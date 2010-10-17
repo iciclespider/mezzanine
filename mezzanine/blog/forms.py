@@ -26,4 +26,6 @@ class BlogPostForm(forms.ModelForm):
 
     def __init__(self):
         super(BlogPostForm, self).__init__()
+        self.fields["title"].label = 'Title:'
+        self.fields["content"].label = 'Content:'
         self.fields["status"].widget = forms.HiddenInput()

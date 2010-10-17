@@ -2,24 +2,29 @@
 
 {% load mezzanine_tags i18n %}
 
-{% block title %}{{ title }} | Mezzanine{% endblock %}
-{% block branding %}<h1 id="site-name">Mezzanine</h1>{% endblock %}
+{% block title %}{{ title }} | McNerthney{% endblock %}
+{% block branding %}<h1 id="site-name"><a href="/">McNerthney</a></h1>{% endblock %}
 {% block nav-global %}{% endblock %}
 
-{% block extrahead %}
+{% block blockbots %}
 {% load_settings CONTENT_MEDIA_URL %}
-<script type="text/javascript">
 
+<script type="text/javascript">
 if (typeof $ == 'undefined') {
     document.write('<scr' + 
         'ipt src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"></scr' + 
         'ipt>');
 }
-
-window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
-
 </script>
 
+<script type="text/javascript">
+window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
+// Allow easy access to the home page.
+$(function() {
+    var title = $('.admin-title');
+    title.html('<a href="/">' + title.html() + '</a>')
+});
+</script>
 
 {% if not request.user.is_authenticated %}
 <style type="text/css">
@@ -36,7 +41,7 @@ window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
 
 $(function() {
     if ($('#id_password').length == 1) { 
-        $('#extra-login-fields').insertAfter($('#id_password').parent()).show();
+        $('#extra-login-fields').insertAfter($('#id_password').closest('div .row')).show();
     }
 });
 
@@ -132,19 +137,22 @@ $(function() {
 
 {% block footer %}{{ block.super }}
 {% if not request.user.is_authenticated %}
-<div class="form-row" id="extra-login-fields" style="display:none;">
-
-    <label class="required">{% trans "Interface:" %}</label> 
-
+<div class="row" id="extra-login-fields" style="display:none;">
+  <div class="column span-4">
+    <label class="required">{% trans 'Interface:' %}</label>
+  </div>
+  <div class="column span-3">
     <input class="interface" type="radio" name="interface" id="interface_admin" 
         value="admin"{% ifnotequal request.REQUEST.interface "site" %} checked{% endifnotequal %} />
     <label class="interface" for="interface_admin">{% trans "Admin" %}</label>
-
+  </div>
+  <div class="column span-3 last">
     <input class="interface" type="radio" name="interface" id="interface_site" 
         value="site"{% ifequal request.REQUEST.interface "site" %} checked{% endifequal %} />
     <label class="interface" for="interface_site">{% trans "Site" %}</label>
-
+  </div>
 </div>
+
 {% endif %}
 {% if request.user.is_authenticated %}
 {% admin_dropdown_menu %}
