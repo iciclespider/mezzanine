@@ -137,12 +137,12 @@ def thumbnail(image_url, width, height):
     return thumb_url
 
 
-@register.inclusion_tag("includes/editable_loader.html", takes_context=True)
+@register.inclusion_tag("admin/includes/editable_loader.html", takes_context=True)
 def editable_loader(context):
     """
     Set up the required JS/CSS for the in-line editing toolbar and controls.
     """
-    t = get_template("includes/editable_toolbar.html")
+    t = get_template("admin/includes/editable_toolbar.html")
     context["REDIRECT_FIELD_NAME"] = REDIRECT_FIELD_NAME
     context["toolbar"] = t.render(Context(context))
     return context
@@ -176,7 +176,7 @@ def editable(parsed, context, token):
             context["form"] = get_edit_form(obj, field_names)
             context["original"] = parsed
             context["uuid"] = uuid4()
-            t = get_template("includes/editable_form.html")
+            t = get_template("admin/includes/editable_form.html")
             return t.render(Context(context))
     return parsed
 
