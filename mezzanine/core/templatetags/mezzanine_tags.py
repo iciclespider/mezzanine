@@ -66,10 +66,11 @@ def set_short_url_for(context, token):
 
 
 @register.to_end_tag
-def metablock(parsed):
+def metablock(nodelist, context):
     """
     Remove HTML tags, entities and superfluous characters from meta blocks.
     """
+    parsed = nodelist.render(context)
     parsed = " ".join(parsed.replace("\n", "").split()).replace(" ,", ",")
     return strip_tags(decode_html_entities(parsed))
 
@@ -149,7 +150,7 @@ def editable_loader(context):
 
 
 @register.to_end_tag
-def editable(parsed, context, token):
+def editable(nodelist, context, token):
     """
     Add the required HTML to the parsed content for in-line editing, such as
     the icon and edit form if the object is deemed to be editable - either it
@@ -167,6 +168,7 @@ def editable(parsed, context, token):
     fields = [parse_field(f) for f in token.split_contents()[1:]]
     if fields:
         fields = [f for f in fields if len(f) == 2 and f[0] is fields[0][0]]
+    parsed = nodelist.render(context)
     if not parsed.strip():
         parsed = "".join([unicode(getattr(*field)) for field in fields])
     if fields:

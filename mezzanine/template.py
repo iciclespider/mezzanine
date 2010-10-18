@@ -45,7 +45,7 @@ class Library(template.Library):
         Creates a tag that parses until it finds the corresponding end tag,
         eg: for a tag named ``mytag`` it will parse until ``endmytag``.
         The decorated func's return value is used to render the parsed
-        content and takes three arguments - the parsed content between the
+        content and takes three arguments - the parsed nodelist between the
         start and end tags, the template context and the tag token.
         """
         @wraps(tag_func)
@@ -56,7 +56,10 @@ class Library(template.Library):
                     self.nodelist = parser.parse((end_name,))
                     parser.delete_first_token()
                 def render(self, context):
-                    args = (self.nodelist.render(context), context, token)
-                    return tag_func(*args[:tag_func.func_code.co_argcount])
+                    context.push()
+                    args = (self.nodelist, context, token)
+                    value = tag_func(*args[:tag_func.func_code.co_argcount])
+                    context.pop()
+                    return value
             return ToEndTagNode()
         return self.tag(tag_wrapper)
