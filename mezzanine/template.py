@@ -57,7 +57,7 @@ class Library(template.Library):
                     parser.delete_first_token()
                 def render(self, context):
                     context.push()
-                    args = (self.nodelist, context, token)
+                    args = (context, self.nodelist, token, parser)
                     value = tag_func(*args[:tag_func.func_code.co_argcount])
                     context.pop()
                     return value

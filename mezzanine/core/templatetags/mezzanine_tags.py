@@ -66,7 +66,7 @@ def set_short_url_for(context, token):
 
 
 @register.to_end_tag
-def metablock(nodelist, context):
+def metablock(context, nodelist):
     """
     Remove HTML tags, entities and superfluous characters from meta blocks.
     """
@@ -150,7 +150,7 @@ def editable_loader(context):
 
 
 @register.to_end_tag
-def editable(nodelist, context, token):
+def editable(context, nodelist, token):
     """
     Add the required HTML to the parsed content for in-line editing, such as
     the icon and edit form if the object is deemed to be editable - either it

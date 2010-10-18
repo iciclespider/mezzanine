@@ -3,9 +3,10 @@ from collections import defaultdict
 
 from django.core.urlresolvers import reverse
 from django.db.models import get_model, get_models
+from django.template import TemplateSyntaxError
 
 from mezzanine import template
-from mezzanine.pages.models import Page
+from mezzanine.pages.models import Page, ContentPage
 
 
 register = template.Library()
@@ -126,3 +127,22 @@ def is_page_content_model(admin_model_dict):
         model = get_model(*args)
         return model is not Page and issubclass(model, Page)
     return False
+
+@register.to_end_tag
+def page(context, nodelist, token, parser):
+    """
+    Allows a Page to be embedded in a template.
+      {% page 'home' %}
+        {{ page.title }}
+      {% endpage %}
+    """
+    bits = token.split_contents()
+    if len(bits) != 2:
+        raise TemplateSyntaxError("'%s' takes one argument (slug)" % bits[0])
+    slug = parser.compile_filter(bits[1]).resolve(context)
+    try:
+        page = Page.objects.get(slug=slug)
+    except Page.DoesNotExist:
+        raise TemplateSyntaxError("The Page slug '%s' does not exist." % slug)
+    context['page'] = page
+    return nodelist.render(context)
