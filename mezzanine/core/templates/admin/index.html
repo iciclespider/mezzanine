@@ -1,14 +1,13 @@
 {% extends "admin/base_site.html" %}
 
 <!-- LOADING -->
-{% load mezzanine_tags pages_tags %}
+{% load i18n mezzanine_tags pages_tags %}
 
 <!-- COLTYPE/BODYCLASS -->
 {% block bodyclass %}dashboard{% endblock %}
 {% block content-class %}content-grid{% endblock %}
 
-<!-- BREADCRUMBS -->
-{% block breadcrumbs %}<div class="breadcrumbs">Home</div>{% endblock %}
+{% block content_title %}<h1>{% trans "Dashboard" %}</h1>{% endblock %}
 
 <!-- CONTENT -->
 {% block content%}

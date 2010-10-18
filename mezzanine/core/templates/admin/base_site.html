@@ -6,24 +6,17 @@
 {% block branding %}<h1 id="site-name"><a href="/">McNerthney</a></h1>{% endblock %}
 {% block nav-global %}{% endblock %}
 
-{% block blockbots %}
-{% load_settings CONTENT_MEDIA_URL %}
-
-<script type="text/javascript">
-if (typeof $ == 'undefined') {
-    document.write('<scr' + 
-        'ipt src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"></scr' + 
-        'ipt>');
-}
-</script>
+{% block javascripts %}
+{{ block.super }}
 
 <script type="text/javascript">
 window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
-// Allow easy access to the home page.
-$(function() {
-    var title = $('.admin-title');
-    title.html('<a href="/">' + title.html() + '</a>')
-});
+(function($) {
+    $(window).load(function() {
+        var title = $('.admin-title');
+        title.html('<a href="/">' + title.html() + '</a>')
+    });
+})(django.jQuery);
 </script>
 
 {% if not request.user.is_authenticated %}
@@ -39,23 +32,27 @@ $(function() {
 // login.html template, since we don't want to override the login.html 
 // template as it's very different between Grappelli and the regular admin.
 
-$(function() {
-    if ($('#id_password').length == 1) { 
-        $('#extra-login-fields').insertAfter($('#id_password').closest('div .row')).show();
-    }
-});
+(function($) {
+    $(window).load(function() {
+        if ($('#id_password').length == 1) { 
+            $('#extra-login-fields').insertAfter($('#id_password').closest('div .row')).show();
+        }
+    });
+})(django.jQuery);
 
 </script>
 {% endif %}
 
 {% if request.user.is_authenticated and not is_popup and not request.GET.pop %}
 <style type="text/css">
-    .breadcrumbs {display:none; height:30px; margin:0; padding:0;
+    h1 {margin:10px 0 10px;}
+    div#breadcrumbs {padding:0 0 0 20px;
         background:#e6e6e6 !important;}
+    div#breadcrumbs a {padding:0; margin:5px 0;}
     .dropdown-menu {left:0; padding:0;}
-    .dropdown-menu ul {display:inline; padding:0; margin:0;}
-    .dropdown-menu li {float:left; width:auto; padding:11px 15px; 
-        cursor:pointer; height:30px;
+    .dropdown-menu ul {padding:0; margin:0;}
+    .dropdown-menu li {float:left; width:auto; margin:0 30px 0 0;
+        cursor:pointer; height:auto; padding: 6px 0; color: #309bbf;
         font-size:15px; font-weight:bold; list-style-type:none;}
     .cloned li {display:block; font-size:13px; font-weight:normal; 
         padding:15px 20px 15px 20px !important; border-top:1px solid #eee;}
@@ -74,88 +71,89 @@ $(function() {
 // timeout has passed when mousing out from a menu.
 var onMenu; 
 
-$(function() {
-
-    var grappelli = $('.admin-title').length == 1;
-
-    // Empty out the breadcrumbs div and position the menu over it.
-    var breadcrumb = $('.breadcrumbs');
-    $('.breadcrumbs').html(' ').show();
-    $('body').append($('.dropdown-menu'));
-    // The top value here previously used breadcrumb.offset().top but breaks 
-    // when scrolling and reloading in Firefox, so to resolve this it's 
-    // hard-coded for now. Reported in github issue #11 
-    $('.dropdown-menu').css({
-        top: grappelli ? 30 : 37, position: grappelli ? 'fixed' : 'absolute'
-    }).show();
-
-    $('.dropdown-menu a').mouseover(function() {
-        var parent = $(this).parent();
-        var menu = parent.find('.dropdown-menu-menu').clone();
-        // If we're over a primary menu link, clone the child menu and show it.
-        if (menu.length == 1) {
-            onMenu = true;
-            $('.cloned').remove();
-            $('body').append(menu);
-            // Position the child menu under its parent.
-            var pos = {
-                top: breadcrumb.offset().top + breadcrumb.height(), 
-                left: parent.offset().left,
-                position: 'absolute'
-            }
-            menu.css(pos).addClass('cloned').show();
-            // Ensure the menu stays visible when we mouse onto another item in it.
-            menu.mouseover(function() {
-                onMenu = true;
-            });
-            // Trigger the parent mouseout if we mouseout of the menu.
-            menu.mouseout(function() {
-                $('.dropdown-menu a').mouseout();
-            });
-        }
+(function($) {
+    $(window).load(function() {
+	
+	    var grappelli = $('.admin-title').length == 1;
+	
+	    // Empty out the breadcrumbs div and position the menu over it.
+	    var breadcrumbs = $('#breadcrumbs');
+	    breadcrumbs.html('');
+	    breadcrumbs.append($('.dropdown-menu'));
+	    breadcrumbs.find('.dropdown-menu').show();
+	
+	    $('.dropdown-menu-item').mouseover(function() {
+	        var item = $(this);
+	        var menu = item.find('.dropdown-menu-menu').clone();
+	        // If we're over a primary menu link, clone the child menu and show it.
+	        if (menu.length == 1) {
+                item.css('color', '#444444')
+	            onMenu = true;
+	            $('.cloned').remove();
+	            $('body').append(menu);
+	            // Position the child menu under this item.
+	            var pos = {
+	                // top: breadcrumbs.offset().top + breadcrumbs.outerHeight(), 
+	                top: item.offset().top + item.outerHeight(), 
+	                left: item.offset().left,
+	                position: 'absolute'
+	            }
+	            menu.css(pos).addClass('cloned').show();
+	            // Ensure the menu stays visible when we mouse onto another item in it.
+	            menu.mouseover(function() {
+	                onMenu = true;
+	            });
+	            // Trigger the itme mouseout if we mouseout of the menu.
+	            menu.mouseout(function() {
+	                item.mouseout();
+	            });
+	        }
+	    });
+	
+	    // Set a timeout to hide visible menus on mouseout of primary menu item.
+	    $('.dropdown-menu-item').mouseout(function() {
+	        var item = $(this);
+	        if (item.find('.dropdown-menu-menu').length == 1) {
+	            onMenu = false;
+	            window.setTimeout(function() {
+	                if (!onMenu) {
+	                    $('.cloned').remove();
+                        item.css('color', '#309bbf')
+	                }
+	            }, 0);
+	        }
+	    })
+	  	
     });
-
-    // Set a timeout to hide visible menus on mouseout of primary menu item.
-    $('.dropdown-menu a').mouseout(function() {
-        var parent = $(this).parent();
-        if (parent.find('.dropdown-menu-menu').length == 1) {
-            onMenu = false;
-            window.setTimeout(function() {
-                if (!onMenu) {
-                    $('.cloned').remove();
-                }
-            }, 1000);
-        }
-    })
-
-});
+})(django.jQuery);
 
 </script>
+
 {% endif %}
 
 {% endblock %}
 
 {% block footer %}{{ block.super }}
-{% if not request.user.is_authenticated %}
-<div class="row" id="extra-login-fields" style="display:none;">
-  <div class="column span-4">
-    <label class="required">{% trans 'Interface:' %}</label>
-  </div>
-  <div class="column span-3">
-    <input class="interface" type="radio" name="interface" id="interface_admin" 
-        value="admin"{% ifnotequal request.REQUEST.interface "site" %} checked{% endifnotequal %} />
-    <label class="interface" for="interface_admin">{% trans "Admin" %}</label>
-  </div>
-  <div class="column span-3 last">
-    <input class="interface" type="radio" name="interface" id="interface_site" 
-        value="site"{% ifequal request.REQUEST.interface "site" %} checked{% endifequal %} />
-    <label class="interface" for="interface_site">{% trans "Site" %}</label>
-  </div>
-</div>
 
-{% endif %}
 {% if request.user.is_authenticated %}
-{% admin_dropdown_menu %}
+   {% admin_dropdown_menu %}
+{% else %}
+  <div class="row" id="extra-login-fields" style="display:none;">
+    <div class="column span-4">
+      <label class="required">{% trans 'Interface:' %}</label>
+    </div>
+    <div class="column span-3">
+      <input class="interface" type="radio" name="interface" id="interface_admin" 
+          value="admin"{% ifnotequal request.REQUEST.interface "site" %} checked{% endifnotequal %} />
+      <label class="interface" for="interface_admin">{% trans "Admin" %}</label>
+    </div>
+    <div class="column span-3 last">
+      <input class="interface" type="radio" name="interface" id="interface_site" 
+          value="site"{% ifequal request.REQUEST.interface "site" %} checked{% endifequal %} />
+      <label class="interface" for="interface_site">{% trans "Site" %}</label>
+    </div>
+  </div>
 {% endif %}
+
 {% endblock %}
 

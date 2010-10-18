@@ -26,10 +26,10 @@ DATABASE_PORT = ""
 import os
 project_path = os.path.dirname(os.path.abspath(__file__))
 project_dir = project_path.split(os.sep)[-1]
-MEDIA_URL = "/site_media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(project_path, MEDIA_URL.strip("/"))
 TEMPLATE_DIRS = (os.path.join(project_path, "templates"),)
-ADMIN_MEDIA_PREFIX = "/media/"
+ADMIN_MEDIA_PREFIX = "/admin/media/"
 ROOT_URLCONF = "%s.urls" % project_dir
 CACHE_MIDDLEWARE_KEY_PREFIX = project_dir
 
@@ -107,7 +107,6 @@ if "debug_toolbar" in INSTALLED_APPS:
     DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
     MIDDLEWARE_CLASSES += ("debug_toolbar.middleware.DebugToolbarMiddleware",)
 if PACKAGE_NAME_GRAPPELLI in INSTALLED_APPS:
-    ADMIN_MEDIA_PREFIX = "/media/admin/"
     GRAPPELLI_ADMIN_HEADLINE = "Mezzanine"
     GRAPPELLI_ADMIN_TITLE = "Mezzanine"
     GRAPPELLI_MEDIA_PATH = os.path.join(os.path.dirname(
