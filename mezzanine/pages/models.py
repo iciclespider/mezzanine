@@ -99,6 +99,9 @@ class SitePage(models.Model):
         verbose_name = _("Site page")
         verbose_name_plural = _("Site pages")
 
+    def __unicode__(self):
+        return unicode(self.page)
+
 
 class ContentPage(Page, Content):
     """

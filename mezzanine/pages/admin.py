@@ -1,13 +1,12 @@
 
 from copy import deepcopy
-
 from django.contrib import admin
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-
-from mezzanine.pages.models import Page, SitePage, ContentPage
 from mezzanine.core.admin import DisplayableAdmin
+from mezzanine.pages.models import Page, SitePage, ContentPage
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
@@ -42,24 +41,24 @@ class PageAdmin(DisplayableAdmin):
             return HttpResponseRedirect(add_url)
         return super(PageAdmin, self).add_view(request, **kwargs)
 
-    def change_view(self, request, object_id, extra_context = None):
+    def change_view(self, request, object_id, extra_context=None):
         """
         For the ``Page`` model, check ``page.get_content_model()`` for a
         subclass and redirect to its admin change view.
         """
         if self.model is Page:
-            page = get_object_or_404(Page, pk = object_id)
+            page = get_object_or_404(Page, pk=object_id)
             content_model = page.get_content_model()
             if content_model is not None:
                 app = content_model.__class__._meta.app_label
                 name = content_model.__class__.__name__.lower()
                 change_url = reverse("admin:%s_%s_change" % (app, name),
-                    args = (content_model.id,))
+                    args=(content_model.id,))
                 return HttpResponseRedirect(change_url)
         return super(PageAdmin, self).change_view(request, object_id,
-            extra_context = None)
+            extra_context=None)
 
-    def changelist_view(self, request, extra_context = None):
+    def changelist_view(self, request, extra_context=None):
         """
         Redirect to the ``Page`` changelist view for ``Page`` subclasses.
         """
@@ -106,6 +105,16 @@ class PageAdmin(DisplayableAdmin):
         return self._maintain_parent(request, response)
 
 
+class SitePageInline(admin.TabularInline):
+    model = SitePage
+    verbose_name = 'Home page'
+    verbose_name_plural = 'Home page'
+
+class SiteAdmin(admin.ModelAdmin):
+    list_display = ('domain', 'name')
+    search_fields = ('domain', 'name')
+    inlines = (SitePageInline,)
+
 content_page_fieldsets = deepcopy(PageAdmin.fieldsets)
 content_page_fieldsets[0][1]["fields"].insert(3, "content")
 
@@ -117,5 +126,6 @@ class ContentPageAdmin(PageAdmin):
 
 
 admin.site.register(Page, PageAdmin)
-admin.site.register(SitePage)
+admin.site.unregister(Site)
+admin.site.register(Site, SiteAdmin)
 admin.site.register(ContentPage, ContentPageAdmin)

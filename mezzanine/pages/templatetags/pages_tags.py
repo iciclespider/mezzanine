@@ -12,7 +12,7 @@ from mezzanine.pages.models import Page, ContentPage, get_home_page
 register = template.Library()
 
 
-def _page_menu(context, parent_page):
+def _page_menu(context, parent_page, admin=False):
     """
     Return a list of child pages for the given parent, storing all
     pages in a dict in the context when first called using parents as keys
@@ -39,14 +39,14 @@ def _page_menu(context, parent_page):
     # calculation of it is correctly applied. This looks weird but if we do 
     # the ``branch_level`` as a separate arg to the template tag with the 
     # addition performed on it, the addition occurs each time the template 
-    # tag is called rather than once per level.
-    if not parent_page:
+    # tag is called rather than once per level.    
+    if not admin and not parent_page:
         parent_page = get_home_page(context["request"])
-    if parent_page:
-        context["branch_level"] = 1
+        setattr(parent_page, "branch_level", 0)
+    context["branch_level"] = 0
+    if parent_page is not None:
+        context["branch_level"] = parent_page.branch_level + 1
         parent_page = parent_page.id
-    else:
-        context["branch_level"] = 0
     context["page_branch"] = context["menu_pages"].get(parent_page, [])
     for i, page in enumerate(context["page_branch"]):
         context["page_branch"][i].branch_level = context["branch_level"]
@@ -100,7 +100,7 @@ def tree_menu_admin(context, parent_page=None):
     """
     Admin tree menu for managing pages.
     """
-    return _page_menu(context, parent_page)
+    return _page_menu(context, parent_page, True)
 
 
 @register.as_tag
