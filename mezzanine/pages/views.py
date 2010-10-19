@@ -7,9 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.http import urlquote
-
-from mezzanine.pages.models import get_home_page, Page
 from mezzanine.pages import page_processors
+from mezzanine.pages.models import Page
 
 
 page_processors.autodiscover()
@@ -29,7 +28,7 @@ admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
 def home(request, template="pages/page.html"):
-    home = get_home_page(request)
+    home = Page.objects.get_home_page(request)
     if not home:
         raise Http404
     return _handle_page(request, home, template)

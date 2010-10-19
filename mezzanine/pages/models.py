@@ -6,18 +6,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.models import Displayable, Orderable, Content
-
-def get_home_page(request):
-    # This should probably be part of a PageManager.
-    host = request.META['HTTP_HOST']
-    # Just use the host name for now.
-    domain = host.split(':')[0]
-    try:
-        return Page.objects.get(sites__site__domain=domain)
-    except Page.DoesNotExist:
-        # Maybe create a "default" home page.
-        return None
-
+from mezzanine.pages.managers import PageManager
 
 class Page(Orderable, Displayable):
     """
@@ -32,6 +21,8 @@ class Page(Orderable, Displayable):
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
+
+    objects = PageManager()
 
     class Meta:
         verbose_name = _("Page")

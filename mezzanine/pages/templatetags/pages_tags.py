@@ -1,12 +1,10 @@
 
 from collections import defaultdict
-
 from django.core.urlresolvers import reverse
 from django.db.models import get_model, get_models
 from django.template import TemplateSyntaxError
-
 from mezzanine import template
-from mezzanine.pages.models import Page, ContentPage, get_home_page
+from mezzanine.pages.models import Page, ContentPage
 
 
 register = template.Library()
@@ -41,7 +39,7 @@ def _page_menu(context, parent_page, admin=False):
     # addition performed on it, the addition occurs each time the template 
     # tag is called rather than once per level.    
     if not admin and not parent_page:
-        parent_page = get_home_page(context["request"])
+        parent_page = Page.objects.get_home_page(context["request"])
         setattr(parent_page, "branch_level", 0)
     context["branch_level"] = 0
     if parent_page is not None:
@@ -132,10 +130,27 @@ def is_page_content_model(admin_model_dict):
     return False
 
 @register.to_end_tag
+def homepage(context, nodelist, token, parser):
+    """
+    Allows the site home Page to be embedded in a template.
+      {% homepage %}
+        {{ page.title }}
+      {% endhomepage %}
+    """
+    bits = token.split_contents()
+    if len(bits) != 1:
+        raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
+    try:
+        context['page'] = Page.objects.get_home_page(context["request"])
+    except Page.DoesNotExist:
+        raise TemplateSyntaxError("The Page slug '%s' does not exist." % slug)
+    return nodelist.render(context)
+
+@register.to_end_tag
 def page(context, nodelist, token, parser):
     """
     Allows a Page to be embedded in a template.
-      {% page 'home' %}
+      {% page 'about' %}
         {{ page.title }}
       {% endpage %}
     """
