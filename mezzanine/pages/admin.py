@@ -6,12 +6,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-from mezzanine.pages.models import Page, ContentPage
+from mezzanine.pages.models import Page, SitePage, ContentPage
 from mezzanine.core.admin import DisplayableAdmin
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
-page_fieldsets[0][1]["fields"] += (("in_navigation", "in_footer"), 
+page_fieldsets[0][1]["fields"] += (("in_navigation", "in_footer"),
     "login_required",)
 
 
@@ -21,15 +21,15 @@ class PageAdmin(DisplayableAdmin):
     redirections between admin interfaces for the ``Page`` model and its
     subclasses.
     """
-    
+
     fieldsets = page_fieldsets
-    
+
     def in_menu(self):
         """
         Hide subclasses from the admin menu.
         """
         return self.model is Page
-    
+
     def add_view(self, request, **kwargs):
         """
         For the ``Page`` model, redirect to the add view for the 
@@ -42,24 +42,24 @@ class PageAdmin(DisplayableAdmin):
             return HttpResponseRedirect(add_url)
         return super(PageAdmin, self).add_view(request, **kwargs)
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, extra_context = None):
         """
         For the ``Page`` model, check ``page.get_content_model()`` for a
         subclass and redirect to its admin change view.
         """
         if self.model is Page:
-            page = get_object_or_404(Page, pk=object_id)
+            page = get_object_or_404(Page, pk = object_id)
             content_model = page.get_content_model()
             if content_model is not None:
                 app = content_model.__class__._meta.app_label
                 name = content_model.__class__.__name__.lower()
                 change_url = reverse("admin:%s_%s_change" % (app, name),
-                    args=(content_model.id,))
+                    args = (content_model.id,))
                 return HttpResponseRedirect(change_url)
         return super(PageAdmin, self).change_view(request, object_id,
-            extra_context=None)
+            extra_context = None)
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view(self, request, extra_context = None):
         """
         Redirect to the ``Page`` changelist view for ``Page`` subclasses.
         """
@@ -117,4 +117,5 @@ class ContentPageAdmin(PageAdmin):
 
 
 admin.site.register(Page, PageAdmin)
+admin.site.register(SitePage)
 admin.site.register(ContentPage, ContentPageAdmin)

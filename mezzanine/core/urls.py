@@ -10,7 +10,7 @@ from django.views.generic.simple import direct_to_template
 from mezzanine.settings import load_settings
 
 
-mezz_settings = load_settings("ADMIN_REMOVAL", "CONTENT_MEDIA_PATH", 
+mezz_settings = load_settings("ADMIN_REMOVAL", "CONTENT_MEDIA_PATH",
                                                 "CONTENT_MEDIA_URL")
 
 urlpatterns = patterns("mezzanine.core.views",
@@ -22,7 +22,7 @@ urlpatterns = patterns("mezzanine.core.views",
 
 urlpatterns += patterns("",
     ("^%s/(?P<path>.*)$" % mezz_settings.CONTENT_MEDIA_URL.strip("/"),
-        "django.views.static.serve", 
+        "django.views.static.serve",
         {"document_root": mezz_settings.CONTENT_MEDIA_PATH}),
 )
 
@@ -66,8 +66,3 @@ if getattr(settings, "PACKAGE_NAME_GRAPPELLI", None):
 for (app, app_patterns) in OPTIONAL_APP_PATTERNS:
     if app in settings.INSTALLED_APPS:
         urlpatterns += app_patterns
-
-# Homepage.
-urlpatterns += patterns("",
-    url("^$", direct_to_template, {"template": "index.html"}, name="home"),
-)

@@ -6,7 +6,7 @@ from django.db.models import get_model, get_models
 from django.template import TemplateSyntaxError
 
 from mezzanine import template
-from mezzanine.pages.models import Page, ContentPage
+from mezzanine.pages.models import Page, ContentPage, get_home_page
 
 
 register = template.Library()
@@ -40,10 +40,13 @@ def _page_menu(context, parent_page):
     # the ``branch_level`` as a separate arg to the template tag with the 
     # addition performed on it, the addition occurs each time the template 
     # tag is called rather than once per level.
-    context["branch_level"] = 0
-    if parent_page is not None:
-        context["branch_level"] = parent_page.branch_level + 1
+    if not parent_page:
+        parent_page = get_home_page(context["request"])
+    if parent_page:
+        context["branch_level"] = 1
         parent_page = parent_page.id
+    else:
+        context["branch_level"] = 0
     context["page_branch"] = context["menu_pages"].get(parent_page, [])
     for i, page in enumerate(context["page_branch"]):
         context["page_branch"][i].branch_level = context["branch_level"]
@@ -82,7 +85,7 @@ def footer_menu(context, parent_page=None):
     return _page_menu(context, parent_page)
 
 
-@register.inclusion_tag("pages/includes/breadcrumb_menu.html", 
+@register.inclusion_tag("pages/includes/breadcrumb_menu.html",
     takes_context=True)
 def breadcrumb_menu(context, parent_page=None):
     """

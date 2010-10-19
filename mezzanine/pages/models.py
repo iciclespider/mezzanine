@@ -1,11 +1,22 @@
 
 from django.contrib.admin.util import quote
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import resolve, reverse
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
-
 from mezzanine.core.models import Displayable, Orderable, Content
+
+def get_home_page(request):
+    # This should probably be part of a PageManager.
+    host = request.META['HTTP_HOST']
+    # Just use the host name for now.
+    domain = host.split(':')[0]
+    try:
+        return Page.objects.get(sites__site__domain=domain)
+    except Page.DoesNotExist:
+        # Maybe create a "default" home page.
+        return None
 
 
 class Page(Orderable, Displayable):
@@ -19,7 +30,7 @@ class Page(Orderable, Displayable):
     in_footer = models.BooleanField(_("Show in footer"))
     titles = models.CharField(editable=False, max_length=1000, null=True)
     content_model = models.CharField(editable=False, max_length=50, null=True)
-    login_required = models.BooleanField(_("Login required"), 
+    login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
 
     class Meta:
@@ -75,7 +86,19 @@ class Page(Orderable, Displayable):
         from mezzanine.pages.views import page
         resolved_view = resolve(self.get_absolute_url())[0]
         return resolved_view != page
-        
+
+
+class SitePage(models.Model):
+    """
+    Associate a home page to a site.
+    """
+    site = models.OneToOneField(Site, related_name="page")
+    page = models.ForeignKey(Page, related_name="sites")
+
+    class Meta:
+        verbose_name = _("Site page")
+        verbose_name_plural = _("Site pages")
+
 
 class ContentPage(Page, Content):
     """

@@ -6,6 +6,30 @@
             "status": 2, 
             "_order": 0, 
             "parent": null, 
+            "description": "<p>Our Home Page</p>", 
+            "title": "Home", 
+            "in_footer": true, 
+            "titles": "Home", 
+            "content_model": "contentpage", 
+            "in_navigation": true, 
+            "slug": "home"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "pages.sitepage", 
+        "fields": {
+            "site": 1, 
+            "page": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "pages.page", 
+        "fields": {
+            "status": 2, 
+            "_order": 0, 
+            "parent": 1, 
             "description": "<p>About us</p>", 
             "title": "About", 
             "in_footer": true, 
@@ -16,12 +40,12 @@
         }
     }, 
     {
-        "pk": 5, 
+        "pk": 6, 
         "model": "pages.page", 
         "fields": {
             "status": 2, 
             "_order": 1, 
-            "parent": 1, 
+            "parent": 2, 
             "description": "<p>History</p>", 
             "title": "History", 
             "in_footer": true, 
@@ -32,12 +56,12 @@
         }
     }, 
     {
-        "pk": 4, 
+        "pk": 5, 
         "model": "pages.page", 
         "fields": {
             "status": 2, 
             "_order": 0, 
-            "parent": 1, 
+            "parent": 2, 
             "description": "<p>Team</p>", 
             "title": "Team", 
             "in_footer": true, 
@@ -48,12 +72,12 @@
         }
     }, 
     {
-        "pk": 2, 
+        "pk": 3, 
         "model": "pages.page", 
         "fields": {
             "status": 2, 
             "_order": 1, 
-            "parent": null, 
+            "parent": 1, 
             "description": "<p>Blog</p>", 
             "title": "Blog", 
             "in_footer": true, 
@@ -64,12 +88,12 @@
         }
     }, 
     {
-        "pk": 6, 
+        "pk": 7, 
         "model": "pages.page", 
         "fields": {
             "status": 2, 
             "_order": 0, 
-            "parent": 3, 
+            "parent": 4, 
             "description": "<p>Legals</p>", 
             "title": "Legals", 
             "in_footer": true, 
@@ -80,12 +104,12 @@
         }
     }, 
     {
-        "pk": 3, 
+        "pk": 4, 
         "model": "pages.page", 
         "fields": {
             "status": 2, 
             "_order": 2, 
-            "parent": null, 
+            "parent": 1, 
             "description": "<p>Fill in the form below to get in touch with us.</p>", 
             "title": "Contact", 
             "in_footer": true, 
@@ -99,32 +123,39 @@
         "pk": 1,
         "model": "pages.contentpage",
         "fields": {
-            "content": "<p>About us</p>" 
+            "content": "<p>Welcome to our Home Page.</p>" 
         }
     },
     {
         "pk": 2,
         "model": "pages.contentpage",
         "fields": {
-            "content": "<p>Blog</p>"
+            "content": "<p>About us</p>" 
         }
     },
     {
-        "pk": 4,
+        "pk": 3,
         "model": "pages.contentpage",
         "fields": {
-            "content": "<p>Team</p>" 
+            "content": "<p>Blog</p>"
         }
     },
     {
         "pk": 5,
         "model": "pages.contentpage",
         "fields": {
-            "content": "<p>History</p>" 
+            "content": "<p>Team</p>" 
         }
     },
     {
         "pk": 6,
+        "model": "pages.contentpage",
+        "fields": {
+            "content": "<p>History</p>" 
+        }
+    },
+    {
+        "pk": 7,
         "model": "pages.contentpage",
         "fields": {
             "content": "<p>Legals</p>" 

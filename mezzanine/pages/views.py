@@ -2,13 +2,13 @@
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template import RequestContext
 from django.template.loader import select_template
 from django.utils.http import urlquote
 
-from mezzanine.pages.models import Page
+from mezzanine.pages.models import get_home_page, Page
 from mezzanine.pages import page_processors
 
 
@@ -28,15 +28,24 @@ def admin_page_ordering(request):
 admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
+def home(request, template="pages/page.html"):
+    home = get_home_page(request)
+    if not home:
+        raise Http404
+    return _handle_page(request, home, template)
+
 def page(request, slug, template="pages/page.html"):
+    page = get_object_or_404(Page.objects.published(request.user), slug=slug)
+    return _handle_page(request, page, template)
+
+def _handle_page(request, page, template):
     """
     Display content for a page. First check for any matching page processors
     and handle them. Secondly, build the list of template names to choose
     from given the slug and type of page being viewed.
     """
-    page = get_object_or_404(Page.objects.published(request.user), slug=slug)
     if page.login_required and not request.user.is_authenticated():
-        return redirect("%s?%s=%s" % (settings.LOGIN_URL, REDIRECT_FIELD_NAME, 
+        return redirect("%s?%s=%s" % (settings.LOGIN_URL, REDIRECT_FIELD_NAME,
             urlquote(request.get_full_path())))
     context = {"page": page}
     for processor in page_processors.processors[page.content_model]:
@@ -50,7 +59,7 @@ def page(request, slug, template="pages/page.html"):
                 raise ValueError("The page processor %s.%s returned %s but "
                     "must return HttpResponse or dict." % (
                     processor.__module__, processor.__name__, type(response)))
-    templates = ["pages/%s.html" % slug]
+    templates = ["pages/%s.html" % page.slug]
     if page.content_model is not None:
         templates.append("pages/%s.html" % page.content_model)
     templates.append(template)
