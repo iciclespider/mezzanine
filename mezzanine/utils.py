@@ -1,14 +1,8 @@
 
-from htmlentitydefs import name2codepoint
-from re import sub
-
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
-from mezzanine.settings import load_settings
-
-
-mezz_settings = load_settings("CONTENT_MEDIA_URL")
-
+from htmlentitydefs import name2codepoint
+from mezzanine.settings import global_settings
+from re import sub
 
 def decode_html_entities(html):
     """
@@ -75,8 +69,7 @@ def content_media_urls(*paths):
     Prefix the list of paths with the ``CONTENT_MEDIA_URL`` setting for 
     internally hosted JS and CSS files.
     """
-    media_url = mezz_settings.CONTENT_MEDIA_URL.strip("/")
-    return ["/%s/%s" % (media_url, path) for path in paths]
+    return ["/%s/%s" % (global_settings.CONTENT_MEDIA_URL, path) for path in paths]
 
 
 def base_concrete_model(abstract, instance):

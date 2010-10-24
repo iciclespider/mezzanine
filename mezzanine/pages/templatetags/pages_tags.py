@@ -39,7 +39,7 @@ def _page_menu(context, parent_page, admin=False):
     # addition performed on it, the addition occurs each time the template 
     # tag is called rather than once per level.    
     if not admin and not parent_page:
-        parent_page = Page.objects.get_home_page(context["request"])
+        parent_page = context["request"].settings.home
         setattr(parent_page, "branch_level", 0)
     context["branch_level"] = 0
     if parent_page is not None:
@@ -141,7 +141,7 @@ def homepage(context, nodelist, token, parser):
     if len(bits) != 1:
         raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
     try:
-        context['page'] = Page.objects.get_home_page(context["request"])
+        context['page'] = context["request"].settings.home
     except Page.DoesNotExist:
         raise TemplateSyntaxError("The Page slug '%s' does not exist." % slug)
     return nodelist.render(context)

@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.forms import get_edit_form
 from mezzanine.core.models import Keyword, Displayable
 from mezzanine.utils import is_editable, paginate
-from mezzanine.settings import load_settings
 
 
 def admin_keywords_submit(request):
@@ -31,11 +30,10 @@ def search(request, template="search_results.html"):
     """
     Display search results.
     """
-    mezz_settings = load_settings("SEARCH_PER_PAGE", "SEARCH_MAX_PAGING_LINKS")
     query = request.GET.get("q", "")
-    results = Displayable.objects.search(query)
-    results = paginate(results, request.GET.get("page", 1), 
-        mezz_settings.SEARCH_PER_PAGE, mezz_settings.SEARCH_MAX_PAGING_LINKS)
+    results = Displayable.objects.search(request.settings, query)
+    results = paginate(results, request.GET.get("page", 1),
+        request.settings.SEARCH_PER_PAGE, request.settings.SEARCH_MAX_PAGING_LINKS)
     context = {"query": query, "results": results}
     return render_to_response(template, context, RequestContext(request))
 

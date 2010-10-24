@@ -2,9 +2,6 @@
 from copy import deepcopy
 from csv import writer
 from datetime import datetime
-from mimetypes import guess_type
-from os.path import join
-
 from django.conf.urls.defaults import patterns, url
 from django.contrib import admin
 from django.core.files.storage import FileSystemStorage
@@ -14,16 +11,16 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
-
 from mezzanine.core.admin import DynamicInlineAdmin
 from mezzanine.forms.forms import ExportForm
 from mezzanine.forms.models import Form, Field, FormEntry, FieldEntry
 from mezzanine.pages.admin import PageAdmin
-from mezzanine.settings import load_settings
+from mezzanine.settings import global_settings
+from mimetypes import guess_type
+from os.path import join
 
 
-mezz_settings = load_settings("FORMS_UPLOAD_ROOT")
-fs = FileSystemStorage(location=mezz_settings.FORMS_UPLOAD_ROOT)
+fs = FileSystemStorage(location=global_settings.FORMS_UPLOAD_ROOT)
 
 # Copy the fieldsets for PageAdmin and add the extra fields for FormAdmin.
 form_fieldsets = deepcopy(PageAdmin.fieldsets)
@@ -77,7 +74,7 @@ class FormAdmin(PageAdmin):
         Output a CSV file to the browser containing the entries for the form.
         """
         if request.POST.get("back"):
-            change_url = reverse("admin:%s_%s_change" % 
+            change_url = reverse("admin:%s_%s_change" %
                 (Form._meta.app_label, Form.__name__.lower()), args=(form_id,))
             return HttpResponseRedirect(change_url)
         form = get_object_or_404(Form, id=form_id)

@@ -13,7 +13,7 @@ register_setting(
     editable=False,
     default=(
         (_("Content"), ("pages.Page", "blog.BlogPost", "blog.Comment",)),
-        (_("Site"), ("sites.Site", "redirects.Redirect", "settings.Setting")),
+        (_("Sites"), ("sites.Site", "settings.Settings", "redirects.Redirect")),
         (_("Users"), ("auth.User", "auth.Group",)),
     ),
 )
@@ -77,7 +77,7 @@ register_setting(
 register_setting(
     name="COMMENTS_DEFAULT_APPROVED",
     description=_("If ``True``, built-in comments are approved by default."),
-    editable=True,
+    editable=False,
     default=True,
 )
 
@@ -186,7 +186,7 @@ register_setting(
     description=_("If ``True``, the pages menu will show all levels of "
         "navigation, otherwise child pages are only shown when viewing the "
         "parent page."),
-    editable=False,
+    editable=True,
     default=True,
 )
 

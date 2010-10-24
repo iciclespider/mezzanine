@@ -1,42 +1,41 @@
 
 from django.contrib import admin
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_unicode
-
-from mezzanine.settings.models import Setting
+from django.utils.translation import ugettext_lazy as _
 from mezzanine.settings.forms import SettingsForm
+from mezzanine.settings.models import Settings, SiteSettings
 
 
 class SettingsAdmin(admin.ModelAdmin):
     """
-    Admin class for settings model. Redirect add/change views to the list 
-    view where a single form is rendered for editing all settings.
+    Admin class for settings model.
     """
-    
-    def changelist_redirect(self):
-        app = Setting._meta.app_label
-        name = Setting.__name__.lower()
-        changelist_url = reverse("admin:%s_%s_changelist" % (app, name))
-        return HttpResponseRedirect(changelist_url)
+    list_display = ('name', 'home')
+    form = SettingsForm
 
-    def add_view(self, *args, **kwargs):
-        return self.changelist_redirect()
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super(SettingsAdmin, self).get_fieldsets(request, obj)
+        if obj:
+            fields = obj.editables()
+            fields.sort()
+            fieldsets[0][1]['fields'].extend(fields)
+        return fieldsets
 
-    def change_view(self, *args, **kwargs):
-        return self.changelist_redirect()
-    
-    def changelist_view(self, request, extra_context=None):
-        if extra_context is None:
-            extra_context = {}
-        settings_form = SettingsForm(request.POST or None)
-        if settings_form.is_valid():
-            settings_form.save()
-            return self.changelist_redirect()
-        extra_context["settings_form"] = settings_form
-        extra_context["title"] = _("Change %s" % 
-            force_unicode(Setting._meta.verbose_name_plural))
-        return super(SettingsAdmin, self).changelist_view(request, extra_context)
+class SiteSettingsInline(admin.TabularInline):
+    model = SiteSettings
+    verbose_name = 'Settings'
+    verbose_name_plural = 'Settings'
 
-admin.site.register(Setting, SettingsAdmin)
+class SiteAdmin(admin.ModelAdmin):
+    list_display = ('domain', 'name')
+    search_fields = ('domain', 'name')
+    inlines = (SiteSettingsInline,)
+
+
+
+admin.site.register(Settings, SettingsAdmin)
+admin.site.unregister(Site)
+admin.site.register(Site, SiteAdmin)

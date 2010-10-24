@@ -6,7 +6,6 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.models import Displayable, Orderable, Content
-from mezzanine.pages.managers import PageManager
 
 class Page(Orderable, Displayable):
     """
@@ -21,8 +20,6 @@ class Page(Orderable, Displayable):
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
-
-    objects = PageManager()
 
     class Meta:
         verbose_name = _("Page")
@@ -77,21 +74,6 @@ class Page(Orderable, Displayable):
         from mezzanine.pages.views import page
         resolved_view = resolve(self.get_absolute_url())[0]
         return resolved_view != page
-
-
-class SitePage(models.Model):
-    """
-    Associate a home page to a site.
-    """
-    site = models.OneToOneField(Site, related_name="page")
-    page = models.ForeignKey(Page, related_name="sites")
-
-    class Meta:
-        verbose_name = _("Site page")
-        verbose_name_plural = _("Site pages")
-
-    def __unicode__(self):
-        return unicode(self.page)
 
 
 class ContentPage(Page, Content):

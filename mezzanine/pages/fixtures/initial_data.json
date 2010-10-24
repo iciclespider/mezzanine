@@ -16,14 +16,6 @@
         }
     }, 
     {
-        "pk": 1, 
-        "model": "pages.sitepage", 
-        "fields": {
-            "site": 1, 
-            "page": 1
-        }
-    }, 
-    {
         "pk": 2, 
         "model": "pages.page", 
         "fields": {

@@ -1,18 +1,15 @@
 
 from collections import defaultdict
 from datetime import datetime, timedelta
-from time import timezone
-from urllib import urlopen, urlencode
-
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.utils.simplejson import loads
-
 from mezzanine import template
 from mezzanine.blog.forms import BlogPostForm
 from mezzanine.blog.models import BlogPost, BlogCategory, Comment
 from mezzanine.core.models import Keyword
-from mezzanine.settings import load_settings
+from time import timezone
+from urllib import urlopen, urlencode
 
 
 register = template.Library()
@@ -37,7 +34,7 @@ def blog_comments_for(context, parent):
     """
     if "blog_comments" not in context:
         comments = defaultdict(list)
-        for comment in parent.comments.visible():
+        for comment in parent.comments.visible(context["request"]):
             comments[comment.replied_to_id].append(comment)
         context["blog_comments"] = comments
         parent = None
@@ -73,19 +70,18 @@ def blog_categories(*args):
     return BlogCategory.objects.filter(blogposts__in=posts)
 
 
-@register.as_tag
-def blog_tags(*args):
+@register.as_tag(takes_context=True)
+def blog_tags(context, *args):
     """
     Put a list of tags (keywords) for blog posts into the template context.
     """
-    mezz_settings = load_settings("TAG_CLOUD_SIZES")
     tags = Keyword.objects.filter(blogpost__isnull=False).annotate(
         post_count=Count("blogpost"))
     if not tags:
         return []
     counts = [tag.post_count for tag in tags]
     min_count, max_count = min(counts), max(counts)
-    sizes = mezz_settings.TAG_CLOUD_SIZES
+    sizes = context["request"].TAG_CLOUD_SIZES
     step = (max_count - min_count) / (sizes - 1)
     if step == 0:
         steps = [sizes / 2]
@@ -118,7 +114,7 @@ def quick_blog(context):
 
 DISQUS_FORUM_ID = None
 
-@register.inclusion_tag("admin/includes/recent_comments.html", 
+@register.inclusion_tag("admin/includes/recent_comments.html",
     takes_context=True)
 def recent_comments(context):
     """
@@ -131,11 +127,10 @@ def recent_comments(context):
     """
 
     global DISQUS_FORUM_ID
-    mezz_settings = load_settings("COMMENTS_DISQUS_KEY", 
-                            "COMMENTS_DISQUS_SHORTNAME", "COMMENTS_NUM_LATEST")
-    disqus_key = mezz_settings.COMMENTS_DISQUS_KEY
-    disqus_shortname = mezz_settings.COMMENTS_DISQUS_SHORTNAME
-    latest = mezz_settings.COMMENTS_NUM_LATEST
+    settings = context["request"].settings
+    disqus_key = settings.COMMENTS_DISQUS_KEY
+    disqus_shortname = settings.COMMENTS_DISQUS_SHORTNAME
+    latest = settings.COMMENTS_NUM_LATEST
     context["comments"] = []
     post_from_comment = lambda comment: int(comment["thread"]["identifier"][0])
 

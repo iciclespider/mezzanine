@@ -1,8 +1,4 @@
 
-import os
-from urllib import urlopen, urlencode
-from uuid import uuid4
-
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -13,14 +9,13 @@ from django.template.loader import get_template
 from django.utils.html import strip_tags
 from django.utils.simplejson import loads
 from django.utils.text import capfirst
-
 from mezzanine import template
 from mezzanine.core.forms import get_edit_form
-from mezzanine.settings import load_settings as _load_settings
 from mezzanine.utils import decode_html_entities, is_editable
+from urllib import urlopen, urlencode
+from uuid import uuid4
+import os
 
-
-mezz_settings = _load_settings("ADMIN_MENU_ORDER", "DASHBOARD_TAGS")
 
 register = template.Library()
 
@@ -30,13 +25,11 @@ def load_settings(context, token):
     """
     Push the given setting names into the context.
     """
+    settings = context["request"].settings
     names = token.split_contents()[1:]
     for name in names:
         if name not in context:
-            mezz_settings = _load_settings(*names)
-            for name in names:
-                context[name] = getattr(mezz_settings, name)
-            break
+            context[name] = getattr(settings, name)
     return ""
 
 
@@ -50,10 +43,10 @@ def set_short_url_for(context, token):
     request = context["request"]
     if getattr(obj, "short_url") is None:
         obj.short_url = request.build_absolute_uri(request.path)
-        mezz_settings = _load_settings("BLOG_BITLY_USER", "BLOG_BITLY_KEY")
+        settings = context["request"].settings
         args = {
-            "login": mezz_settings.BLOG_BITLY_USER,
-            "apiKey": mezz_settings.BLOG_BITLY_KEY,
+            "login": settings.BLOG_BITLY_USER,
+            "apiKey": settings.BLOG_BITLY_KEY,
             "longUrl": obj.short_url,
         }
         if args["login"] and args["apiKey"]:
@@ -96,7 +89,7 @@ def thumbnail(image_url, width, height):
     resized image. if width or height are zero then original ratio is 
     maintained.
     """
-    
+
     image_url = unicode(image_url)
     image_path = os.path.join(settings.MEDIA_ROOT, image_url)
     image_dir, image_name = os.path.split(image_path)
@@ -218,7 +211,7 @@ def admin_app_list(request):
                 admin_url = "add"
             if admin_url:
                 model_label = "%s.%s" % (app_label, model.__name__)
-                for (name, items) in mezz_settings.ADMIN_MENU_ORDER:
+                for (name, items) in request.settings.ADMIN_MENU_ORDER:
                     try:
                         index = list(items).index(model_label)
                     except ValueError:
@@ -241,8 +234,8 @@ def admin_app_list(request):
                     app_dict[app_title]["models"].append(model_dict)
                 else:
                     try:
-                        titles = [x[0] for x in 
-                            mezz_settings.ADMIN_MENU_ORDER]
+                        titles = [x[0] for x in
+                            request.settings.ADMIN_MENU_ORDER]
                         index = titles.index(app_title)
                     except ValueError:
                         index = None
@@ -293,7 +286,7 @@ def dashboard_column(context, token):
     """
     column_index = int(token.split_contents()[1])
     output = []
-    for tag in mezz_settings.DASHBOARD_TAGS[column_index]:
+    for tag in context["request"].settings.DASHBOARD_TAGS[column_index]:
         t = Template("{%% load %s %%}{%% %s %%}" % tuple(tag.split(".")))
         output.append(t.render(Context(context)))
     return "".join(output)

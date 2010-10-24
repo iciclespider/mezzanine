@@ -10,21 +10,30 @@ class Library(template.Library):
     to take the leg-work out of creating different types of template tags.
     """
 
-    def as_tag(self, tag_func):
+    def as_tag(self, takes_context=False):
         """
         Creates a tag expecting the format: ``{% tag_name as var_name %}``
         The decorated func returns the value that is given to ``var_name`` in
         the template.
         """
-        @wraps(tag_func)
-        def tag_wrapper(parser, token):
-            class AsTagNode(template.Node):
-                def render(self, context):
-                    parts = token.split_contents()
-                    context[parts[-1]] = tag_func(*parts[1:-2])
-                    return ""
-            return AsTagNode()
-        return self.tag(tag_wrapper)
+        def dec(tag_func):
+            @wraps(tag_func)
+            def tag_wrapper(parser, token):
+                class AsTagNode(template.Node):
+                    def render(self, context):
+                        parts = token.split_contents()
+                        args = parts[1:-2]
+                        if takes_context:
+                            args.insert(0, context)
+                        context[parts[-1]] = tag_func(*args)
+                        return ""
+                return AsTagNode()
+            return self.tag(tag_wrapper)
+        if callable(takes_context):
+            tag_func = takes_context
+            takes_context = False
+            return dec(tag_func)
+        return dec
 
     def render_tag(self, tag_func):
         """

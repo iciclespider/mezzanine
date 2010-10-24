@@ -1,22 +1,19 @@
 
 from datetime import date, datetime
+from django import forms
+from django.core.files.storage import FileSystemStorage
+from django.core.urlresolvers import reverse
+from django.forms.extras import SelectDateWidget
+from django.utils.importlib import import_module
+from django.utils.translation import ugettext_lazy as _
+from mezzanine.forms.models import FormEntry, FieldEntry
+from mezzanine.settings import global_settings
 from operator import ior
 from os.path import join
 from uuid import uuid4
 
-from django import forms
-from django.forms.extras import SelectDateWidget
-from django.core.files.storage import FileSystemStorage
-from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module
-from django.utils.translation import ugettext_lazy as _
 
-from mezzanine.forms.models import FormEntry, FieldEntry
-from mezzanine.settings import load_settings
-
-
-mezz_settings = load_settings("FORMS_FIELD_MAX_LENGTH", "FORMS_UPLOAD_ROOT")
-fs = FileSystemStorage(location=mezz_settings.FORMS_UPLOAD_ROOT)
+fs = FileSystemStorage(location=global_settings.FORMS_UPLOAD_ROOT)
 
 FILTER_CHOICE_CONTAINS = "1"
 FILTER_CHOICE_DOESNT_CONTAIN = "2"
@@ -44,23 +41,23 @@ DATE_FILTER_CHOICES = (
 )
 
 FILTER_FUNCS = {
-    FILTER_CHOICE_CONTAINS: 
+    FILTER_CHOICE_CONTAINS:
         lambda val, field: val.lower() in field.lower(),
-    FILTER_CHOICE_DOESNT_CONTAIN: 
+    FILTER_CHOICE_DOESNT_CONTAIN:
         lambda val, field: val.lower() not in field.lower(),
-    FILTER_CHOICE_EQUALS: 
+    FILTER_CHOICE_EQUALS:
         lambda val, field: val.lower() == field.lower(),
     FILTER_CHOICE_DOESNT_EQUAL:
         lambda val, field: val.lower() != field.lower(),
-    FILTER_CHOICE_BETWEEN: 
-        lambda val_from, val_to, field: val_from <= field <=  val_to
+    FILTER_CHOICE_BETWEEN:
+        lambda val_from, val_to, field: val_from <= field <= val_to
 }
 
-text_filter_field = forms.ChoiceField(label=" ", required=False, 
+text_filter_field = forms.ChoiceField(label=" ", required=False,
     choices=TEXT_FILTER_CHOICES)
-choice_filter_field = forms.ChoiceField(label=" ", required=False, 
+choice_filter_field = forms.ChoiceField(label=" ", required=False,
     choices=CHOICE_FILTER_CHOICES)
-date_filter_field = forms.ChoiceField(label=" ", required=False, 
+date_filter_field = forms.ChoiceField(label=" ", required=False,
     choices=DATE_FILTER_CHOICES)
 
 
@@ -93,7 +90,7 @@ class FormForForm(forms.ModelForm):
                 "help_text": field.help_text}
             arg_names = field_class.__init__.im_func.func_code.co_varnames
             if "max_length" in arg_names:
-                field_args["max_length"] = mezz_settings.FORMS_FIELD_MAX_LENGTH
+                field_args["max_length"] = global_settings.FORMS_FIELD_MAX_LENGTH
             if "choices" in arg_names:
                 field_args["choices"] = field.get_choices()
             if field_widget is not None:
@@ -171,7 +168,7 @@ class ExportForm(forms.Form):
                 else:
                     choices = field.get_choices()
                 contains_field = forms.MultipleChoiceField(label=" ",
-                    choices=choices, widget=forms.CheckboxSelectMultiple(), 
+                    choices=choices, widget=forms.CheckboxSelectMultiple(),
                     required=False)
                 self.fields["%s_filter" % field_key] = choice_filter_field
                 self.fields["%s_contains" % field_key] = contains_field
@@ -190,14 +187,14 @@ class ExportForm(forms.Form):
         # Add ``FormEntry.entry_time`` as a field.
         field_key = "field_0"
         self.fields["%s_export" % field_key] = forms.BooleanField(initial=True,
-            label=FormEntry._meta.get_field("entry_time").verbose_name, 
+            label=FormEntry._meta.get_field("entry_time").verbose_name,
             required=False)
         self.fields["%s_filter" % field_key] = date_filter_field
         self.fields["%s_from" % field_key] = forms.DateField(
             label=" ", widget=SelectDateWidget(), required=False)
         self.fields["%s_to" % field_key] = forms.DateField(
             label=_("and"), widget=SelectDateWidget(), required=False)
-        
+
     def __iter__(self):
         """
         Yield pairs of include checkbox / filters for each field.
@@ -207,12 +204,12 @@ class ExportForm(forms.Form):
             fields = [f for f in super(ExportForm, self).__iter__()
                 if f.name.startswith(prefix)]
             yield fields[0], fields[1], fields[2:]
-    
+
     def columns(self):
         """
         Returns the list of selected column names.
         """
-        fields = [f.label for f in self.form_fields 
+        fields = [f.label for f in self.form_fields
             if self.cleaned_data["field_%s_export" % f.id]]
         if self.cleaned_data["field_0_export"]:
             fields.append(self.entry_time_name)

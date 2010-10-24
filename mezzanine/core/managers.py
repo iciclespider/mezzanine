@@ -6,11 +6,6 @@ from string import punctuation
 from django.db.models import Manager, Q, CharField, TextField, get_models
 from django.db.models.query import QuerySet
 
-from mezzanine.settings import load_settings
-
-
-mezz_settings = load_settings("STOP_WORDS")
-
 
 class PublishedManager(Manager):
     """
@@ -22,8 +17,8 @@ class PublishedManager(Manager):
         from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
         if for_user is not None and for_user.is_staff:
             return self.all()
-        return self.filter( 
-            Q(publish_date__lte=datetime.now()) | Q(publish_date__isnull=True), 
+        return self.filter(
+            Q(publish_date__lte=datetime.now()) | Q(publish_date__isnull=True),
             Q(expiry_date__gte=datetime.now()) | Q(expiry_date__isnull=True),
             Q(status=CONTENT_STATUS_PUBLISHED))
 
@@ -50,13 +45,13 @@ class SearchableQuerySet(QuerySet):
         self._search_fields = kwargs.pop("search_fields", {})
         super(SearchableQuerySet, self).__init__(*args, **kwargs)
 
-    def search(self, query, search_fields=None):
+    def search(self, settings, query, search_fields=None):
         """
         Build a queryset matching words in the given search query, treating
         quoted terms as exact phrases and taking into account + and - symbols
         as modifiers controlling which terms to require and exclude.
         """
-        
+
         def search_fields_to_dict(fields):
             """
             Convert a sequence of fields to a weighted dict.
@@ -107,8 +102,7 @@ class SearchableQuerySet(QuerySet):
         # Remove stop words from terms that aren't quoted or use modifiers,
         # since words with these are an explicit part of the search query. If
         # doing so ends up with an empty term list, then keep the stop words.
-        terms_no_stopwords = [t for t in terms if t.lower() not in 
-            mezz_settings.STOP_WORDS]
+        terms_no_stopwords = [t for t in terms if t.lower() not in settings.STOP_WORDS]
         get_positive_terms = lambda terms: [t.lower().strip(punctuation)
             for t in terms if t[0] != "-"]
         positive_terms = get_positive_terms(terms_no_stopwords)
@@ -195,7 +189,7 @@ class SearchableManager(Manager):
         search_fields = self._search_fields
         return SearchableQuerySet(self.model, search_fields=search_fields)
 
-    def search(self, *args, **kwargs):
+    def search(self, settings, *args, **kwargs):
         """
         Proxy to queryset's search method for the manager's model and any
         models that subclass from this manager's model if the model is
@@ -207,7 +201,7 @@ class SearchableManager(Manager):
         else:
             models = [self.model]
         for model in models:
-            results = model.objects.get_query_set().search(*args, **kwargs)
+            results = model.objects.get_query_set().search(settings, *args, **kwargs)
             all_results.extend(results)
         sort_key = lambda r: r.result_count
         return sorted(all_results, key=sort_key, reverse=True)

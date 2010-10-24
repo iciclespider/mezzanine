@@ -1,0 +1,42 @@
+[
+    {
+        "pk": 1, 
+        "model": "settings.settings", 
+        "fields": {
+            "name": "Main", 
+            "home": 1
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "localhost", 
+            "name": "localhost"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "sites.site", 
+        "fields": {
+            "domain": "127.0.0.1", 
+            "name": "127.0.0.1"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "settings.sitesettings", 
+        "fields": {
+            "site": 1, 
+            "settings": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "settings.sitesettings", 
+        "fields": {
+            "site": 2, 
+            "settings": 1
+        }
+    } 
+]

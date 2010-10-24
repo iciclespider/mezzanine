@@ -28,7 +28,7 @@ admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
 def home(request, template="pages/page.html"):
-    home = Page.objects.get_home_page(request)
+    home = request.settings.home
     if not home:
         raise Http404
     return _handle_page(request, home, template)

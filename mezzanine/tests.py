@@ -1,6 +1,7 @@
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.template import Context, Template
@@ -11,8 +12,8 @@ from mezzanine.core.models import CONTENT_STATUS_DRAFT, \
                                     CONTENT_STATUS_PUBLISHED
 from mezzanine.forms.models import Form, FIELD_CHOICES
 from mezzanine.pages.models import ContentPage
-from mezzanine.settings.models import Setting
-from mezzanine.settings import editable_settings, load_settings, registry
+from mezzanine.settings.models import Settings, Setting
+from mezzanine.settings import registry
 
 
 class Tests(TestCase):
@@ -26,7 +27,7 @@ class Tests(TestCase):
         """
         Create an admin user.
         """
-        self._settings = load_settings("BLOG_SLUG", "MOBILE_USER_AGENTS")
+        self._settings = Settings.objects.get(sites__site__id=settings.SITE_ID)
         self._username = "test"
         self._password = "test"
         args = (self._username, "example@example.com", self._password)
@@ -37,7 +38,7 @@ class Tests(TestCase):
         Test a draft page as only being viewable by a staff member.
         """
         self.client.logout()
-        draft = ContentPage.objects.create(title="Draft", 
+        draft = ContentPage.objects.create(title="Draft",
                                                 status=CONTENT_STATUS_DRAFT)
         response = self.client.get(draft.get_absolute_url())
         self.assertEqual(response.status_code, 404)
@@ -60,7 +61,7 @@ class Tests(TestCase):
         Test generated description is first line of content.
         """
         description = "<p>How now brown cow</p>"
-        page = ContentPage.objects.create(title="Draft", 
+        page = ContentPage.objects.create(title="Draft",
             content=description * 3)
         self.assertEqual(page.description, description)
 
@@ -146,23 +147,23 @@ class Tests(TestCase):
         first = ContentPage.objects.create(title="test page").id
         second = ContentPage.objects.create(title="test another test page").id
         # Either word.
-        results = ContentPage.objects.search("another test")
+        results = ContentPage.objects.search(self._settings, "another test")
         self.assertEqual(len(results), 2)
         # Must include first word.
-        results = ContentPage.objects.search("+another test")
+        results = ContentPage.objects.search(self._settings, "+another test")
         self.assertEqual(len(results), 1)
         # Mustn't include first word.
-        results = ContentPage.objects.search("-another test")
+        results = ContentPage.objects.search(self._settings, "-another test")
         self.assertEqual(len(results), 1)
         if results:
             self.assertEqual(results[0].id, first)
         # Exact phrase.
-        results = ContentPage.objects.search('"another test"')
+        results = ContentPage.objects.search(self._settings, '"another test"')
         self.assertEqual(len(results), 1)
         if results:
             self.assertEqual(results[0].id, second)
         # Test ordering.
-        results = ContentPage.objects.search("test")
+        results = ContentPage.objects.search(self._settings, "test")
         self.assertEqual(len(results), 2)
         if results:
             self.assertEqual(results[0].id, second)
@@ -209,11 +210,10 @@ class Tests(TestCase):
             elif setting_type is str:
                 setting_value += "test"
             else:
-                self.fail("Unsupported setting type for %s: %s" % 
+                self.fail("Unsupported setting type for %s: %s" %
                                                 (setting_name, setting_type))
             values_by_name[setting_name] = setting_value
             Setting.objects.create(name=setting_name, value=str(setting_value))
         # Load the settings and make sure the DB values have persisted.
-        mezz_settings = load_settings(*names_by_type.values())
         for (name, value) in values_by_name.items():
-            self.assertEqual(getattr(mezz_settings, name), value)
+            self.assertEqual(getattr(self._settings, name), value)

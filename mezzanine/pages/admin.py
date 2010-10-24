@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from mezzanine.core.admin import DisplayableAdmin
-from mezzanine.pages.models import Page, SitePage, ContentPage
+from mezzanine.pages.models import Page, ContentPage
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
@@ -105,16 +105,6 @@ class PageAdmin(DisplayableAdmin):
         return self._maintain_parent(request, response)
 
 
-class SitePageInline(admin.TabularInline):
-    model = SitePage
-    verbose_name = 'Home page'
-    verbose_name_plural = 'Home page'
-
-class SiteAdmin(admin.ModelAdmin):
-    list_display = ('domain', 'name')
-    search_fields = ('domain', 'name')
-    inlines = (SitePageInline,)
-
 content_page_fieldsets = deepcopy(PageAdmin.fieldsets)
 content_page_fieldsets[0][1]["fields"].insert(3, "content")
 
@@ -126,6 +116,4 @@ class ContentPageAdmin(PageAdmin):
 
 
 admin.site.register(Page, PageAdmin)
-admin.site.unregister(Site)
-admin.site.register(Site, SiteAdmin)
 admin.site.register(ContentPage, ContentPageAdmin)

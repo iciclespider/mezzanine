@@ -1,8 +1,6 @@
 
 from django.db.models import Manager
 
-from mezzanine.settings import load_settings
-
 
 class CommentManager(Manager):
     """
@@ -10,8 +8,7 @@ class CommentManager(Manager):
     ``COMMENTS_UNAPPROVED_VISIBLE`` is set to False.
     """
 
-    def visible(self):
-        mezz_settings = load_settings("COMMENTS_UNAPPROVED_VISIBLE")
-        if mezz_settings.COMMENTS_UNAPPROVED_VISIBLE:
+    def visible(self, request):
+        if request.settings.COMMENTS_UNAPPROVED_VISIBLE:
             return self.all()
         return self.filter(approved=True)
