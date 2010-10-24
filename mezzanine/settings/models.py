@@ -44,6 +44,8 @@ class Settings(models.Model):
         if not registry_setting:
             self.__dict__[name] = value
             return
+        if not registry_setting["editable"]:
+            raise AttributeError("Read only setting value: %s" % name)
         self_value = self.__dict__.get(name, registry_setting["default"])
         if value == self_value:
             return

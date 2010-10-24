@@ -69,7 +69,7 @@ def content_media_urls(*paths):
     Prefix the list of paths with the ``CONTENT_MEDIA_URL`` setting for 
     internally hosted JS and CSS files.
     """
-    return ["/%s/%s" % (global_settings.CONTENT_MEDIA_URL, path) for path in paths]
+    return ["/%s/%s" % (global_settings.CONTENT_MEDIA_URL.strip('/'), path) for path in paths]
 
 
 def base_concrete_model(abstract, instance):
