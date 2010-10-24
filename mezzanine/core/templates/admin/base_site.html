@@ -124,6 +124,8 @@ var onMenu;
 	        }
 	    })
 	  	
+        // Provides link back to homepage.
+        $('#user-tools li:last').before('<li><a href="/">View Site</a></li>');
     });
 })(django.jQuery);
 
@@ -156,4 +158,3 @@ var onMenu;
 {% endif %}
 
 {% endblock %}
-

@@ -1,4 +1,6 @@
 
+from uuid import uuid4
+
 from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -37,7 +39,7 @@ class DynamicInlineAdminForm(forms.ModelForm):
                 widget=OrderWidget, required=False)
 
 
-def get_edit_form(obj, field_names, data=None):
+def get_edit_form(obj, field_names, data=None, files=None):
     """
     Returns the in-line editing form for editing a single model field.
     """
@@ -55,7 +57,13 @@ def get_edit_form(obj, field_names, data=None):
         class Meta:
             model = obj.__class__
             fields = field_names.split(",")
+            
+        def __init__(self, *args, **kwargs):
+            super(EditForm, self).__init__(*args, **kwargs)
+            self.uuid = str(uuid4())
+            for f in self.fields.keys():
+                self.fields[f].widget.attrs["id"] = "%s-%s" % (f, self.uuid)
 
     initial = {"app": obj._meta.app_label, "id": obj.id, "fields": field_names, 
         "model": obj._meta.object_name.lower()}
-    return EditForm(instance=obj, initial=initial, data=data)
+    return EditForm(instance=obj, initial=initial, data=data, files=files)

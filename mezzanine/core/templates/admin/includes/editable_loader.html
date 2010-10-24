@@ -35,6 +35,7 @@
 {% load_settings CONTENT_MEDIA_URL TINYMCE_URL %}
 <script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"></script>
 <script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.tools.js"></script>
+<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.form.js"></script>
 <script language="javascript" src="{{ TINYMCE_URL }}/jscripts/tiny_mce/tiny_mce_src.js"></script>
 <script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/tinymce_setup.js"></script>
 <script language="javascript">
@@ -54,8 +55,8 @@ $(function($) {
         if (typeof tinyMCE != "undefined" ) {
             tinyMCE.triggerSave();
         }
-        $.post(form.attr('action'), form.serialize(), function(data) {
-            if (data) {
+        form.ajaxSubmit(function(data) {
+            if (data && data != '<head></head><body></body>') {
                 alert('{% trans "Error" %}: ' + data);
                 loading.hide();
                 form.show();

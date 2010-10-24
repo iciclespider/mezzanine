@@ -4,7 +4,7 @@ from django.db import models
 from django.template.defaultfilters import truncatewords_html
 from django.utils.translation import ugettext, ugettext_lazy as _
 from hashlib import md5
-from mezzanine.blog.managers import CommentManager
+from mezzanine.blog.managers import BlogPostManager, CommentManager
 from mezzanine.core.models import Displayable, Ownable, Content, Slugged
 from mezzanine.settings import global_settings
 
@@ -16,6 +16,8 @@ class BlogPost(Displayable, Ownable, Content):
 
     category = models.ForeignKey("BlogCategory", related_name="blogposts",
         blank=True, null=True)
+
+    objects = BlogPostManager()
 
     class Meta:
         verbose_name = _("Blog post")
