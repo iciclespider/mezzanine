@@ -129,7 +129,7 @@
     {% if has_add_permission %}
     <div id="addlist-primary">
         <select class="addlist">
-            <option value="">{% trans "Add primary" %} ...</option>
+            <option value="">{% trans "Add home" %} ...</option>
             {% for model in page_models %}
             <option value="{{ model.add_url }}">{{ model.name }}</option>
             {% endfor %}

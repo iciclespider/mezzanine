@@ -33,7 +33,11 @@
 
 </style>
 {% load_settings CONTENT_MEDIA_URL TINYMCE_URL %}
-<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"></script>
+<script language="javascript">
+    if (typeof $ == "undefined") {
+        document.write('<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"><\/script>')
+    }
+</script>
 <script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.tools.js"></script>
 <script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.form.js"></script>
 <script language="javascript" src="{{ TINYMCE_URL }}/jscripts/tiny_mce/tiny_mce_src.js"></script>

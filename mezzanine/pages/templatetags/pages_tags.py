@@ -17,7 +17,6 @@ def _page_menu(context, parent_page, admin=False):
     for retrieval on subsequent recursive calls from the menu template.
     """
     if "menu_pages" not in context:
-        pages = defaultdict(list)
         try:
             user = context["request"].user
         except KeyError:
@@ -26,28 +25,44 @@ def _page_menu(context, parent_page, admin=False):
             slug = context["request"].path.strip("/")
         except KeyError:
             slug = ""
+        home = context["request"].settings.home
+        pages = {}
+        menu_pages = defaultdict(list)
+        selected_page = None
         for page in Page.objects.published(for_user=user).order_by("_order"):
-            setattr(page, "selected", (slug + "/").startswith(page.slug + "/"))
+            setattr(page, "selected", False)
             setattr(page, "html_id", page.slug.replace("/", "-"))
-            setattr(page, "primary", page.parent_id is None)
+            setattr(page, "primary", page.parent_id == home.id)
             setattr(page, "branch_level", 0)
-            pages[page.parent_id].append(page)
-        context["menu_pages"] = pages
+            pages[page.id] = page
+            menu_pages[page.parent_id].append(page)
+            if page == home:
+                context["home_page"] = page
+                if not admin:
+                    setattr(page, "branch_level", -1)
+            if page.slug == slug:
+                selected_page = page
+        context["menu_pages"] = menu_pages
+        while selected_page:
+            selected_page.selected = True
+            selected_page = pages.get(selected_page.parent_id, None)
     # ``branch_level`` must be stored against each page so that the 
     # calculation of it is correctly applied. This looks weird but if we do 
     # the ``branch_level`` as a separate arg to the template tag with the 
     # addition performed on it, the addition occurs each time the template 
-    # tag is called rather than once per level.    
-    if not admin and not parent_page:
-        parent_page = context["request"].settings.home
-        setattr(parent_page, "branch_level", 0)
-    context["branch_level"] = 0
-    if parent_page is not None:
-        context["branch_level"] = parent_page.branch_level + 1
-        parent_page = parent_page.id
-    context["page_branch"] = context["menu_pages"].get(parent_page, [])
-    for i, page in enumerate(context["page_branch"]):
-        context["page_branch"][i].branch_level = context["branch_level"]
+    # tag is called rather than once per level.
+    if not parent_page and not admin:
+        parent_page = context["home_page"]
+    if parent_page:
+        branch_level = parent_page.branch_level + 1
+        page_branch = context["menu_pages"][parent_page.id]
+        for page in page_branch:
+            page.branch_level = branch_level
+    else:
+        branch_level = 0
+        page_branch = [context["home_page"]]
+    context["branch_level"] = branch_level
+    context["page_branch"] = page_branch
     return context
 
 

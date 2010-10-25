@@ -15,7 +15,14 @@
 			    <img src="{% admin_media_prefix %}img/admin/arrow-down.gif" />
 			</span>
 			<select class="addlist" id="addlink-{{ page.id }}">
-			    <option value="">{% trans "Add secondary" %} ...</option>
+			    <option value="">
+			      {% if page.parent_id %}
+			          {% trans "Add secondary" %}
+			      {% else %}
+			          {% trans "Add primary" %}
+			      {% endif %}
+			      ...
+			    </option>
     			{% for model in page_models %}
 			    <option value="{{ model.add_url }}?parent={{ page.id }}"
 			        >{{ model.name }}</option>

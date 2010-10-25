@@ -1,7 +1,6 @@
 
 from django.db.models import Count, Manager
 
-from mezzanine.settings import load_settings
 from mezzanine.core.managers import DisplayableManager
 
 
