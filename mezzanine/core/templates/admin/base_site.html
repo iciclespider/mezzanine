@@ -10,7 +10,7 @@
 {{ block.super }}
 
 <script type="text/javascript">
-window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
+window.__admin_keywords_submit_url = '{% try_url "admin_keywords_submit" %}';
 (function($) {
     $(window).load(function() {
         var title = $('.admin-title');
@@ -64,6 +64,10 @@ window.__admin_keywords_submit_url = '{% admin_url "admin_keywords_submit" %}';
     .messagelist {margin-top:14px; z-index:0 !important;}
     {% if original.overridden %}
     .slug, .deletelink {display:none !important;}
+    {% endif %}
+    {% if singleton %}
+    .submit-row * {display:none !important;}
+    .submit-row .default {display:inline !important;}
     {% endif %}
 </style>
 <script type="text/javascript">
@@ -128,6 +132,22 @@ var onMenu;
         $('#user-tools li:last').before('<li><a href="/">View Site</a></li>');
     });
 })(django.jQuery);
+
+// Remove extraneous ``template`` forms from inline formsets since we have
+// our own method of dynamic inlines.
+$(function() {
+    var removeRows = {};
+    $.each($('*[name*=__prefix__]'), function(i, e) {
+        var row = $(e).parent().parent();
+        if (!row.attr('id')) {
+            row.attr('id', 'remove__prefix__' + i);
+        }
+        removeRows[row.attr('id')] = true;
+    });
+    for (var rowID in removeRows) {
+        $('#' + rowID).remove();
+    }
+});
 
 </script>
 

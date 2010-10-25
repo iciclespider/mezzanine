@@ -1,10 +1,10 @@
 
 from collections import defaultdict
-from django.core.urlresolvers import reverse
 from django.db.models import get_model, get_models
 from django.template import TemplateSyntaxError
 from mezzanine import template
-from mezzanine.pages.models import Page, ContentPage
+from mezzanine.pages.models import Page
+from mezzanine.utils import admin_url
 
 
 register = template.Library()
@@ -126,8 +126,7 @@ def models_for_pages(*args):
     for model in get_models():
         if model is not Page and issubclass(model, Page):
             setattr(model, "name", model._meta.verbose_name)
-            setattr(model, "add_url", reverse("admin:%s_%s_add" %
-                (model._meta.app_label, model.__name__.lower())))
+            setattr(model, "add_url", admin_url(model, "add"))
             page_models.append(model)
     return page_models
 
@@ -155,10 +154,7 @@ def homepage(context, nodelist, token, parser):
     bits = token.split_contents()
     if len(bits) != 1:
         raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
-    try:
-        context['page'] = context["request"].settings.home
-    except Page.DoesNotExist:
-        raise TemplateSyntaxError("The Page slug '%s' does not exist." % slug)
+    context['page'] = context["request"].settings.home
     return nodelist.render(context)
 
 @register.to_end_tag

@@ -1,8 +1,22 @@
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
 from htmlentitydefs import name2codepoint
 from mezzanine.settings import global_settings
 from re import sub
+
+
+def admin_url(model, url, object_id=None):
+    """
+    Returns the admin url for the given model and url name.
+    """
+    opts = model._meta
+    url = "admin:%s_%s_%s" % (opts.app_label, opts.object_name.lower(), url)
+    args = ()
+    if object_id is not None:
+        args = (object_id,)
+    return reverse(url, args=args)
+
 
 def decode_html_entities(html):
     """
