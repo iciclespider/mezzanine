@@ -1,6 +1,5 @@
 
 from django import VERSION
-from django.conf import settings
 from django.contrib import admin
 from django.db.models import AutoField
 from django.http import HttpResponseRedirect
@@ -12,12 +11,8 @@ from mezzanine.utils import content_media_urls, admin_url
 
 
 # Build the list of admin JS file for ``Displayable`` models.
-# For >= Django 1.2 include a backport of the collapse js which targets
-# earlier versions of the admin.
 displayable_js = ["js/jquery-1.4.2.min.js",
     "js/keywords_field.js"]
-if not (VERSION[0] <= 1 and VERSION[1] <= 1):
-    displayable_js.append("js/collapse_backport.js")
 displayable_js = content_media_urls(*displayable_js)
 displayable_js.append("%s/jscripts/tiny_mce/tiny_mce_src.js" % global_settings.TINYMCE_URL)
 displayable_js.extend(content_media_urls("js/tinymce_setup.js"))
@@ -42,7 +37,7 @@ class DisplayableAdmin(admin.ModelAdmin):
         (None, {"fields": ["title", "status",
             ("publish_date", "expiry_date"), ]}),
         (_("Meta data"), {"fields": ("slug", "description", "keywords"),
-            "classes": ("collapse-closed",)},),
+            "classes": ("collapse", "closed")},),
     )
 
     def save_form(self, request, form, change):
@@ -137,7 +132,7 @@ class SingletonAdmin(admin.ModelAdmin):
         except self.model.MultipleObjectsReturned:
             return super(SingletonAdmin, self).changelist_view(*args, **kwargs)
         except self.model.DoesNotExist:
-            add_url = admin_url(model, "add")
+            add_url = admin_url(self.model, "add")
             return HttpResponseRedirect(add_url)
         else:
             change_url = admin_url(self.model, "change", singleton.id)

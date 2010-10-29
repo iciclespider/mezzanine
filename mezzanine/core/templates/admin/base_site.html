@@ -135,7 +135,7 @@ var onMenu;
 
 // Remove extraneous ``template`` forms from inline formsets since we have
 // our own method of dynamic inlines.
-$(function() {
+(function($) {
     var removeRows = {};
     $.each($('*[name*=__prefix__]'), function(i, e) {
         var row = $(e).parent().parent();
@@ -147,7 +147,7 @@ $(function() {
     for (var rowID in removeRows) {
         $('#' + rowID).remove();
     }
-});
+})(django.jQuery);
 
 </script>
 
