@@ -6,7 +6,7 @@ class Fragment(object):
         try:
             fragment = ContentFragment.objects.get(name=key)
         except ContentFragment.DoesNotExist:
-            raise IndexError('ContentFragment "%s" does not exist.' % key)
+            raise KeyError('ContentFragment "%s" does not exist.' % key)
         return fragment.content
 
 _fragment = {"fragment": Fragment()}
