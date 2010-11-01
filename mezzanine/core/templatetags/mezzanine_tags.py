@@ -4,22 +4,21 @@ from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models import Model
-from django.template import Context, Template
-from django.template.loader import get_template
+from django.template import Context
+from django.template.loader import get_template, Template
 from django.utils.html import strip_tags
 from django.utils.simplejson import loads
 from django.utils.text import capfirst
 from mezzanine import template
 from mezzanine.core.forms import get_edit_form
-from mezzanine.utils import admin_url, decode_html_entities, is_editable
 from mezzanine.settings import global_settings
+from mezzanine.utils import admin_url, decode_html_entities, is_editable
 from urllib import urlopen, urlencode
 from uuid import uuid4
 import os
 
 
 register = template.Library()
-
 
 @register.render_tag
 def load_settings(context, token):

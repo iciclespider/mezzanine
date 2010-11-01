@@ -1,8 +1,8 @@
 
-from functools import wraps
-
 from django import template
-
+from django.utils.functional import curry
+from functools import wraps
+from inspect import getargspec
 
 class Library(template.Library):
     """
@@ -72,3 +72,20 @@ class Library(template.Library):
                     return value
             return ToEndTagNode()
         return self.tag(tag_wrapper)
+
+    def simple_context_tag(self, func):
+        params, xx, xxx, defaults = getargspec(func)
+
+        class SimpleContextNode(template.Node):
+            def __init__(self, vars_to_resolve):
+                self.vars_to_resolve = map(template.Variable, vars_to_resolve)
+
+            def render(self, context):
+                resolved_vars = [var.resolve(context) for var in self.vars_to_resolve]
+                return func(context, *resolved_vars)
+
+        compile_func = curry(template.generic_tag_compiler, params, defaults, getattr(func, "_decorated_function", func).__name__, SimpleContextNode)
+        compile_func.__doc__ = func.__doc__
+        self.tag(getattr(func, "_decorated_function", func).__name__, compile_func)
+        return func
+

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from mezzanine.core.admin import DisplayableAdmin
-from mezzanine.pages.models import Page, ContentPage
+from mezzanine.pages.models import Page, ContentPage, ContentFragment
 from mezzanine.utils import admin_url
 
 
@@ -110,5 +110,14 @@ class ContentPageAdmin(PageAdmin):
     fieldsets = content_page_fieldsets
 
 
+class ContentFragmentAdmin(admin.ModelAdmin):
+    """
+    Admin class for the ContentFragment.
+    """
+    list_display = ('name',)
+    fields = ('name', 'content')
+
+
 admin.site.register(Page, PageAdmin)
 admin.site.register(ContentPage, ContentPageAdmin)
+admin.site.register(ContentFragment, ContentFragmentAdmin)

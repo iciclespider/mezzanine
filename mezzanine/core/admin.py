@@ -14,8 +14,8 @@ from mezzanine.utils import content_media_urls, admin_url
 displayable_js = ["js/jquery-1.4.2.min.js",
     "js/keywords_field.js"]
 displayable_js = content_media_urls(*displayable_js)
-displayable_js.append("%s/jscripts/tiny_mce/tiny_mce_src.js" % global_settings.TINYMCE_URL)
-displayable_js.extend(content_media_urls("js/tinymce_setup.js"))
+#displayable_js.append("%s/jscripts/tiny_mce/tiny_mce_src.js" % global_settings.TINYMCE_URL)
+#displayable_js.extend(content_media_urls("js/tinymce_setup.js"))
 
 
 class DisplayableAdmin(admin.ModelAdmin):

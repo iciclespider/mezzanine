@@ -12,7 +12,7 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("pages.Page", "blog.BlogPost", "blog.Comment",)),
+        (_("Content"), ("pages.Page", "pages.ContentFragment", "blog.BlogPost", "blog.Comment",)),
         (_("Sites"), ("sites.Site", "settings.Settings", "redirects.Redirect")),
         (_("Users"), ("auth.User", "auth.Group",)),
     ),

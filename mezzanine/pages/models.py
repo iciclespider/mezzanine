@@ -29,6 +29,9 @@ class Page(Orderable, Displayable):
     def __unicode__(self):
         return self.titles
 
+    def __init__(self, *args, **kwargs):
+        super(Page, self).__init__(*args, **kwargs)
+
     @models.permalink
     def get_absolute_url(self):
         return ("page", (), {"slug": self.get_slug()})
@@ -81,3 +84,16 @@ class ContentPage(Page, Content):
     class Meta:
         verbose_name = _("Content page")
         verbose_name_plural = _("Content pages")
+
+
+class ContentFragment(Content):
+    """
+    Implements html content fragments which can be included in pages.
+    """
+
+    name = models.CharField(_("Name"), max_length=100, unique=True, db_index=True)
+
+    class Meta:
+        verbose_name = _("Fragment")
+        verbose_name_plural = _("Fragments")
+

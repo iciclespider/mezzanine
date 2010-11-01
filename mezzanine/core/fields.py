@@ -1,11 +1,13 @@
 
-from django.db.models import TextField
+from django.db import models
+from django.utils.safestring import mark_safe
 
 
-class HtmlField(TextField):
+class HtmlField(models.TextField):
     """
     TextField that stores HTML.
     """
+    __metaclass__ = models.SubfieldBase
 
     def formfield(self, **kwargs):
         """
@@ -15,3 +17,7 @@ class HtmlField(TextField):
         formfield = super(HtmlField, self).formfield(**kwargs)
         formfield.widget.attrs["class"] = "mceEditor"
         return formfield
+
+    def to_python(self, value):
+        return mark_safe(value)
+
