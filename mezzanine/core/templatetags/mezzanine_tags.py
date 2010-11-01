@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models import Model
-from django.template import Context
+from django.template import Context, TemplateSyntaxError
 from django.template.loader import get_template, Template
 from django.utils.html import strip_tags
 from django.utils.simplejson import loads
@@ -308,6 +308,9 @@ def dashboard_column(context, token):
     column_index = int(token.split_contents()[1])
     output = []
     for tag in context["request"].settings.DASHBOARD_TAGS[column_index]:
-        t = Template("{%% load %s %%}{%% %s %%}" % tuple(tag.split(".")))
-        output.append(t.render(Context(context)))
+        try:
+            t = Template("{%% load %s %%}{%% %s %%}" % tuple(tag.split(".")))
+            output.append(t.render(Context(context)))
+        except TemplateSyntaxError:
+            pass
     return "".join(output)
