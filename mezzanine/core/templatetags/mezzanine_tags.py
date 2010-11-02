@@ -21,19 +21,6 @@ import os
 register = template.Library()
 
 @register.render_tag
-def load_settings(context, token):
-    """
-    Push the given setting names into the context.
-    """
-    settings = context["request"].settings
-    names = token.split_contents()[1:]
-    for name in names:
-        if name not in context:
-            context[name] = getattr(settings, name)
-    return ""
-
-
-@register.render_tag
 def set_short_url_for(context, token):
     """
     Sets the ``short_url`` attribute of the given model using the bit.ly

@@ -3,7 +3,7 @@ from collections import defaultdict
 from django.conf import settings
 from django.db.models import get_model, get_models
 from django.template import (StringOrigin, Template, TemplateSyntaxError,
-    TemplateEncodingError, Lexer, Parser, get_library)
+    TemplateEncodingError, Lexer, Parser, get_library, loader)
 from django.template.debug import DebugLexer, DebugParser
 from django.utils.encoding import smart_unicode
 from django.utils.safestring import mark_safe
@@ -21,26 +21,31 @@ def _page_menu(context, parent_page, admin=False):
     for retrieval on subsequent recursive calls from the menu template.
     """
     if "menu_pages" not in context:
-        try:
-            user = context["request"].user
-        except KeyError:
+        if admin:
             user = None
-        try:
-            slug = context["request"].path.strip("/")
-        except KeyError:
-            slug = ""
-        home = context["request"].settings.home
+            slug = None
+            home = None
+        else:
+            try:
+                user = context["request"].user
+            except KeyError:
+                user = None
+            try:
+                slug = context["request"].path.strip("/")
+            except KeyError:
+                slug = ""
+            home = Page.objects.home(context["request"].settings)
         pages = {}
         menu_pages = defaultdict(list)
         selected_page = None
         for page in Page.objects.published(for_user=user).order_by("_order"):
             setattr(page, "selected", False)
             setattr(page, "html_id", page.slug.replace("/", "-"))
-            setattr(page, "primary", page.parent_id == home.id)
+            setattr(page, "primary", home and page.parent_id == home.id)
             setattr(page, "branch_level", 0)
             pages[page.id] = page
             menu_pages[page.parent_id].append(page)
-            if page == home:
+            if home and page.id == home.id:
                 context["home_page"] = page
                 if not admin:
                     setattr(page, "branch_level", -1)
@@ -64,7 +69,7 @@ def _page_menu(context, parent_page, admin=False):
             page.branch_level = branch_level
     else:
         branch_level = 0
-        page_branch = [context["home_page"]]
+        page_branch = context["menu_pages"][None]
     context["branch_level"] = branch_level
     context["page_branch"] = page_branch
     return context
@@ -86,12 +91,13 @@ def tree_menu_footer(context, parent_page=None):
     return _page_menu(context, parent_page)
 
 
-@register.inclusion_tag("pages/includes/primary_menu.html", takes_context=True)
+@register.simple_context_tag
 def primary_menu(context, parent_page=None):
     """
     Page menu that only renders the primary top-level pages.
     """
-    return _page_menu(context, parent_page)
+    _page_menu(context, parent_page)
+    return loader.render_to_string(context['request'].settings.TEMPLATE_PRIMARY_MENU, context)
 
 
 @register.inclusion_tag("pages/includes/footer_menu.html", takes_context=True)
@@ -158,7 +164,7 @@ def homepage(context, nodelist, token, parser):
     bits = token.split_contents()
     if len(bits) != 1:
         raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
-    context['page'] = context["request"].settings.home
+    context['page'] = Page.objects.home(context["request"].settings)
     return nodelist.render(context)
 
 @register.to_end_tag

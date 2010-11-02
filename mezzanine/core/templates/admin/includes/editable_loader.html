@@ -1,4 +1,4 @@
-{% load mezzanine_tags i18n %}
+{% load i18n %}
 
 {% if request.user.is_staff %}
 
@@ -51,17 +51,16 @@
         margin:15px 0 0 15px; padding:5px 15px;
         -moz-box-shadow: 0 0 5px #999; -webkit-box-shadow: 0 0 5px #999}
 </style>
-{% load_settings CONTENT_MEDIA_URL TINYMCE_URL %}
 <script language="javascript">
     if (typeof $ == "undefined") {
         document.write('<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery-1.4.2.min.js"><\/script>')
     }
 </script>
-<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.tools.js"></script>
-<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/jquery.form.js"></script>
+<script language="javascript" src="{{ request.settings.CONTENT_MEDIA_URL }}js/jquery.tools.js"></script>
+<script language="javascript" src="{{ request.settings.CONTENT_MEDIA_URL }}js/jquery.form.js"></script>
 {% comment %}
-<script language="javascript" src="{{ TINYMCE_URL }}/jscripts/tiny_mce/tiny_mce_src.js"></script>
-<script language="javascript" src="{{ CONTENT_MEDIA_URL }}js/tinymce_setup.js"></script>
+<script language="javascript" src="{{ request.settings.TINYMCE_URL }}/jscripts/tiny_mce/tiny_mce_src.js"></script>
+<script language="javascript" src="{{ request.settings.CONTENT_MEDIA_URL }}js/tinymce_setup.js"></script>
 {% endcomment %}
 <script language="javascript">
 

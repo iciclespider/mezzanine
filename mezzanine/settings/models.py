@@ -2,8 +2,7 @@
 from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from mezzanine.pages.models import Page
-from mezzanine.settings import registry
+from mezzanine.settings import registry, editables
 
 
 class Settings(models.Model):
@@ -11,7 +10,6 @@ class Settings(models.Model):
     A named group of settings.
     """
     name = models.CharField(max_length=50)
-    home = models.ForeignKey(Page, related_name="settings")
 
     class Meta(object):
         verbose_name = 'Settings'
@@ -19,9 +17,7 @@ class Settings(models.Model):
 
 
     def editables(self, names=None):
-        if names is None:
-            names = registry.keys()
-        return [k for (k, v) in registry.items() if v["editable"] and k in names]
+        return editables()
 
     def __getattr__(self, name):
         registry_setting = registry.get(name, None)

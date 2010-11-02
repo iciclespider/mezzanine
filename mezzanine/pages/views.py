@@ -3,9 +3,8 @@ from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
-from django.template.loader import select_template
 from django.utils.http import urlquote
 from mezzanine.pages import page_processors
 from mezzanine.pages.models import Page
@@ -27,17 +26,17 @@ def admin_page_ordering(request):
 admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
-def home(request, template="pages/page.html"):
-    home = request.settings.home
+def home(request):
+    home = Page.objects.home(request.settings)
     if not home:
         raise Http404
-    return _handle_page(request, home, template)
+    return _handle_page(request, home)
 
-def page(request, slug, template="pages/page.html"):
-    page = get_object_or_404(Page.objects.published(request.user), slug=slug)
-    return _handle_page(request, page, template)
+def page(request, slug):
+    page = get_object_or_404(Page.objects.published(request.user), settings=request.settings, slug=slug)
+    return _handle_page(request, page)
 
-def _handle_page(request, page, template):
+def _handle_page(request, page):
     """
     Display content for a page. First check for any matching page processors
     and handle them. Secondly, build the list of template names to choose
@@ -49,18 +48,17 @@ def _handle_page(request, page, template):
     context = {"page": page}
     for processor in page_processors.processors[page.content_model]:
         response = processor(request, page)
-        if isinstance(response, HttpResponse):
-            return response
-        elif response:
-            if isinstance(response, dict):
-                context.update(response)
-            else:
+        if response:
+            if isinstance(response, HttpResponse):
+                return response
+            if not isinstance(response, dict):
                 raise ValueError("The page processor %s.%s returned %s but "
                     "must return HttpResponse or dict." % (
                     processor.__module__, processor.__name__, type(response)))
-    templates = ["pages/%s.html" % page.slug]
-    if page.content_model is not None:
-        templates.append("pages/%s.html" % page.content_model)
-    templates.append(template)
-    t = select_template(templates)
-    return HttpResponse(t.render(RequestContext(request, context)))
+            context.update(response)
+    #templates = ["pages/%s.html" % page.slug]
+    #if page.content_model is not None:
+    #    templates.append("pages/%s.html" % page.content_model)
+    #templates.append(template)
+    #t = select_template(templates)
+    return render_to_response(page.get_template(), RequestContext(request, context))

@@ -4,6 +4,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.models import Displayable, Orderable, Content
+from mezzanine.pages.managers import PageManager
 from mezzanine.utils import admin_url
 
 class Page(Orderable, Displayable):
@@ -19,8 +20,12 @@ class Page(Orderable, Displayable):
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
+    template = models.CharField(max_length=100, null=True, blank=True)
 
-    class Meta:
+    objects = PageManager()
+
+    class Meta(Orderable.Meta, Displayable.Meta):
+        abstract = False
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
         ordering = ("titles",)
@@ -61,10 +66,12 @@ class Page(Orderable, Displayable):
         """
         Recursively build the slug from the chain of parents.
         """
-        slug = slugify(self.title)
-        if self.parent is not None:
-            return "%s/%s" % (self.parent.get_slug(), slug)
-        return slug
+        if not self.parent:
+            return ''
+        slug = self.parent.get_slug()
+        if slug:
+            slug += '/'
+        return slug + slugify(self.title)
 
     def overridden(self):
         """
@@ -75,25 +82,31 @@ class Page(Orderable, Displayable):
         resolved_view = resolve(self.get_absolute_url())[0]
         return resolved_view != page
 
+    def get_template(self):
+        if self.template:
+            return self.template
+        return self.settings.TEMPLATE_CONTENTPAGE
 
 class ContentPage(Page, Content):
     """
     Implements the default type of page with a single HTML content field.
     """
 
-    class Meta:
+    class Meta(Page.Meta, Content.Meta):
+        abstract = False
         verbose_name = _("Content page")
         verbose_name_plural = _("Content pages")
 
 
-class ContentFragment(Content):
+class Template(Content):
     """
-    Implements html content fragments which can be included in pages.
+    Implements data base backed django templates.
     """
 
     name = models.CharField(_("Name"), max_length=100, unique=True, db_index=True)
 
-    class Meta:
-        verbose_name = _("Fragment")
-        verbose_name_plural = _("Fragments")
+    class Meta(Content.Meta):
+        abstract = False
+        verbose_name = _("Template")
+        verbose_name_plural = _("Templates")
 

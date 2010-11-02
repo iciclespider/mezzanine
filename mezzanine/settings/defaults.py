@@ -12,7 +12,7 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("pages.Page", "pages.ContentFragment", "blog.BlogPost", "blog.Comment",
+        (_("Content"), ("pages.Page", "pages.Template", "blog.BlogPost", "blog.Comment",
         (_("Media Library"), "fb_browse"),)),
         (_("Site"), ("sites.Site", "redirects.Redirect", "settings.Setting")),
         (_("Users"), ("auth.User", "auth.Group",)),
@@ -189,6 +189,48 @@ register_setting(
         "parent page."),
     editable=True,
     default=True,
+)
+
+register_setting(
+    name="TEMPLATE_BASE",
+    description=_("Base template for all views."),
+    editable=True,
+    default="base",
+)
+
+register_setting(
+    name="TEMPLATE_404",
+    description=_("Template for 404s."),
+    editable=True,
+    default="404",
+)
+
+register_setting(
+    name="TEMPLATE_500",
+    description=_("Template for 500s."),
+    editable=True,
+    default="500",
+)
+
+register_setting(
+    name="TEMPLATE_PAGE",
+    description=_("Base template for all page views."),
+    editable=True,
+    default="page",
+)
+
+register_setting(
+    name="TEMPLATE_CONTENTPAGE",
+    description=_("Template for all content page views."),
+    editable=True,
+    default="contentpage",
+)
+
+register_setting(
+    name="TEMPLATE_PRIMARY_MENU",
+    description=_("Template for rendering the primary menu."),
+    editable=True,
+    default="primary_menu",
 )
 
 register_setting(

@@ -4,13 +4,13 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from mezzanine.core.admin import DisplayableAdmin
-from mezzanine.pages.models import Page, ContentPage, ContentFragment
+from mezzanine.pages.models import Page, ContentPage, Template
 from mezzanine.utils import admin_url
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
-page_fieldsets[0][1]["fields"] += (("in_navigation", "in_footer"),
-    "login_required",)
+page_fieldsets[0][1]["fields"].extend((("in_navigation", "in_footer"), "login_required"))
+page_fieldsets[1][1]["fields"].insert(1, 'parent')
 
 
 class PageAdmin(DisplayableAdmin):
@@ -110,9 +110,9 @@ class ContentPageAdmin(PageAdmin):
     fieldsets = content_page_fieldsets
 
 
-class ContentFragmentAdmin(admin.ModelAdmin):
+class TemplateAdmin(admin.ModelAdmin):
     """
-    Admin class for the ContentFragment.
+    Admin class for Template model.
     """
     list_display = ('name',)
     fields = ('name', 'content')
@@ -120,4 +120,4 @@ class ContentFragmentAdmin(admin.ModelAdmin):
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(ContentPage, ContentPageAdmin)
-admin.site.register(ContentFragment, ContentFragmentAdmin)
+admin.site.register(Template, TemplateAdmin)

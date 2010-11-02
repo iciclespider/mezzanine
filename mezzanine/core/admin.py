@@ -1,12 +1,11 @@
 
-from django import VERSION
+from django import forms
 from django.contrib import admin
 from django.db.models import AutoField
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.forms import DynamicInlineAdminForm
 from mezzanine.core.models import Orderable
-from mezzanine.settings import global_settings
 from mezzanine.utils import content_media_urls, admin_url
 
 
@@ -36,9 +35,24 @@ class DisplayableAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ["title", "status",
             ("publish_date", "expiry_date"), ]}),
-        (_("Meta data"), {"fields": ("slug", "description", "keywords"),
+        (_("Meta data"), {"fields": ["settings", "slug", "description", "keywords"],
             "classes": ("collapse", "closed")},),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        class DisplayableAdminForm(forms.ModelForm):
+            def __init__(self, *args, **kwargs):
+                initial = kwargs.get('initial')
+                if initial is not None:
+                    initial['settings'] = request.settings
+                super(DisplayableAdminForm, self).__init__(*args, **kwargs)
+            def _get_validation_exclusions(self):
+                exclusions = super(DisplayableAdminForm, self)._get_validation_exclusions()
+                # prevent the check for settings, slug unique together by the form.
+                exclusions.append('slug')
+                return exclusions
+        kwargs['form'] = DisplayableAdminForm
+        return super(DisplayableAdmin, self).get_form(request, obj, **kwargs)
 
     def save_form(self, request, form, change):
         """

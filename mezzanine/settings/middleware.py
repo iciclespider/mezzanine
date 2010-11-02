@@ -10,7 +10,7 @@ class LazySettings(object):
             try:
                 request._cached_settings = Settings.objects.get(sites__site__domain=domain)
             except Settings.DoesNotExist:
-                raise Http404
+                request._cached_settings = Settings()
         return request._cached_settings
 
 

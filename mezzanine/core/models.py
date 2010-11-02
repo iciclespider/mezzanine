@@ -1,14 +1,14 @@
 
 from datetime import datetime
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.base import ModelBase
 from django.template.defaultfilters import slugify, truncatewords_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from mezzanine.core.fields import HtmlField
 from mezzanine.core.managers import DisplayableManager, KeywordManager
+from mezzanine.settings.models import Settings
 from mezzanine.utils import base_concrete_model
 
 
@@ -17,12 +17,14 @@ class Slugged(models.Model):
     Abstract model that handles auto-generating slugs.
     """
 
+    settings = models.ForeignKey(Settings, related_name="%(class)s")
+    slug = models.CharField(_("URL"), max_length=100, blank=True)
     title = models.CharField(_("Title"), max_length=100)
-    slug = models.CharField(_("URL"), max_length=100, blank=True, null=True)
 
     class Meta:
         abstract = True
-        ordering = ("title",)
+        ordering = ("settings", "title",)
+        unique_together = ("settings", "slug")
 
     def __unicode__(self):
         return self.title
@@ -46,7 +48,7 @@ class Slugged(models.Model):
                 if self.id is not None:
                     qs = qs.exclude(id=self.id)
                 try:
-                    qs.get(slug=self.slug)
+                    qs.get(settings=self.settings, slug=self.slug)
                 except ObjectDoesNotExist:
                     break
                 i += 1
@@ -74,10 +76,10 @@ class Displayable(Slugged):
 
     status = models.IntegerField(_("Status"),
         choices=CONTENT_STATUS_CHOICES, default=CONTENT_STATUS_DRAFT)
-    publish_date = models.DateTimeField(_("Published from"), 
+    publish_date = models.DateTimeField(_("Published from"),
         help_text=_("With published selected, won't be shown until this time"),
         blank=True, null=True)
-    expiry_date = models.DateTimeField(_("Expires on"), 
+    expiry_date = models.DateTimeField(_("Expires on"),
         help_text=_("With published selected, won't be shown after this time"),
         blank=True, null=True)
     description = HtmlField(_("Description"), blank=True)
@@ -89,7 +91,7 @@ class Displayable(Slugged):
     objects = DisplayableManager()
     search_fields = {"_keywords": 10, "title": 5}
 
-    class Meta:
+    class Meta(Slugged.Meta):
         abstract = True
 
     def save(self, *args, **kwargs):
@@ -147,7 +149,7 @@ class Displayable(Slugged):
 
 class Content(models.Model):
     """
-    Provides a HTML field for manging general content and making it searchable.
+    Provides a HTML field for managing general content and making it searchable.
     """
 
     content = HtmlField(_("Content"))
@@ -253,6 +255,7 @@ class Keyword(Slugged):
 
     objects = KeywordManager()
 
-    class Meta:
+    class Meta(Slugged.Meta):
+        abstract = False
         verbose_name = _("Keyword")
         verbose_name_plural = _("Keywords")

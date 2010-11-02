@@ -18,12 +18,12 @@ for app in settings.INSTALLED_APPS:
     except ImportError:
         pass
 
-class GlobalSettings(object):
-    def editables(self, names=None):
-        if names is None:
-            names = registry.keys()
-        return [k for (k, v) in registry.items() if v["editable"] and k in names]
+def editables(names=None):
+    if names is None:
+        names = registry.keys()
+    return [k for (k, v) in registry.items() if v["editable"] and k in names]
 
+class GlobalSettings(object):
     def __getattr__(self, name):
         setting = registry.get(name, None)
         if not setting:

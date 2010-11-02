@@ -1,8 +1,6 @@
 
 from django import template
-from django.utils.functional import curry
 from functools import wraps
-from inspect import getargspec
 
 class Library(template.Library):
     """
@@ -61,6 +59,7 @@ class Library(template.Library):
         def tag_wrapper(parser, token):
             class ToEndTagNode(template.Node):
                 def __init__(self):
+                    super(ToEndTagNode, self).__init__()
                     end_name = "end%s" % tag_func.__name__
                     self.nodelist = parser.parse((end_name,))
                     parser.delete_first_token()
@@ -73,19 +72,14 @@ class Library(template.Library):
             return ToEndTagNode()
         return self.tag(tag_wrapper)
 
-    def simple_context_tag(self, func):
-        params, xx, xxx, defaults = getargspec(func)
-
-        class SimpleContextNode(template.Node):
-            def __init__(self, vars_to_resolve):
-                self.vars_to_resolve = map(template.Variable, vars_to_resolve)
-
-            def render(self, context):
-                resolved_vars = [var.resolve(context) for var in self.vars_to_resolve]
-                return func(context, *resolved_vars)
-
-        compile_func = curry(template.generic_tag_compiler, params, defaults, getattr(func, "_decorated_function", func).__name__, SimpleContextNode)
-        compile_func.__doc__ = func.__doc__
-        self.tag(getattr(func, "_decorated_function", func).__name__, compile_func)
-        return func
-
+    def simple_context_tag(self, tag_func):
+        @wraps(tag_func)
+        def tag_wrapper(parser, token):
+            class SimpleContextNode(template.Node):
+                def __init__(self):
+                    super(SimpleContextNode, self).__init__()
+                    self.vars = [parser.compile_filter(bit) for bit in token.split_contents()[1:]]
+                def render(self, context):
+                    return tag_func(context, *[var.resolve(context) for var in self.vars])
+            return SimpleContextNode()
+        return self.tag(tag_wrapper)
