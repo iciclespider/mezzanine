@@ -195,42 +195,42 @@ register_setting(
     name="TEMPLATE_BASE",
     description=_("Base template for all views."),
     editable=True,
-    default="base",
+    default="base.html",
 )
 
 register_setting(
     name="TEMPLATE_404",
     description=_("Template for 404s."),
     editable=True,
-    default="404",
+    default="404.html",
 )
 
 register_setting(
     name="TEMPLATE_500",
     description=_("Template for 500s."),
     editable=True,
-    default="500",
+    default="500.html",
 )
 
 register_setting(
     name="TEMPLATE_PAGE",
     description=_("Base template for all page views."),
     editable=True,
-    default="page",
+    default="pages/page.html",
 )
 
 register_setting(
     name="TEMPLATE_CONTENTPAGE",
     description=_("Template for all content page views."),
     editable=True,
-    default="contentpage",
+    default="pages/contentpage.html",
 )
 
 register_setting(
     name="TEMPLATE_PRIMARY_MENU",
     description=_("Template for rendering the primary menu."),
     editable=True,
-    default="primary_menu",
+    default="pages/includes/primary_menu.html",
 )
 
 register_setting(
