@@ -1,12 +1,7 @@
 
 from collections import defaultdict
-from django.conf import settings
 from django.db.models import get_model, get_models
-from django.template import (StringOrigin, Template, TemplateSyntaxError,
-    TemplateEncodingError, Lexer, Parser, get_library, loader)
-from django.template.debug import DebugLexer, DebugParser
-from django.utils.encoding import smart_unicode
-from django.utils.safestring import mark_safe
+from django.template import TemplateSyntaxError, loader
 from mezzanine import template
 from mezzanine.pages.models import Page
 from mezzanine.utils import admin_url
@@ -185,42 +180,3 @@ def page(context, nodelist, token, parser):
         raise TemplateSyntaxError("The Page slug '%s' does not exist." % slug)
     context['page'] = page
     return nodelist.render(context)
-
-
-@register.simple_context_tag
-def render(context, *args):
-    """
-    Renders the arguments as a template themselves. This allows for treating
-    text obtained from the model as template code.
-      {% render page.content %}
-    """
-    if len(args) == 1:
-        return PagesTemplate(args[0], 'render', 'pages_tags').render(context)
-    bits = []
-    for arg in args:
-        bits.append(PagesTemplate(arg, 'render', 'pages_tags').render(context))
-    return mark_safe(u''.join(bits))
-
-
-class PagesTemplate(Template):
-    def __init__(self, template_string, origin=None, libs=None, name='<Unknown Template>'):
-        try:
-            template_string = smart_unicode(template_string)
-        except UnicodeDecodeError:
-            raise TemplateEncodingError("Templates can only be constructed from unicode or UTF-8 strings.")
-        if settings.TEMPLATE_DEBUG and origin is None:
-            origin = StringOrigin(template_string)
-        if settings.TEMPLATE_DEBUG:
-            lexer_class, parser_class = DebugLexer, DebugParser
-        else:
-            lexer_class, parser_class = Lexer, Parser
-        lexer = lexer_class(template_string, origin)
-        parser = parser_class(lexer.tokenize())
-        if libs:
-            if isinstance(libs, (unicode, basestring)):
-                parser.add_library(get_library(libs))
-            else:
-                for lib in libs:
-                    parser.add_library(get_library(lib))
-        self.nodelist = parser.parse()
-        self.name = name

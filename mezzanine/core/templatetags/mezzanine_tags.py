@@ -4,9 +4,10 @@ from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models import Model
-from django.template import Context, TemplateSyntaxError
+from django.template import Context, Template, TemplateSyntaxError
 from django.template.loader import get_template, Template
 from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 from django.utils.simplejson import loads
 from django.utils.text import capfirst
 from mezzanine import template
@@ -301,3 +302,54 @@ def dashboard_column(context, token):
         except TemplateSyntaxError:
             pass
     return "".join(output)
+
+
+@register.simple_context_tag
+def render(context, *args):
+    """
+    Renders the arguments as a template themselves. This allows for treating
+    text obtained from the model as template code.
+      {% render page.content %}
+    """
+    if len(args) == 1:
+        return Template(args[0], 'render').render(context)
+    bits = []
+    for arg in args:
+        bits.append(Template(arg, 'render').render(context))
+    return mark_safe(u''.join(bits))
+
+@register.to_end_tag
+def unique(context, nodelist, token, parser):
+    bits = token.split_contents()
+    if len(bits) != 2:
+        raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
+    type = parser.compile_filter(bits[1]).resolve(context)
+    value = nodelist.render(context)
+    uniques = context.render_context.get('uniques')
+    if uniques is None:
+        uniques = {}
+        context.render_context['uniques'] = {type:[value]}
+    else:
+        values = uniques.get(type)
+        if values is None:
+            values = [value]
+            uniques[type] = values
+        else:
+            if value not in values:
+                values.append(value)
+    return u''
+
+@register.to_end_tag
+def uniques(context, nodelist, token, parser):
+    bits = token.split_contents()
+    if len(bits) != 2:
+        raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
+    type = parser.compile_filter(bits[1]).resolve(context)
+    format = nodelist.render(context)
+    uniques = context.render_context.get('uniques')
+    if not uniques:
+        return u''
+    values = uniques.get(type)
+    if not values:
+        return u''
+    return mark_safe('\n'.join([format % value for value in values]))

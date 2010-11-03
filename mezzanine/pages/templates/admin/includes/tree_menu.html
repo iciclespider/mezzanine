@@ -8,8 +8,9 @@
 				<span class="icon open">+</span>
 				<span class="icon close">-</span>
 			</a>
-			<a href="{% url admin:pages_page_change page.id %}{% if not page.primary %}?parent={{ page.parent_id }}{% endif %}"
-				class="changelink">{{ page.title }}</a>
+			<a href="{% url admin:pages_page_change page.id %}" class="change-link">
+				{{ page.title }}
+            </a>
 			<span class="ordering">
 			    <img src="{% admin_media_prefix %}img/admin/arrow-up.gif" />
 			    <img src="{% admin_media_prefix %}img/admin/arrow-down.gif" />
@@ -24,8 +25,9 @@
 			      ...
 			    </option>
     			{% for model in page_models %}
-			    <option value="{{ model.add_url }}?parent={{ page.id }}"
-			        >{{ model.name }}</option>
+			    <option value="{{ model.add_url }}?parent={{ page.id }}">
+			        {{ model.name }}
+                </option>
 		    	{% endfor %}
 		    </select>
 		</div>

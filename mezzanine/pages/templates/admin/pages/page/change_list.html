@@ -1,5 +1,5 @@
 {% extends "admin/change_list.html" %}
-{% load pages_tags i18n %}
+{% load pages_tags adminmedia i18n %}
 
 {% block extrahead %}{{ block.super }}
 <style type="text/css">
@@ -11,10 +11,12 @@
     #tree ul {padding:0;}
     #tree ul ul {padding-left:40px; display:none;}
     #tree li {list-style-type:none;}
-    #tree .tree-toggle, #tree .changelink {float:left; font-weight:bold; 
-        font-size:12px;}
+    #tree .tree-toggle, #tree .change-link {float:left; font-weight:bold; 
+        font-size:12px;position: relative;}
     #tree .tree-toggle {visibility:hidden;}
-    #tree a {float:right;}
+    #tree a.change-link {background-position: 0 50%; background-repeat: no-repeat;margin-left: 10px;padding-left: 15px;}
+    #tree a.change-link:visited {background-image: url('{% admin_media_prefix %}img/icons/icon-actions-change-link.png');}
+    #tree a.change-link:active {background-image: url('{% admin_media_prefix %}img/icons/icon-actions-change-link-hover.png');}
     #tree a .icon {display:block; float:left; width:16px; color:#fff; 
         text-align:center; background:#c6c6c6; margin:0 8px 0 4px;}
     #tree a .close {display:none;}
