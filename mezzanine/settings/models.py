@@ -15,6 +15,10 @@ class Settings(models.Model):
         verbose_name = 'Settings'
         verbose_name_plural = 'Settings'
 
+    @property
+    def homepage(self):
+        from mezzanine.pages.models import Page
+        return Page.objects.home(self)
 
     def editables(self, names=None):
         return editables()

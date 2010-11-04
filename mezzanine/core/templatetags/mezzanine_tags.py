@@ -4,8 +4,10 @@ from django.contrib import admin
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models import Model
-from django.template import Context, Template, TemplateSyntaxError
+from django.template import (Context, Node, TextNode, NodeList, FilterExpression,
+    Template, TemplateSyntaxError)
 from django.template.loader import get_template, Template
+from django.template.loader_tags import BlockNode
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 from django.utils.simplejson import loads
@@ -318,26 +320,66 @@ def render(context, *args):
         bits.append(Template(arg, 'render').render(context))
     return mark_safe(u''.join(bits))
 
-@register.to_end_tag
-def unique(context, nodelist, token, parser):
-    bits = token.split_contents()
-    if len(bits) != 2:
-        raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
-    type = parser.compile_filter(bits[1]).resolve(context)
-    value = nodelist.render(context)
-    uniques = context.render_context.get('uniques')
-    if uniques is None:
-        uniques = {}
-        context.render_context['uniques'] = {type:[value]}
-    else:
-        values = uniques.get(type)
-        if values is None:
-            values = [value]
-            uniques[type] = values
+UNIQUES = 'uniques'
+
+class UniqueNode(Node):
+    def __init__(self, type, nodelist):
+        self.type = type
+        self.nodelist = nodelist
+
+    def render(self, context):
+        if isinstance(self.type, FilterExpression):
+            self.type = self.type.resolve(context)
+        value = self.nodelist.render(context)
+        uniques = context.render_context.get(UNIQUES)
+        if uniques is None:
+            context.render_context[UNIQUES] = {self.type:[value]}
         else:
-            if value not in values:
-                values.append(value)
-    return u''
+            values = uniques.get(self.type)
+            if values is None:
+                uniques[self.type] = [value]
+            else:
+                if value not in values:
+                    values.append(value)
+        return u''
+
+def unique(parser, token):
+    bits = token.split_contents()
+    if bits[0] == 'unique':
+        if len(bits) != 2:
+            raise TemplateSyntaxError("'unique' takes one argument (type)")
+        type = parser.compile_filter(bits[1])
+    else:
+        if len(bits) != 1:
+            raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
+        type = bits[0]
+    nodelist = parser.parse(('end' + bits[0],))
+    parser.delete_first_token()
+    node = UniqueNode(type, nodelist)
+    try:
+        block = parser.__uniques_block
+        block.nodelist.append(node)
+        return TextNode('')
+    except AttributeError:
+        pass
+    try:
+        if UNIQUES in parser.__loaded_blocks:
+            raise TemplateSyntaxError("'%s' tag cannot be used with 'block' name 'uniques'." % bits[0])
+        parser.__loaded_blocks.append(UNIQUES)
+    except AttributeError:
+        parser.__loaded_blocks = [UNIQUES]
+    nodelist = NodeList()
+    nodelist.contains_nontext = True
+    nodelist.append(parser.create_variable_node(parser.compile_filter('block.super')))
+    nodelist.append(node)
+    block = BlockNode(UNIQUES, nodelist)
+    parser.__uniques_block = block
+    return block
+
+register.tag(unique)
+register.tag('css', unique)
+register.tag('js', unique)
+
 
 @register.to_end_tag
 def uniques(context, nodelist, token, parser):
@@ -346,7 +388,7 @@ def uniques(context, nodelist, token, parser):
         raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
     type = parser.compile_filter(bits[1]).resolve(context)
     format = nodelist.render(context)
-    uniques = context.render_context.get('uniques')
+    uniques = context.render_context.get(UNIQUES)
     if not uniques:
         return u''
     values = uniques.get(type)

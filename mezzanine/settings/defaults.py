@@ -192,10 +192,24 @@ register_setting(
 )
 
 register_setting(
+    name="THEME",
+    description=_("jQuery UI Theme to use."),
+    editable=True,
+    default="base",
+)
+
+register_setting(
     name="TEMPLATE_BASE",
     description=_("Base template for all views."),
     editable=True,
     default="base.html",
+)
+
+register_setting(
+    name="TEMPLATE_BODY",
+    description=_("Base template for all views."),
+    editable=True,
+    default="body.html",
 )
 
 register_setting(

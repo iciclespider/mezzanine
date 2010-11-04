@@ -149,20 +149,6 @@ def is_page_content_model(admin_model_dict):
     return False
 
 @register.to_end_tag
-def homepage(context, nodelist, token, parser):
-    """
-    Allows the site home Page to be embedded in a template.
-      {% homepage %}
-        {{ page.title }}
-      {% endhomepage %}
-    """
-    bits = token.split_contents()
-    if len(bits) != 1:
-        raise TemplateSyntaxError("'%s' does not take arguments" % bits[0])
-    context['page'] = Page.objects.home(context["request"].settings)
-    return nodelist.render(context)
-
-@register.to_end_tag
 def page(context, nodelist, token, parser):
     """
     Allows a Page to be embedded in a template.
