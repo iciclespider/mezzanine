@@ -9,7 +9,7 @@ from mezzanine.utils import admin_url
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
-page_fieldsets[0][1]["fields"].extend((("in_navigation", "in_footer"), "login_required"))
+page_fieldsets[0][1]["fields"].extend(("template", ("in_navigation", "in_footer"), "login_required"))
 page_fieldsets[1][1]["fields"].insert(1, 'parent')
 
 

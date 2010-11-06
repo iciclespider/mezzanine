@@ -14,7 +14,6 @@ from django.utils.simplejson import loads
 from django.utils.text import capfirst
 from mezzanine import template
 from mezzanine.core.forms import get_edit_form
-from mezzanine.settings import global_settings
 from mezzanine.utils import admin_url, decode_html_entities, is_editable
 from urllib import urlopen, urlencode
 from uuid import uuid4
@@ -189,7 +188,7 @@ def admin_app_list(request):
     dashboard widget.
     """
     app_dict = {}
-    menu_order = [(x[0], list(x[1])) for x in global_settings.ADMIN_MENU_ORDER]
+    menu_order = [(x[0], list(x[1])) for x in request.settings.ADMIN_MENU_ORDER]
     found_items = set()
     for (model, model_admin) in admin.site._registry.items():
         opts = model._meta

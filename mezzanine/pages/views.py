@@ -27,10 +27,10 @@ admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
 def home(request):
-    home = Page.objects.home(request.settings)
-    if not home:
+    page = request.settings.homepage
+    if not page:
         raise Http404
-    return _handle_page(request, home)
+    return _handle_page(request, page)
 
 def page(request, slug):
     page = get_object_or_404(Page.objects.published(request.user), settings=request.settings, slug=slug)
@@ -61,4 +61,10 @@ def _handle_page(request, page):
     #    templates.append("pages/%s.html" % page.content_model)
     #templates.append(template)
     #t = select_template(templates)
-    return render_to_response(page.get_template(), RequestContext(request, context))
+    template = None
+    content_model = page.get_content_model()
+    if content_model:
+        template = content_model.get_template()
+    if not template:
+        template = page.get_template()
+    return render_to_response(template, RequestContext(request, context))
