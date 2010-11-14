@@ -1,7 +1,7 @@
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import get_model
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
@@ -54,3 +54,9 @@ def edit(request):
     else:
         response = form.errors.values()[0][0]
     return HttpResponse(unicode(response))
+
+def v404(request):
+    raise Http404
+
+def v500(request):
+    raise Exception('Forced 500.')
