@@ -61,63 +61,63 @@
     };
     
     (function($) {
-
-        $('#tree .tree-toggle').click(function() {
-            // Show/hide the branch and toggle the icon.
-            var pageLink = $(this);
-            pageLink.parent().parent().find('ul').toggle();
-            pageLink.find('.icon').toggle();
-            // Add or remove the page ID from the cookie.
-            var opened = pageLink.find('.close:visible').length == 1;
-            var id = pageLink.attr('id').split('-')[1];
-            toggleID(opened, id);
-            return false;
-        });
-
-        // Show previously opened branches.
-        if (ids) {
-            $('#page-' + ids.split(',').join(', #page-')).click();
-        }
-
-        // Show the open/close button for branches that have children
-        $('li:has(li) .tree-toggle').css({visibility: 'visible'});
-        $('li:not(:has(li)) .tree-toggle').css({visibility: 'hidden'});
-        
-        // The dropdown list for adding a new page contains URLs for each 
-        // model - redirect when selected.
-        $('.addlist').change(function() {
-            // Ensure the branch is saved as open when adding to it so that 
-            // the new branch will be visible directly after saving.
-            var id = $(this).attr('id');
-            if (id) {
-                toggleID(true, id.split('-')[1]);
-            }
-            var addUrl = this[this.selectedIndex].value;
-            if (addUrl) {
-                location.href = addUrl;
-            }
-            this.selectedIndex = 0;
-            return true;
-        });
-        
-        // AJAX callback that's triggered when dragging a page to re-order 
-        // it has ended.
-        var updateOrdering = function(event, ui) {
-            var ordering = $(this).sortable('toArray').toString();
-            $.post('{% url admin_page_ordering %}', {ordering: ordering},
-            function(data){
-                if (data !== "ok") {
-                    alert("Error occured: " + data + "\nOrdering wasn't updated.");
-                }
+        $(document).ready(function() {
+            $('#tree .tree-toggle').click(function() {
+                // Show/hide the branch and toggle the icon.
+                var pageLink = $(this);
+                pageLink.parent().parent().find('ul').toggle();
+                pageLink.find('.icon').toggle();
+                // Add or remove the page ID from the cookie.
+                var opened = pageLink.find('.close:visible').length == 1;
+                var id = pageLink.attr('id').split('-')[1];
+                toggleID(opened, id);
+                return false;
             });
-        };
-
-        
-        // Make the pages sortable via drag and drop.
-        $('#tree ul').sortable({handle: '.ordering', axis: 'y', opacity: '.7', 
-            stop: updateOrdering});
-        $('#tree ul').disableSelection();
-
+    
+            // Show previously opened branches.
+            if (ids) {
+                $('#page-' + ids.split(',').join(', #page-')).click();
+            }
+    
+            // Show the open/close button for branches that have children
+            $('li:has(li) .tree-toggle').css({visibility: 'visible'});
+            $('li:not(:has(li)) .tree-toggle').css({visibility: 'hidden'});
+            
+            // The dropdown list for adding a new page contains URLs for each 
+            // model - redirect when selected.
+            $('.addlist').change(function() {
+                // Ensure the branch is saved as open when adding to it so that 
+                // the new branch will be visible directly after saving.
+                var id = $(this).attr('id');
+                if (id) {
+                    toggleID(true, id.split('-')[1]);
+                }
+                var addUrl = this[this.selectedIndex].value;
+                if (addUrl) {
+                    location.href = addUrl;
+                }
+                this.selectedIndex = 0;
+                return true;
+            });
+            
+            // AJAX callback that's triggered when dragging a page to re-order 
+            // it has ended.
+            var updateOrdering = function(event, ui) {
+                var ordering = $(this).sortable('toArray').toString();
+                $.post('{% url admin_page_ordering %}', {ordering: ordering},
+                function(data){
+                    if (data !== "ok") {
+                        alert("Error occured: " + data + "\nOrdering wasn't updated.");
+                    }
+                });
+            };
+    
+            
+            // Make the pages sortable via drag and drop.
+            $('#tree ul').sortable({handle: '.ordering', axis: 'y', opacity: '.7', 
+                stop: updateOrdering});
+            $('#tree ul').disableSelection();
+        });
     })(django.jQuery);
 
 </script>
