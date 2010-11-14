@@ -59,7 +59,7 @@ MEDIA_ROOT = os.path.join(base_directory, MEDIA_URL.strip("/"))
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = "/media/admin/"
+ADMIN_MEDIA_PREFIX = "/admin/media/"
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = "b6055148-2c50-4ee5-adda-fc38502b707c0862d0d0-95e2-42d4-b477-b9dc5d027e4d42452e0f-b3e7-4d10-b0ec-4872b8e6c888"
