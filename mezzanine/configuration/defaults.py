@@ -115,6 +115,13 @@ register_setting(
 )
 
 register_setting(
+    name="CSS_THEME",
+    description=_("CSS Theme to use."),
+    editable=True,
+    default="base",
+)
+
+register_setting(
     name="DASHBOARD_TAGS",
     description=_("A three item sequence, each containing a sequence of "
         "template tags used to render the admin dashboard."),
@@ -192,59 +199,52 @@ register_setting(
 )
 
 register_setting(
-    name="THEME",
-    description=_("jQuery UI Theme to use."),
+    name="TEMPLATE_HTML",
+    description=_("HTML template for all views."),
     editable=True,
-    default="base",
-)
-
-register_setting(
-    name="TEMPLATE_BASE",
-    description=_("Base template for all views."),
-    editable=True,
-    default="base.html",
+    default="base/html",
 )
 
 register_setting(
     name="TEMPLATE_BODY",
-    description=_("Base template for all views."),
+    description=_("Body template for all views."),
     editable=True,
-    default="body.html",
+    default="base/body",
 )
 
 register_setting(
     name="TEMPLATE_404",
     description=_("Template for 404s."),
     editable=True,
-    default="404.html",
+    default="base/404",
 )
 
 register_setting(
     name="TEMPLATE_500",
     description=_("Template for 500s."),
     editable=True,
-    default="500.html",
+    default="base/500",
 )
 
 register_setting(
     name="TEMPLATE_PAGE",
     description=_("Base template for all page views."),
     editable=True,
-    default="pages/page.html",
+    default="base/page",
 )
 
 register_setting(
     name="TEMPLATE_CONTENTPAGE",
     description=_("Template for all content page views."),
     editable=True,
-    default="pages/contentpage.html",
+    default="base/contentpage",
 )
 
 register_setting(
     name="TEMPLATE_PRIMARY_MENU",
     description=_("Template for rendering the primary menu."),
     editable=True,
-    default="pages/includes/primary_menu.html",
+    default="base/primary_menu",
 )
 
 register_setting(
