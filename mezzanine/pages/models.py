@@ -82,10 +82,18 @@ class Page(Orderable, Displayable):
         resolved_view = resolve(self.get_absolute_url())[0]
         return resolved_view != page
 
+    @property
+    def instance(self):
+        if self.content_model:
+            instance = getattr(self, self.content_model, None)
+            if instance:
+                return instance
+        return self
+
     def get_template(self):
         if self.template:
             return self.template
-        return self.get_default_template()
+        return self.instance.get_default_template()
 
     def get_default_template(self):
         return self.settings.PAGE_TEMPLATE

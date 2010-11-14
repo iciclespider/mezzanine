@@ -49,7 +49,7 @@ def _handle_page(request, page):
     if page.login_required and not request.user.is_authenticated():
         return redirect("%s?%s=%s" % (settings.LOGIN_URL, REDIRECT_FIELD_NAME,
             urlquote(request.get_full_path())))
-    context = {"page": page}
+    context = {"page": page.instance}
     for processor in page_processors.processors[page.content_model]:
         response = processor(request, page)
         if response:
@@ -60,15 +60,4 @@ def _handle_page(request, page):
                     "must return HttpResponse or dict." % (
                     processor.__module__, processor.__name__, type(response)))
             context.update(response)
-    #templates = ["pages/%s.html" % page.slug]
-    #if page.content_model is not None:
-    #    templates.append("pages/%s.html" % page.content_model)
-    #templates.append(template)
-    #t = select_template(templates)
-    template = None
-    content_model = page.get_content_model()
-    if content_model:
-        template = content_model.get_template()
-    if not template:
-        template = page.get_template()
-    return render_to_response(template, RequestContext(request, context))
+    return render_to_response(page.get_template(), RequestContext(request, context))

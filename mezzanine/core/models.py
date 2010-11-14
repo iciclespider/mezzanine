@@ -6,7 +6,7 @@ from django.db.models.base import ModelBase
 from django.template.defaultfilters import slugify, truncatewords_html
 from django.utils.translation import ugettext, ugettext_lazy as _
 from mezzanine.configuration.models import Settings
-from mezzanine.core.fields import HtmlField
+from mezzanine.core.fields import StyleField, HtmlField
 from mezzanine.core.managers import DisplayableManager, KeywordManager
 from mezzanine.utils import base_concrete_model
 
@@ -151,7 +151,7 @@ class Content(models.Model):
     Provides a HTML field for managing general content and making it searchable.
     """
 
-    content = HtmlField(_("Content"))
+    content = HtmlField(_("Content"), blank=True)
 
     search_fields = ("content",)
 
