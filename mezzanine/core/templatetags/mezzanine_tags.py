@@ -377,6 +377,7 @@ def unique(parser, token):
 
 register.tag(unique)
 register.tag('css', unique)
+register.tag('theme', unique)
 register.tag('js', unique)
 
 
