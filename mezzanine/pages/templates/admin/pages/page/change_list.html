@@ -60,7 +60,7 @@
         document.cookie = cookie + '=' + ids + '; path=/';
     };
     
-    $(function() {
+    (function($) {
 
         $('#tree .tree-toggle').click(function() {
             // Show/hide the branch and toggle the icon.
@@ -118,7 +118,7 @@
             stop: updateOrdering});
         $('#tree ul').disableSelection();
 
-    });
+    })(django.jQuery);
 
 </script>
 {% endblock %}
