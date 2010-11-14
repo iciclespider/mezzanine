@@ -115,6 +115,7 @@ class TemplateAdmin(admin.ModelAdmin):
     Admin class for Template model.
     """
     list_display = ('name',)
+    ordering = ('name',)
     fields = ('name', 'content')
 
 

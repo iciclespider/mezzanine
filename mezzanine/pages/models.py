@@ -116,3 +116,5 @@ class Template(Content):
         verbose_name = _("Template")
         verbose_name_plural = _("Templates")
 
+    def __unicode__(self):
+        return self.name

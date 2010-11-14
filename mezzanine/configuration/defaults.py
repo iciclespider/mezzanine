@@ -6,52 +6,73 @@ import os.path
 
 
 register_setting(
-    name="JQUERY_UI_THEME",
-    description=_("jQuery UI Theme to use."),
-    editable=True,
-    default="base",
-)
-
-register_setting(
     name="CONTENTPAGE_TEMPLATE",
     description=_("Template for all content page views."),
     editable=True,
-    default="base/contentpage",
+    default="base/contentpage.html",
+)
+
+register_setting(
+    name="CONTENTPAGE_STYLE",
+    description=_("CSS Style for all content page views."),
+    editable=True,
+    default="base/contentpage.css",
 )
 
 register_setting(
     name="PAGE_TEMPLATE",
     description=_("Template for all page views."),
     editable=True,
-    default="base/page",
+    default="base/page.html",
+)
+
+register_setting(
+    name="PAGE_SYTLE",
+    description=_("CSS Style for all page views."),
+    editable=True,
+    default="base/page.css",
 )
 
 register_setting(
     name="BODY_TEMPLATE",
-    description=_("Body template for all views."),
+    description=_("Body Template for all views."),
     editable=True,
-    default="base/body",
+    default="base/body.html",
+)
+
+register_setting(
+    name="BODY_STYLE",
+    description=_("Body CSS Style for all views."),
+    editable=True,
+    default="base/body.css",
 )
 
 register_setting(
     name="HTML_TEMPLATE",
     description=_("HTML template for all views."),
     editable=True,
-    default="base/html",
+    default="base/html.html",
 )
 
 register_setting(
     name="404_TEMPLATE",
     description=_("Template for 404s."),
     editable=True,
-    default="base/404",
+    default="base/404.html",
 )
 
 register_setting(
     name="500_TEMPLATE",
     description=_("Template for 500s."),
     editable=True,
-    default="base/500",
+    default="base/500.html",
+)
+
+register_setting(
+    name="JQUERY_UI_THEME",
+    description=_("jQuery UI Theme to use."),
+    editable=True,
+    default="base",
 )
 
 register_setting(
