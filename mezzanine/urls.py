@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns("",
     ("^admin/filebrowser/", include("filebrowser.urls")),
     ("^admin/", include(admin.site.urls)),
+    ("^grappelli/", include("grappelli.urls")),
     ("^", include("mezzanine.core.urls")),
     ("^", include("mezzanine.pages.urls")),
 )

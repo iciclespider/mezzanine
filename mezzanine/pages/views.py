@@ -27,14 +27,18 @@ admin_page_ordering = staff_member_required(admin_page_ordering)
 
 
 def home(request):
-    page = request.settings.homepage
-    if not page:
-        raise Http404
-    return _handle_page(request, page)
+    if not request.settings.exists or not request.settings.homepage:
+        return _handle_no_domain(request)
+    return _handle_page(request, request.settings.homepage)
 
 def page(request, slug):
+    if not request.settings.exists:
+        return _handle_no_domain(request)
     page = get_object_or_404(Page.objects.published(request.user), settings=request.settings, slug=slug)
     return _handle_page(request, page)
+
+def _handle_no_domain(request):
+    return HttpResponse(request.settings.domain)
 
 def _handle_page(request, page):
     """
