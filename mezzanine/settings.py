@@ -112,3 +112,7 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "django.contrib.admindocs",
 )
+
+GRAPPELLI_ADMIN_TITLE = 'McNerthney'
+
+FILEBROWSER_DIRECTORY = ''
