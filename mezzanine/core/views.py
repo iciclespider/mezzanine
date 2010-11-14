@@ -55,8 +55,8 @@ def edit(request):
         response = form.errors.values()[0][0]
     return HttpResponse(unicode(response))
 
-def v404(request):
+def v404(request, url):
     raise Http404
 
-def v500(request):
+def v500(request, url):
     raise Exception('Forced 500.')

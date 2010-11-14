@@ -12,8 +12,8 @@ urlpatterns = patterns("mezzanine.core.views",
         name="admin_keywords_submit"),
     url("^edit/$", "edit", name="edit"),
     url("^search/$", "search", name="search"),
-    url("^404/$", "v404", name="404"),
-    url("^500/$", "v500", name="500"),
+    url("^404/(.*)$", "v404", name="404"),
+    url("^500/(.*)$", "v500", name="500"),
 )
 
 urlpatterns += patterns("",
