@@ -1,11 +1,162 @@
 
-import os.path
-
 from django.conf import settings
 from django.utils.translation import ugettext as _
-
 from mezzanine.configuration import register_setting
+import os.path
 
+
+register_setting(
+    name="JQUERY_UI_THEME",
+    description=_("jQuery UI Theme to use."),
+    editable=True,
+    default="base",
+)
+
+register_setting(
+    name="CONTENTPAGE_TEMPLATE",
+    description=_("Template for all content page views."),
+    editable=True,
+    default="base/contentpage",
+)
+
+register_setting(
+    name="PAGE_TEMPLATE",
+    description=_("Template for all page views."),
+    editable=True,
+    default="base/page",
+)
+
+register_setting(
+    name="BODY_TEMPLATE",
+    description=_("Body template for all views."),
+    editable=True,
+    default="base/body",
+)
+
+register_setting(
+    name="HTML_TEMPLATE",
+    description=_("HTML template for all views."),
+    editable=True,
+    default="base/html",
+)
+
+register_setting(
+    name="404_TEMPLATE",
+    description=_("Template for 404s."),
+    editable=True,
+    default="base/404",
+)
+
+register_setting(
+    name="500_TEMPLATE",
+    description=_("Template for 500s."),
+    editable=True,
+    default="base/500",
+)
+
+register_setting(
+    name="GOOGLE_ANALYTICS_ID",
+    editable=True,
+    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
+    default="",
+)
+
+#register_setting(
+#    name="BLOG_BITLY_USER",
+#    description=_("Username for bit.ly URL shortening service."),
+#    editable=True,
+#    default="",
+#)
+
+#register_setting(
+#    name="BLOG_BITLY_KEY",
+#    description=_("Key for bit.ly URL shortening service."),
+#    editable=True,
+#    default="",
+#)
+
+#register_setting(
+#    name="BLOG_POST_PER_PAGE",
+#    description=_("Number of blog posts to show on a blog listing page."),
+#    editable=True,
+#    default=5,
+#)
+
+#register_setting(
+#    name="BLOG_POST_MAX_PAGING_LINKS",
+#    description=_("Max number of paging links to show on a blog listing page."),
+#    editable=True,
+#    default=10,
+#)
+
+#register_setting(
+#    name="COMMENTS_DISQUS_SHORTNAME",
+#    description=_("Username for the http://disqus.com comments service."),
+#    editable=True,
+#    default="",
+#)
+
+#register_setting(
+#    name="COMMENTS_DISQUS_KEY",
+#    description=_("API key for the http://disqus.com comments service."),
+#    editable=True,
+#    default="",
+#)
+
+#register_setting(
+#    name="COMMENTS_DEFAULT_APPROVED",
+#    description=_("If ``True``, built-in comments are approved by default."),
+#    editable=False,
+#    default=True,
+#)
+
+#register_setting(
+#    name="COMMENTS_NUM_LATEST",
+#   description=_("Number of latest comments to show in the admin dashboard."),
+#   editable=True,
+#    default=5,
+#)
+
+#register_setting(
+#    name="COMMENTS_UNAPPROVED_VISIBLE",
+#    description=_("If ``True``, unapproved comments will have a placeholder "
+#       "visible on the site with a 'waiting for approval' or "
+#        "'comment removed' message based on the workflow around the "
+#        "``MEZZANINE_COMMENTS_DEFAULT_APPROVED`` setting - if ``True`` then "
+#       "the former message is used, if ``False`` then the latter."),
+#    editable=True,
+#    default=True,
+#)
+
+#register_setting(
+#    name="TAG_CLOUD_SIZES",
+#    description=_("Number of different sizes for tags when shown as a cloud."),
+#    editable=True,
+#    default=4,
+#)
+
+#register_setting(
+#    name="PAGES_MENU_SHOW_ALL",
+#    description=_("If ``True``, the pages menu will show all levels of "
+#        "navigation, otherwise child pages are only shown when viewing the "
+#        "parent page."),
+#    editable=True,
+#    default=True,
+#)
+
+#register_setting(
+#    name="SEARCH_PER_PAGE",
+#    description=_("Number of results to show in the search results page."),
+#    editable=True,
+#    default=10,
+#)
+
+#register_setting(
+#    name="SEARCH_MAX_PAGING_LINKS",
+#    description=_("Max number of paging links for the search results page."),
+#    editable=True,
+#    default=10,
+#)
 
 register_setting(
     name="ADMIN_MENU_ORDER",
@@ -27,113 +178,6 @@ register_setting(
 )
 
 register_setting(
-    name="BLOG_BITLY_USER",
-    description=_("Username for bit.ly URL shortening service."),
-    editable=True,
-    default="",
-)
-
-register_setting(
-    name="BLOG_BITLY_KEY",
-    description=_("Key for bit.ly URL shortening service."),
-    editable=True,
-    default="",
-)
-
-register_setting(
-    name="BLOG_POST_PER_PAGE",
-    description=_("Number of blog posts to show on a blog listing page."),
-    editable=True,
-    default=5,
-)
-
-register_setting(
-    name="BLOG_POST_MAX_PAGING_LINKS",
-    description=_("Max number of paging links to show on a blog listing page."),
-    editable=True,
-    default=10,
-)
-
-register_setting(
-    name="BLOG_SLUG",
-    description=_("Slug of the page object for the blog."),
-    editable=False,
-    default="blog",
-)
-
-register_setting(
-    name="COMMENTS_DISQUS_SHORTNAME",
-    description=_("Username for the http://disqus.com comments service."),
-    editable=True,
-    default="",
-)
-
-register_setting(
-    name="COMMENTS_DISQUS_KEY",
-    description=_("API key for the http://disqus.com comments service."),
-    editable=True,
-    default="",
-)
-
-register_setting(
-    name="COMMENTS_DEFAULT_APPROVED",
-    description=_("If ``True``, built-in comments are approved by default."),
-    editable=False,
-    default=True,
-)
-
-register_setting(
-    name="COMMENTS_NUM_LATEST",
-    description=_("Number of latest comments to show in the admin dashboard."),
-    editable=True,
-    default=5,
-)
-
-register_setting(
-    name="COMMENTS_UNAPPROVED_VISIBLE",
-    description=_("If ``True``, unapproved comments will have a placeholder "
-        "visible on the site with a 'waiting for approval' or "
-        "'comment removed' message based on the workflow around the "
-        "``MEZZANINE_COMMENTS_DEFAULT_APPROVED`` setting - if ``True`` then "
-        "the former message is used, if ``False`` then the latter."),
-    editable=True,
-    default=True,
-)
-
-register_setting(
-    name="CONTENT_MEDIA_PATH",
-    description=_("Absolute path to Mezzanine's internal media files."),
-    editable=False,
-    default=os.path.join(os.path.dirname(__file__), "..", "core", "media"),
-)
-
-register_setting(
-    name="CONTENT_MEDIA_URL",
-    description=_("URL prefix for serving Mezzanine's internal media files."),
-    editable=False,
-    default="/content_media/",
-)
-
-register_setting(
-    name="CSS_THEME",
-    description=_("CSS Theme to use."),
-    editable=True,
-    default="base",
-)
-
-register_setting(
-    name="DASHBOARD_TAGS",
-    description=_("A three item sequence, each containing a sequence of "
-        "template tags used to render the admin dashboard."),
-    editable=False,
-    default=(
-        ("blog_tags.quick_blog", "mezzanine_tags.app_list"),
-        ("blog_tags.recent_comments",),
-        ("mezzanine_tags.recent_actions",),
-    ),
-)
-
-register_setting(
     name="FORMS_FIELD_MAX_LENGTH",
     description=_("Max length allowed for field values in the forms app."),
     editable=False,
@@ -151,13 +195,6 @@ register_setting(
     name="FORMS_UPLOAD_ROOT",
     description=_("Absolute path for storing file uploads for the forms app."),
     editable=False,
-    default="",
-)
-
-register_setting(
-    name="GOOGLE_ANALYTICS_ID",
-    editable=True,
-    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
     default="",
 )
 
@@ -183,82 +220,36 @@ register_setting(
 )
 
 register_setting(
-    name="TAG_CLOUD_SIZES",
-    description=_("Number of different sizes for tags when shown as a cloud."),
-    editable=True,
-    default=4,
+    name="DASHBOARD_TAGS",
+    description=_("A three item sequence, each containing a sequence of "
+        "template tags used to render the admin dashboard."),
+    editable=False,
+    default=(
+        ("blog_tags.quick_blog", "mezzanine_tags.app_list"),
+        ("blog_tags.recent_comments",),
+        ("mezzanine_tags.recent_actions",),
+    ),
 )
 
 register_setting(
-    name="PAGES_MENU_SHOW_ALL",
-    description=_("If ``True``, the pages menu will show all levels of "
-        "navigation, otherwise child pages are only shown when viewing the "
-        "parent page."),
-    editable=True,
-    default=True,
+    name="CONTENT_MEDIA_PATH",
+    description=_("Absolute path to Mezzanine's internal media files."),
+    editable=False,
+    default=os.path.join(os.path.dirname(__file__), "..", "core", "media"),
 )
 
 register_setting(
-    name="TEMPLATE_HTML",
-    description=_("HTML template for all views."),
-    editable=True,
-    default="base/html",
+    name="CONTENT_MEDIA_URL",
+    description=_("URL prefix for serving Mezzanine's internal media files."),
+    editable=False,
+    default="/content_media/",
 )
 
 register_setting(
-    name="TEMPLATE_BODY",
-    description=_("Body template for all views."),
-    editable=True,
-    default="base/body",
-)
-
-register_setting(
-    name="TEMPLATE_404",
-    description=_("Template for 404s."),
-    editable=True,
-    default="base/404",
-)
-
-register_setting(
-    name="TEMPLATE_500",
-    description=_("Template for 500s."),
-    editable=True,
-    default="base/500",
-)
-
-register_setting(
-    name="TEMPLATE_PAGE",
-    description=_("Base template for all page views."),
-    editable=True,
-    default="base/page",
-)
-
-register_setting(
-    name="TEMPLATE_CONTENTPAGE",
-    description=_("Template for all content page views."),
-    editable=True,
-    default="base/contentpage",
-)
-
-register_setting(
-    name="TEMPLATE_PRIMARY_MENU",
-    description=_("Template for rendering the primary menu."),
-    editable=True,
-    default="base/primary_menu",
-)
-
-register_setting(
-    name="SEARCH_PER_PAGE",
-    description=_("Number of results to show in the search results page."),
-    editable=True,
-    default=10,
-)
-
-register_setting(
-    name="SEARCH_MAX_PAGING_LINKS",
-    description=_("Max number of paging links for the search results page."),
-    editable=True,
-    default=10,
+    name="BLOG_SLUG",
+    description=_("Slug of the page object for the blog."),
+    editable=False,
+    default="blog",
 )
 
 register_setting(

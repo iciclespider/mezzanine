@@ -88,7 +88,7 @@ class Page(Orderable, Displayable):
         return self.get_default_template()
 
     def get_default_template(self):
-        return self.settings.TEMPLATE_PAGE
+        return self.settings.PAGE_TEMPLATE
 
 class ContentPage(Page, Content):
     """
@@ -101,7 +101,7 @@ class ContentPage(Page, Content):
         verbose_name_plural = _("Content pages")
 
     def get_default_template(self):
-        return self.settings.TEMPLATE_CONTENTPAGE
+        return self.settings.CONTENTPAGE_TEMPLATE
 
 
 class Template(Content):
