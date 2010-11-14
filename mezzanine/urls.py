@@ -1,18 +1,13 @@
 
 from django.conf import settings
-from django.conf.urls.defaults import *
-from mezzanine.settings import global_settings
+from django.conf.urls.defaults import patterns, include
+from django.contrib import admin
+from mezzanine.configuration import global_settings
 
+admin.autodiscover()
 
 urlpatterns = patterns("",
+    ("^admin/", include(admin.site.urls)),
     ("^", include("mezzanine.core.urls")),
+    ("^", include("mezzanine.pages.urls")),
 )
-
-if "mezzanine.blog" in settings.INSTALLED_APPS:
-    urlpatterns += patterns("",
-        ("^%s/" % global_settings.BLOG_SLUG, include("mezzanine.blog.urls")),
-    )
-if "mezzanine.pages" in settings.INSTALLED_APPS:
-    urlpatterns += patterns("",
-        ("^", include("mezzanine.pages.urls")),
-    )

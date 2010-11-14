@@ -1,8 +1,8 @@
 
 from django import forms
 from mezzanine.pages.models import Page
-from mezzanine.settings import registry
-from mezzanine.settings.models import Settings
+from mezzanine.configuration import registry
+from mezzanine.configuration.models import Settings
 
 FIELD_TYPES = {
     bool: forms.BooleanField,
@@ -12,7 +12,7 @@ FIELD_TYPES = {
 class SettingsForm(forms.ModelForm):
     """
     Form for settings - creates a field for each setting in 
-    ``mezzanine.settings`` that is marked as editable.
+    ``mezzanine.configuration`` that is marked as editable.
     """
     class Meta:
         model = Settings

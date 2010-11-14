@@ -14,7 +14,7 @@ from mezzanine.core.admin import DynamicInlineAdmin
 from mezzanine.forms.forms import ExportForm
 from mezzanine.forms.models import Form, Field, FieldEntry
 from mezzanine.pages.admin import PageAdmin
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 from mezzanine.utils import admin_url
 from mimetypes import guess_type
 from os.path import join

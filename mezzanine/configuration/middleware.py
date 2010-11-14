@@ -1,6 +1,6 @@
 
 from django.http import Http404
-from mezzanine.settings.models import Settings
+from mezzanine.configuration.models import Settings
 
 class LazySettings(object):
     def __get__(self, request, obj_type=None):

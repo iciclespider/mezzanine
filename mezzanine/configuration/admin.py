@@ -1,9 +1,9 @@
 
 from django.contrib import admin
 from django.contrib.sites.models import Site
-from mezzanine.settings import editables
-from mezzanine.settings.forms import SettingsForm
-from mezzanine.settings.models import Settings, SiteSettings
+from mezzanine.configuration import editables
+from mezzanine.configuration.forms import SettingsForm
+from mezzanine.configuration.models import Settings, SiteSettings
 
 
 class SettingsAdmin(admin.ModelAdmin):

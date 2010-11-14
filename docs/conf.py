@@ -20,8 +20,8 @@ sys.path.insert(0, mezzanine_path)
 os.environ["DJANGO_SETTINGS_MODULE"] = "mezzanine.project_template.settings"
 import mezzanine
 
-# Generate the documentation for mezzanine.settings
-from mezzanine.settings import registry
+# Generate the documentation for mezzanine.configuration
+from mezzanine.configuration import registry
 
 settings_docs = [".. THIS DOCUMENT IS AUTO GENERATED VIA conf.py"]
 for name in sorted(registry.keys()):
@@ -39,7 +39,7 @@ for name in sorted(registry.keys()):
     settings_docs.extend(["", setting["description"]])
 with open(os.path.join(docs_path, "settings.rst"), "w") as f:
     f.write("\n".join(settings_docs))
-    
+
 
 # Generate the CHANGELOG file.
 repo = None
@@ -53,7 +53,7 @@ else:
     except error.RepoError:
         pass
 if repo is not None:
-    
+
     from datetime import datetime
     from django.utils.datastructures import SortedDict
 

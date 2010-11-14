@@ -2,7 +2,7 @@
 from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from mezzanine.settings import registry, editables
+from mezzanine.configuration import registry, editables
 
 
 class Settings(models.Model):
@@ -65,7 +65,7 @@ class Settings(models.Model):
 
 class Setting(models.Model):
     """
-    Stores values for ``mezzanine.settings`` that can be edited via the admin.
+    Stores values for ``mezzanine.configuration`` that can be edited via the admin.
     """
     settings = models.ForeignKey(Settings, related_name="settings")
     name = models.CharField(max_length=50)

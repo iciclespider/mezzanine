@@ -2,7 +2,7 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from htmlentitydefs import name2codepoint
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 from re import sub
 
 

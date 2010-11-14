@@ -183,7 +183,7 @@ def admin_app_list(request):
     """
     Adopted from ``django.contrib.admin.sites.AdminSite.index``. Returns a 
     list of lists of models grouped and ordered according to 
-    ``mezzanine.settings.ADMIN_MENU_ORDER``. Called from the 
+    ``request.settings.ADMIN_MENU_ORDER``. Called from the 
     ``admin_dropdown_menu`` template tag as well as the ``app_list`` 
     dashboard widget.
     """
@@ -292,7 +292,7 @@ def recent_actions(context):
 def dashboard_column(context, token):
     """
     Takes an index for retrieving the sequence of template tags from 
-    ``mezzanine.settings.DASHBOARD_TAGS`` to render into the admin dashboard.
+    ``request.settings.DASHBOARD_TAGS`` to render into the admin dashboard.
     """
     column_index = int(token.split_contents()[1])
     output = []

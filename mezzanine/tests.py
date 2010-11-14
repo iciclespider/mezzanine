@@ -12,8 +12,8 @@ from mezzanine.core.models import CONTENT_STATUS_DRAFT, \
                                     CONTENT_STATUS_PUBLISHED
 from mezzanine.forms.models import Form, FIELD_CHOICES
 from mezzanine.pages.models import ContentPage
-from mezzanine.settings.models import Settings, Setting
-from mezzanine.settings import registry
+from mezzanine.configuration.models import Settings, Setting
+from mezzanine.configuration import registry
 
 
 class Tests(TestCase):

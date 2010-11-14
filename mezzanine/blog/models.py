@@ -6,7 +6,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from hashlib import md5
 from mezzanine.blog.managers import BlogPostManager, CommentManager
 from mezzanine.core.models import Displayable, Ownable, Content, Slugged
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 
 
 class BlogPost(Displayable, Ownable, Content):

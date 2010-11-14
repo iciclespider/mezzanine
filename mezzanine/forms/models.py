@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.fields import HtmlField
 from mezzanine.core.models import Orderable, Content
 from mezzanine.pages.models import Page
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 
 
 FIELD_CHOICES = (

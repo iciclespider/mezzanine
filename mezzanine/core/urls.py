@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.contrib.admin.sites import NotRegistered
 from django.views.generic.simple import direct_to_template
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 from urlparse import urlsplit
 
 

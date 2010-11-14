@@ -4,11 +4,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.base import ModelBase
 from django.template.defaultfilters import slugify, truncatewords_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
+from mezzanine.configuration.models import Settings
 from mezzanine.core.fields import HtmlField
 from mezzanine.core.managers import DisplayableManager, KeywordManager
-from mezzanine.settings.models import Settings
 from mezzanine.utils import base_concrete_model
 
 

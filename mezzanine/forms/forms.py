@@ -7,7 +7,7 @@ from django.forms.extras import SelectDateWidget
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.forms.models import FormEntry, FieldEntry
-from mezzanine.settings import global_settings
+from mezzanine.configuration import global_settings
 from operator import ior
 from os.path import join
 from uuid import uuid4
