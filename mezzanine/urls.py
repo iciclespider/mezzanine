@@ -7,8 +7,8 @@ from mezzanine.configuration import global_settings
 admin.autodiscover()
 
 urlpatterns = patterns("",
-    ("^admin/", include(admin.site.urls)),
     ("^admin/filebrowser/", include("filebrowser.urls")),
+    ("^admin/", include(admin.site.urls)),
     ("^", include("mezzanine.core.urls")),
     ("^", include("mezzanine.pages.urls")),
 )
