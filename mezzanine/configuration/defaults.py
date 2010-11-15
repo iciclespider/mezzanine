@@ -13,49 +13,28 @@ register_setting(
 )
 
 register_setting(
-    name="CONTENTPAGE_TEMPLATE",
+    name="TEMPLATE_CONTENTPAGE",
     description=_("Template for all content page views."),
     editable=True,
     default="base/contentpage.html",
 )
 
 register_setting(
-    name="CONTENTPAGE_STYLE",
-    description=_("CSS Style for all content page views."),
-    editable=True,
-    default="base/contentpage.css",
-)
-
-register_setting(
-    name="PAGE_TEMPLATE",
+    name="TEMPLATE_PAGE",
     description=_("Template for all page views."),
     editable=True,
     default="base/page.html",
 )
 
 register_setting(
-    name="PAGE_SYTLE",
-    description=_("CSS Style for all page views."),
-    editable=True,
-    default="base/page.css",
-)
-
-register_setting(
-    name="BODY_TEMPLATE",
+    name="TEMPLATE_BODY",
     description=_("Body Template for all views."),
     editable=True,
     default="base/body.html",
 )
 
 register_setting(
-    name="BODY_STYLE",
-    description=_("Body CSS Style for all views."),
-    editable=True,
-    default="base/body.css",
-)
-
-register_setting(
-    name="HTML_TEMPLATE",
+    name="TEMPLATE_HTML",
     description=_("HTML template for all views."),
     editable=True,
     default="base/html.html",
@@ -83,11 +62,32 @@ register_setting(
 )
 
 register_setting(
-    name="GOOGLE_ANALYTICS_ID",
+    name="STYLE_BODY",
+    description=_("Body CSS Style for all views."),
     editable=True,
-    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
+    default="base/body.css",
+)
+
+register_setting(
+    name="STYLE_PAGE",
+    description=_("CSS Style for all page views."),
+    editable=True,
     default="",
 )
+
+register_setting(
+    name="STYLE_CONTENTPAGE",
+    description=_("CSS Style for all content page views."),
+    editable=True,
+    default="",
+)
+
+#register_setting(
+#    name="GOOGLE_ANALYTICS_ID",
+#    editable=True,
+#    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
+#    default="",
+#)
 
 #register_setting(
 #    name="BLOG_BITLY_USER",
