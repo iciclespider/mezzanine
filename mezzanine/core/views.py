@@ -1,14 +1,16 @@
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import get_model
-from django.http import HttpResponse, Http404
+from django.http import (HttpResponse, Http404, HttpResponseNotFound,
+    HttpResponseServerError)
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import loader, RequestContext
 from django.utils.translation import ugettext_lazy as _
-
+from django.views import debug
 from mezzanine.core.forms import get_edit_form
 from mezzanine.core.models import Keyword, Displayable
 from mezzanine.utils import is_editable, paginate
+import sys
 
 
 def admin_keywords_submit(request):
@@ -55,8 +57,21 @@ def edit(request):
         response = form.errors.values()[0][0]
     return HttpResponse(unicode(response))
 
-def v404(request, url):
+def force404(request, url=None):
     raise Http404
 
-def v500(request, url):
+def force500(request, url=None):
     raise Exception('Forced 500.')
+
+def handler404(request):
+    if request.settings.DEBUG:
+        return debug.technical_404_response(request, sys.exc_info()[1])
+    template = loader.get_template(request.settings.TEMPLATE_404)
+    return HttpResponseNotFound(template.render(RequestContext(request)))
+
+def handler500(request):
+    if request.settings.DEBUG:
+        return debug.technical_500_response(request, *sys.exc_info())
+    template = loader.get_template(request.settings.TEMPLATE_500)
+    return HttpResponseServerError(template.render(RequestContext(request)))
+

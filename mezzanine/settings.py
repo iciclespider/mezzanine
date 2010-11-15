@@ -4,8 +4,8 @@ import os
 
 base_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = True
 
 ADMINS = (
     ('Patrick J. McNerthney', 'pat@mcnerthney.com'),

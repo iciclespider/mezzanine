@@ -84,7 +84,7 @@ class Page(Orderable, Displayable):
 
     @property
     def instance(self):
-        if self.content_model:
+        if self.content_model and self.content_model != self._meta.object_name.lower():
             instance = getattr(self, self.content_model, None)
             if instance:
                 return instance

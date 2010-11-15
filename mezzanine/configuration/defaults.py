@@ -6,6 +6,13 @@ import os.path
 
 
 register_setting(
+    name="DEBUG",
+    description=_("If ``True``, 404s and 500s debug views are displayed."),
+    editable=True,
+    default=True,
+)
+
+register_setting(
     name="CONTENTPAGE_TEMPLATE",
     description=_("Template for all content page views."),
     editable=True,
@@ -55,14 +62,14 @@ register_setting(
 )
 
 register_setting(
-    name="404_TEMPLATE",
+    name="TEMPLATE_404",
     description=_("Template for 404s."),
     editable=True,
     default="base/404.html",
 )
 
 register_setting(
-    name="500_TEMPLATE",
+    name="TEMPLATE_500",
     description=_("Template for 500s."),
     editable=True,
     default="base/500.html",

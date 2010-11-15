@@ -4,7 +4,8 @@ from django.conf.urls.defaults import patterns, include
 from django.contrib import admin
 from mezzanine.configuration import global_settings
 
-admin.autodiscover()
+handler404 = 'mezzanine.core.views.handler404'
+handler500 = 'mezzanine.core.views.handler500'
 
 urlpatterns = patterns("",
     ("^admin/filebrowser/", include("filebrowser.urls")),
@@ -13,3 +14,5 @@ urlpatterns = patterns("",
     ("^", include("mezzanine.core.urls")),
     ("^", include("mezzanine.pages.urls")),
 )
+
+admin.autodiscover()
