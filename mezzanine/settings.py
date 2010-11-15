@@ -61,6 +61,14 @@ MEDIA_ROOT = os.path.join(base_directory, MEDIA_URL.strip("/"))
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = "/admin/media/"
 
+# Default e-mail address to use for various automated correspondence from
+# the site managers.
+DEFAULT_FROM_EMAIL = 'mezzanine@mcnerthney.com'
+
+# Subject-line prefix for email messages send with django.core.mail.mail_admins
+# or ...mail_managers.  Make sure to include the trailing space.
+EMAIL_SUBJECT_PREFIX = '[Mezzanine] '
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = "b6055148-2c50-4ee5-adda-fc38502b707c0862d0d0-95e2-42d4-b477-b9dc5d027e4d42452e0f-b3e7-4d10-b0ec-4872b8e6c888"
 
