@@ -28,7 +28,7 @@ class Page(Orderable, Displayable):
         abstract = False
         verbose_name = _("Page")
         verbose_name_plural = _("Pages")
-        ordering = ("titles",)
+        ordering = ("parent__id", "_order")
         order_with_respect_to = "parent"
 
     def __unicode__(self):
@@ -53,7 +53,6 @@ class Page(Orderable, Displayable):
 
     def __hash__(self):
         return hash(self.instance._get_pk_val())
-
 
     @models.permalink
     def get_absolute_url(self):
@@ -107,6 +106,7 @@ class Page(Orderable, Displayable):
 
     def get_default_template(self):
         return self.settings.TEMPLATE_PAGE
+
 
 class ContentPage(Page, Content):
     """
