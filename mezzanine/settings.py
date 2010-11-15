@@ -65,6 +65,9 @@ ADMIN_MEDIA_PREFIX = "/admin/media/"
 # the site managers.
 DEFAULT_FROM_EMAIL = 'mezzanine@mcnerthney.com'
 
+# E-mail address that error messages come from.
+SERVER_EMAIL = 'mezzanine@mcnerthney.com'
+
 # Subject-line prefix for email messages send with django.core.mail.mail_admins
 # or ...mail_managers.  Make sure to include the trailing space.
 EMAIL_SUBJECT_PREFIX = '[Mezzanine] '
