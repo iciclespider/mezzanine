@@ -37,6 +37,24 @@ class Page(Orderable, Displayable):
     def __init__(self, *args, **kwargs):
         super(Page, self).__init__(*args, **kwargs)
 
+    @property
+    def instance(self):
+        if self.content_model and self.content_model != self._meta.object_name.lower():
+            instance = getattr(self, self.content_model, None)
+            if instance:
+                return instance
+        return self
+
+    def __eq__(self, other):
+        return isinstance(other, Page) and self.instance._get_pk_val() == other.instance._get_pk_val()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.instance._get_pk_val())
+
+
     @models.permalink
     def get_absolute_url(self):
         return ("page", (), {"slug": self.get_slug()})
@@ -81,14 +99,6 @@ class Page(Orderable, Displayable):
         from mezzanine.pages.views import page
         resolved_view = resolve(self.get_absolute_url())[0]
         return resolved_view != page
-
-    @property
-    def instance(self):
-        if self.content_model and self.content_model != self._meta.object_name.lower():
-            instance = getattr(self, self.content_model, None)
-            if instance:
-                return instance
-        return self
 
     def get_template(self):
         if self.template:
