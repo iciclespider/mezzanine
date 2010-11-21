@@ -363,7 +363,9 @@ def unique(parser, token):
         pass
     try:
         if UNIQUES in parser.__loaded_blocks:
-            raise TemplateSyntaxError("'%s' tag cannot be used with 'block' name 'uniques'." % bits[0])
+            # This occurs when declared in root template and works
+            # as long as it occurs before the uniques usage.
+            return node
         parser.__loaded_blocks.append(UNIQUES)
     except AttributeError:
         parser.__loaded_blocks = [UNIQUES]
