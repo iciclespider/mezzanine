@@ -66,6 +66,8 @@ class Page(Orderable, Displayable):
         Create the titles field using the titles up the parent chain and set
         the initial value for ordering.
         """
+        if self.parent:
+            self.settings = self.parent.settings
         if self.id is None:
             self.content_model = self._meta.object_name.lower()
         titles = [self.title]
