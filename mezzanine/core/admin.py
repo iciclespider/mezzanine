@@ -33,10 +33,20 @@ class DisplayableAdmin(admin.ModelAdmin):
     date_hierarchy = "publish_date"
     radio_fields = {"status": admin.HORIZONTAL}
     fieldsets = (
-        (None, {"fields": ["settings", "title", "status",
-            ("publish_date", "expiry_date"), ]}),
-        (_("Meta data"), {"fields": ["slug", "description", "keywords"],
-            "classes": ("collapse", "closed")},),
+        (None, {"fields": ["settings",
+                           "status",
+                           "title",
+                          ]
+               },
+        ),
+        (_("Meta data"), {"fields": [("publish_date", "expiry_date"),
+                                     "slug",
+                                     "description",
+                                     "keywords",
+                                    ],
+                          "classes": ("collapse", "closed")
+                         },
+        ),
     )
 
     def get_form(self, request, obj=None, **kwargs):
