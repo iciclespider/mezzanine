@@ -16,16 +16,26 @@ page_fieldsets[1][1]["fields"].insert(3, ("in_navigation", "in_footer", "login_r
 
 class PageAdminForm(DisplayableAdminForm):
     def __init__(self, *args, **kwargs):
-        initial = kwargs.get('initial')
-        if initial is not None and not initial.get('settings'):
-            parent = initial.get('parent')
+        if len(args) > 0:
+            POST = args[0].copy()
+            parent = POST.get('parent')
             if parent:
                 try:
-                    initial['settings'] = Page.objects.get(id=parent).settings
+                    POST['settings'] = Page.objects.get(id=parent).settings.id
+                    args = [POST]
+                    args.extend(args[1:])
                 except Page.DoesNotExist:
                     pass
+        else:
+            initial = kwargs.get('initial')
+            if initial:
+                parent = initial.get('parent')
+                if parent:
+                    try:
+                        initial['settings'] = Page.objects.get(id=parent).settings.id
+                    except Page.DoesNotExist:
+                        pass
         super(DisplayableAdminForm, self).__init__(*args, **kwargs)
-
 
 class PageAdmin(DisplayableAdmin):
     """
