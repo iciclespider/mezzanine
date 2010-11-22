@@ -74,7 +74,7 @@ class Displayable(Slugged):
     """
 
     status = models.IntegerField(_("Status"),
-        choices=CONTENT_STATUS_CHOICES, default=CONTENT_STATUS_DRAFT)
+        choices=CONTENT_STATUS_CHOICES, default=CONTENT_STATUS_PUBLISHED)
     publish_date = models.DateTimeField(_("Published from"),
         help_text=_("With published selected, won't be shown until this time"),
         blank=True, null=True)
