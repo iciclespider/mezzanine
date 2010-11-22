@@ -3,7 +3,7 @@ from copy import deepcopy
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from mezzanine.core.admin import DisplayableAdmin
+from mezzanine.core.admin import DisplayableAdmin, DisplayableAdminForm
 from mezzanine.pages.models import Page, ContentPage, Template
 from mezzanine.utils import admin_url
 
@@ -14,6 +14,19 @@ page_fieldsets[1][1]["fields"].insert(0, "template")
 page_fieldsets[1][1]["fields"].insert(3, ("in_navigation", "in_footer", "login_required"))
 
 
+class PageAdminForm(DisplayableAdminForm):
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial')
+        if initial is not None and not initial.get('settings'):
+            parent = initial.get('parent')
+            if parent:
+                try:
+                    initial['settings'] = Page.objects.get(id=parent).settings
+                except Page.DoesNotExist:
+                    pass
+        super(DisplayableAdminForm, self).__init__(*args, **kwargs)
+
+
 class PageAdmin(DisplayableAdmin):
     """
     Admin class for the ``Page`` model and all subclasses of ``Page``. Handles
@@ -22,6 +35,7 @@ class PageAdmin(DisplayableAdmin):
     """
 
     fieldsets = page_fieldsets
+    form = PageAdminForm
 
     def in_menu(self):
         """

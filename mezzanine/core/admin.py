@@ -17,6 +17,20 @@ displayable_js = content_media_urls(*displayable_js)
 #displayable_js.extend(content_media_urls("js/tinymce_setup.js"))
 
 
+class DisplayableAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial')
+        if initial is not None and not initial.get('settings'):
+            if request.settings.exists:
+                initial['settings'] = request.settings
+        super(DisplayableAdminForm, self).__init__(*args, **kwargs)
+
+    def _get_validation_exclusions(self):
+        exclusions = super(DisplayableAdminForm, self)._get_validation_exclusions()
+        # prevent the check for settings, slug unique together by the form.
+        exclusions.append('slug')
+        return exclusions
+
 class DisplayableAdmin(admin.ModelAdmin):
     """
     Admin class for subclasses of the abstract ``Displayable`` model.
@@ -48,21 +62,7 @@ class DisplayableAdmin(admin.ModelAdmin):
                          },
         ),
     )
-
-    def get_form(self, request, obj=None, **kwargs):
-        class DisplayableAdminForm(forms.ModelForm):
-            def __init__(self, *args, **kwargs):
-                initial = kwargs.get('initial')
-                if initial is not None:
-                    initial['settings'] = request.settings
-                super(DisplayableAdminForm, self).__init__(*args, **kwargs)
-            def _get_validation_exclusions(self):
-                exclusions = super(DisplayableAdminForm, self)._get_validation_exclusions()
-                # prevent the check for settings, slug unique together by the form.
-                exclusions.append('slug')
-                return exclusions
-        kwargs['form'] = DisplayableAdminForm
-        return super(DisplayableAdmin, self).get_form(request, obj, **kwargs)
+    form = DisplayableAdminForm
 
     def save_form(self, request, form, change):
         """
