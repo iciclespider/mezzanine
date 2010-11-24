@@ -33,11 +33,10 @@ When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
 enough (filebrowser does work quite right though).  I also like to test
 using the non loop network interface, which creates the effect of a
-differently domain being accessed.  
+differently domain being accessed.  There is also a fixture called "localhost", which provides a very
+simple Hello World web site.
 
-There is also a fixture called "localhost", which provides a very
-simple Hello World web site.  So the typical sequence of management 
-commands to run a demo test server is:
+So the typical sequence of management commands to run a demo test server is:
 
   $ mezzanine/manage.py syncdb
 
