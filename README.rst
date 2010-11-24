@@ -19,26 +19,33 @@ found in the original Mezzanine project:
 Test Server
 ===========
 
-This project is requires Django version 1.2 and Grappelli version 2.2.
+This project is requires Django version 1.2, Grappelli version 2.2,
+and the latest version of filebrowser.
 
 Steps to run a sample test server:
 
   * Ensure Django version 1.2 is available when "django" is imported.
   * Ensure Grappelli version 2.2 is available when "grappelli" is imported.
+  * Ensure the "filebrowser" can be imported.
   * Run the syncdb Django management command.
   * Run the runserver Django management command.
 
 When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
-enough, at least for testing.  I also like to test using the non loop
-network interface, which creates the effect of a differently domain
-being accessed.  So the runserver command I use is something like this:  
+enough (filebrowser does work quite right though).  I also like to test
+using the non loop network interface, which creates the effect of a
+differently domain being accessed.  
 
-  $ mezzanine/manage.py runserver --adminmedia=~/src/grappelli/grappelli/media 0.0.0.0:8000 
+There is also a fixture called "localhost", which provides a very
+simple Hello World web site.  So the typical sequence of management 
+commands to run a demo test server is:
 
-This provides an empty installation with no web site.  Opening a url,
-such as "http://127.0.0.1:8000/" will echo back the domain used.  The /admin/
-page should allow for logging in so sites can be created.
+  $ mezzanine/manage.py syncdb
+  $ mezzanine/manage.py loaddata localhost
+  $ mezzanine/manage.py runserver --adminmedia=~/src/grappelli/grappelli/media 0.0.0.0:8000
+
+Opening a url that does not have a domain configured for it,
+such as "http://127.0.0.1:8000/", will echo back the domain used.
 
 ===================
 Creating a Web Site
@@ -78,3 +85,6 @@ loading the "localhost" fixture via the following command:
 
 The templates loaded in the localhost fixture demonstrate one way to
 utilize the above template hierarchy.
+
+Now, the url "http://localhost:8000/ should have a web site running
+against it.
