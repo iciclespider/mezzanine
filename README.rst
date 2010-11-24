@@ -8,12 +8,12 @@ found here:  https://github.com/stephenmcd/mezzanine
 This implementations has the following items not currently
 found in the original Mezzanine project:
 
-  * Multiple domains.
+  * Support for multiple web site behind multiple domains.
   * Content Pages as the home page.
   * Content Page's contents are rendered as Django templates.
   * "Template" model for supplying Django templates.
   * Media file handling within templates.
-  * Themes driving by the user entered settings.
+  * Themes driven by the user entered settings.
 
 ===========
 Test Server
@@ -33,8 +33,8 @@ When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
 enough (filebrowser does work quite right though).  I also like to test
 using the non loop network interface, which creates the effect of a
-different domain being accessed.  There is also a fixture called "localhost", which provides a very
-simple Hello World web site.
+different domain being accessed.  There is also a fixture called "localhost",
+which provides a very simple Hello World example web site.
 
 So the typical sequence of management commands to run a demo test server is:
 
@@ -42,7 +42,7 @@ So the typical sequence of management commands to run a demo test server is:
 
   $ mezzanine/manage.py loaddata localhost
 
-  $ mezzanine/manage.py runserver --adminmedia=~/src/grappelli/grappelli/media 0.0.0.0:8000
+  $ mezzanine/manage.py runserver --adminmedia=grappelli/media 0.0.0.0:8000
 
 ===================
 Creating a Web Site
