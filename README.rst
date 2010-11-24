@@ -32,11 +32,11 @@ Steps to run a sample test server:
 When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
 enough (filebrowser does work quite right though).  I also like to test
-using the non loop network interface, which creates the effect of a
-different domain being accessed.  There is also a fixture called "localhost",
+using all network interfaces, which creates the effect of access from
+several different domains.  There is also a fixture called "localhost",
 which provides a very simple Hello World example web site.
 
-So the typical sequence of management commands to run a demo test server is:
+The typical sequence of management commands to run a demo test server is:
 
   $ mezzanine/manage.py syncdb
 
@@ -50,11 +50,11 @@ Creating a Web Site
 
 A virtual domain or host is created by adding a Site under Site->Sites.
 Each Site is associated with a set of Settings, which determines what
-is displayed for that domain.  A set of Setting can have more than one
+is displayed for that domain.  A set of Settings can have more than one
 Site referring to it, allowing for different domain names displaying
 the same content.
 
-So to create a simple, initial site, add a new Settings record under
+To create a simple, initial site, add a new Settings record under
 Configuration->Settings and give it a name.  The current items available
 for configuration drive a template and css hierarchy which allows
 for the implementation of a wide variety of different types of themes.
@@ -71,8 +71,10 @@ CSS settings with these above template levels:
 
   * STYLE_BODY - Styles applied to the html in the TEMPLATE_STYLE template.
   * STYLE_PAGE - Styles applied to the html in the TEMPLATE_PAGE template.
-  * STYLE_CONTENTPAGE - Style applied to the html in the TEMPLATE_CONTENTPAGE
-  template.
+  * STYLE_CONTENTPAGE - Style applied to the html in the TEMPLATE_CONTENTPAGE template.
+
+Any of the above settings can be changed in the Settings to enable
+a different "theme" for that part of the rendered html page.
 
 An initial shell of a simple web site associated with the "localhost" domain
 showing an example of using most of the above Settings can be loaded by
