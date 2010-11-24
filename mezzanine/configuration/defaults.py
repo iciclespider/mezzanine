@@ -191,7 +191,7 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("pages.Page", "pages.Template", "blog.BlogPost", "blog.Comment",
+        (_("Content"), ("core.Template", "pages.Page", "blog.BlogPost", "blog.Comment",
             (_("Media Library"), "fb_browse"))),
         (_("Site"), ("sites.Site", "redirects.Redirect", "settings.Setting")),
         (_("Users"), ("auth.User", "auth.Group",)),

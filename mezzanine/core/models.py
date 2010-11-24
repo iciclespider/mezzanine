@@ -258,3 +258,19 @@ class Keyword(Slugged):
         abstract = False
         verbose_name = _("Keyword")
         verbose_name_plural = _("Keywords")
+
+
+class Template(Content):
+    """
+    Implements data base backed django templates.
+    """
+
+    name = models.CharField(_("Name"), max_length=100, unique=True, db_index=True)
+
+    class Meta(Content.Meta):
+        abstract = False
+        verbose_name = _("Template")
+        verbose_name_plural = _("Templates")
+
+    def __unicode__(self):
+        return self.name

@@ -4,7 +4,7 @@ import os
 
 base_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -13,16 +13,24 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'postgresql_psycopg2',
-        'NAME': 'mcnerthney',
-        'USER': 'mcnerthney',
-        'PASSWORD': 'mcnerthney',
-        'HOST': 'localhost',
-        'PORT': '',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            "ENGINE": "sqlite3",
+            "NAME": os.path.join(base_directory, "mezzanine.db"),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'postgresql_psycopg2',
+            'NAME': 'mcnerthney',
+            'USER': 'mcnerthney',
+            'PASSWORD': 'mcnerthney',
+            'HOST': 'localhost',
+            'PORT': '',
+        }
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -88,7 +96,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    "mezzanine.pages.template_loader.Loader",
+    "mezzanine.core.template_loader.Loader",
     "django.template.loaders.app_directories.Loader",
 )
 
@@ -96,12 +104,12 @@ MIDDLEWARE_CLASSES = (
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
+    #"django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     #"django.middleware.cache.UpdateCacheMiddleware",
     #"django.middleware.cache.FetchFromCacheMiddleware",
     "mezzanine.configuration.middleware.SettingsMiddleware",
-    "mezzanine.core.middleware.MobileTemplate",
-    "mezzanine.core.middleware.AdminLoginInterfaceSelector",
+    #"mezzanine.core.middleware.MobileTemplate",
+    #"mezzanine.core.middleware.AdminLoginInterfaceSelector",
 )
 
 ROOT_URLCONF = 'mezzanine.urls'

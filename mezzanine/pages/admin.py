@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from mezzanine.core.admin import DisplayableAdmin, DisplayableAdminForm
-from mezzanine.pages.models import Page, ContentPage, Template
+from mezzanine.pages.models import Page, ContentPage
 from mezzanine.utils import admin_url
 
 
@@ -32,7 +32,7 @@ class PageAdminForm(DisplayableAdminForm):
                 parent = initial.get('parent')
                 if parent:
                     try:
-                        initial['settings'] = Page.objects.get(id=parent).settings.id
+                        initial['settings'] = Page.objects.get(id=parent).settings
                     except Page.DoesNotExist:
                         pass
         super(DisplayableAdminForm, self).__init__(*args, **kwargs)
@@ -135,15 +135,5 @@ class ContentPageAdmin(PageAdmin):
     fieldsets = content_page_fieldsets
 
 
-class TemplateAdmin(admin.ModelAdmin):
-    """
-    Admin class for Template model.
-    """
-    list_display = ('name',)
-    ordering = ('name',)
-    fields = ('name', 'content')
-
-
 admin.site.register(Page, PageAdmin)
 admin.site.register(ContentPage, ContentPageAdmin)
-admin.site.register(Template, TemplateAdmin)

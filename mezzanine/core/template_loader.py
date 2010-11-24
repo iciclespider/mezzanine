@@ -4,7 +4,7 @@ Wrapper for loading templates from the Template model.
 
 from django.template import TemplateDoesNotExist
 from django.template.loader import BaseLoader
-from mezzanine.pages.models import Template
+from mezzanine.core.models import Template
 
 class Loader(BaseLoader):
     is_usable = True

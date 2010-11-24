@@ -122,19 +122,3 @@ class ContentPage(Page, Content):
 
     def get_default_template(self):
         return self.settings.TEMPLATE_CONTENTPAGE
-
-
-class Template(Content):
-    """
-    Implements data base backed django templates.
-    """
-
-    name = models.CharField(_("Name"), max_length=100, unique=True, db_index=True)
-
-    class Meta(Content.Meta):
-        abstract = False
-        verbose_name = _("Template")
-        verbose_name_plural = _("Templates")
-
-    def __unicode__(self):
-        return self.name

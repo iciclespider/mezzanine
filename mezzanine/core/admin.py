@@ -5,7 +5,7 @@ from django.db.models import AutoField
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.forms import DynamicInlineAdminForm
-from mezzanine.core.models import Orderable
+from mezzanine.core.models import Orderable, Template
 from mezzanine.utils import content_media_urls, admin_url
 
 
@@ -19,9 +19,15 @@ displayable_js = content_media_urls(*displayable_js)
 
 class DisplayableAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        initial = kwargs.get('initial')
-        if initial is not None and not initial.get('settings'):
-            if request.settings.exists:
+        if len(args) > 0:
+            if not args[0].get('initial') and request.settings.exists:
+                POST = args[0].copy()
+                POST['settings'] = request.settings.id
+                args = [POST]
+                args.extend(args[1:])
+        else:
+            initial = kwargs.get('initial')
+            if initial is not None and not initial.get('settings') and request.settings.exists:
                 initial['settings'] = request.settings
         super(DisplayableAdminForm, self).__init__(*args, **kwargs)
 
@@ -177,3 +183,14 @@ class SingletonAdmin(admin.ModelAdmin):
             extra_context["singleton"] = True
         return super(SingletonAdmin, self).change_view(request, object_id,
                                                         extra_context)
+
+
+class TemplateAdmin(admin.ModelAdmin):
+    """
+    Admin class for Template model.
+    """
+    list_display = ('name',)
+    ordering = ('name',)
+    fields = ('name', 'content')
+
+admin.site.register(Template, TemplateAdmin)
