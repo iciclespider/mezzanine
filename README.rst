@@ -28,7 +28,6 @@ Steps to run a sample test server:
   * Ensure Grappelli version 2.2 is available when "grappelli" is imported.
   * Ensure the "filebrowser" can be imported.
   * Run the syncdb Django management command.
-  * Run the runserver Django management command.
 
 When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
@@ -41,11 +40,10 @@ simple Hello World web site.  So the typical sequence of management
 commands to run a demo test server is:
 
   $ mezzanine/manage.py syncdb
-  $ mezzanine/manage.py loaddata localhost
-  $ mezzanine/manage.py runserver --adminmedia=~/src/grappelli/grappelli/media 0.0.0.0:8000
 
-Opening a url that does not have a domain configured for it,
-such as "http://127.0.0.1:8000/", will echo back the domain used.
+  $ mezzanine/manage.py loaddata localhost
+
+  $ mezzanine/manage.py runserver --adminmedia=~/src/grappelli/grappelli/media 0.0.0.0:8000
 
 ===================
 Creating a Web Site
@@ -86,5 +84,8 @@ loading the "localhost" fixture via the following command:
 The templates loaded in the localhost fixture demonstrate one way to
 utilize the above template hierarchy.
 
-Now, the url "http://localhost:8000/ should have a web site running
+Now, the url "http://localhost:8000/" should have a web site running
 against it.
+
+Opening a url that does not have a domain configured for it,
+such as "http://127.0.0.1:8000/", will echo back the domain used.
