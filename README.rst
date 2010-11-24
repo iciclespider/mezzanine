@@ -5,7 +5,7 @@ Overview
 This is a fork of Stephen McDonald's Mezzanine project
 found here:  https://github.com/stephenmcd/mezzanine
 
-This implementations the following items not currently
+This implementations has the following items not currently
 found in the original Mezzanine project:
 
   * Multiple domains.
@@ -23,9 +23,8 @@ This project is requires Django version 1.2 and Grappelli version 2.2.
 
 Steps to run a sample test server:
 
-  * Ensure Django version 1.2 is available by importing "django".
-  * Ensure Grappelli version 2.2 is available by importing "grappelli".
-  * Change the settings.py database configuration.
+  * Ensure Django version 1.2 is available when "django" is imported.
+  * Ensure Grappelli version 2.2 is available when "grappelli" is imported.
   * Run the syncdb Django management command.
   * Run the runserver Django management command.
 
@@ -58,14 +57,10 @@ for the implementation of a wide variety of different types of themes.
 
 The current intent in the template hierarchy is the following:
 
-  * TEMPLATE_HTML - The root template.  This establishes a "blank slate"
-  html page and deals with structuring the non-body html elements.
-  * TEMPLATE_BODY - The body template.  Defines the overall structure of
-  a given web site.  Extends TEMPLATE_HTML.
-  * TEMPLATE_PAGE - Structures the html at the base Page level.  Extends
-  TEMPLATE_BODY.
-  * TEMPLATE_CONTENTPAGE - Structures the html for ContentPages.  Extends
-  TEMPLATE_CONTENTPAGE.
+  * TEMPLATE_HTML - The root template.  This establishes a "blank slate" html page and deals with structuring the non-body html elements.
+  * TEMPLATE_BODY - The body template.  Defines the overall structure of a given web site.  Extends TEMPLATE_HTML.
+  * TEMPLATE_PAGE - Structures the html at the base Page level.  Extends TEMPLATE_BODY.
+  * TEMPLATE_CONTENTPAGE - Structures the html for ContentPages.  Extends TEMPLATE_CONTENTPAGE.
 
 Then, there are following Settings values to associate a collection of
 CSS settings with these above template levels:
