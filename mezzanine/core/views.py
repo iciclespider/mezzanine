@@ -64,14 +64,14 @@ def force500(request, url=None):
     raise Exception('Forced 500.')
 
 def handler404(request):
-    info = sys.exc_info()[1]
+    info = sys.exc_info()
     if not request.settings.DEBUG:
         try:
             template = loader.get_template(request.settings.TEMPLATE_404)
             return HttpResponseNotFound(template.render(RequestContext(request)))
         except:
             pass
-    return debug.technical_404_response(request, info)
+    return debug.technical_404_response(request, info[1])
 
 def handler500(request):
     info = sys.exc_info()
@@ -81,5 +81,5 @@ def handler500(request):
             return HttpResponseServerError(template.render(RequestContext(request)))
         except:
             pass
-    return debug.technical_500_response(request, info)
+    return debug.technical_500_response(request, *info)
 
