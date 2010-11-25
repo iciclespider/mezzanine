@@ -10,9 +10,9 @@ handler404 = 'mezzanine.core.views.handler_404'
 handler500 = 'mezzanine.core.views.handler_500'
 
 urlpatterns = patterns("",
+    ("^", include("mezzanine.core.urls")),
+    ("^", include("mezzanine.pages.urls")),
     ("^admin/filebrowser/", include("filebrowser.urls")),
     ("^admin/", include(admin.site.urls)),
     ("^grappelli/", include("grappelli.urls")),
-    ("^", include("mezzanine.core.urls")),
-    ("^", include("mezzanine.pages.urls")),
 )
