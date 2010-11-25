@@ -104,19 +104,27 @@
             // it has ended.
             var updateOrdering = function(event, ui) {
                 var ordering = $(this).sortable('toArray').toString();
-                $.post('{% url admin_page_ordering %}', {ordering: ordering},
-                function(data){
-                    if (data !== "ok") {
-                        document.write(data);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url admin_page_ordering %}',
+                    data: {ordering: ordering},
+                    error: function(xhr, status) {
+                        if (xhr.readyState != 4 || !xhr.responseText) {
+                            return;
+                        }
+                        document.write(xhr.responseText);
                         document.close();
                     }
                 });
             };
-    
             
             // Make the pages sortable via drag and drop.
-            $('#tree ul').sortable({handle: '.ordering', axis: 'y', opacity: '.7', 
-                stop: updateOrdering});
+            $('#tree ul').sortable({
+                handle: '.ordering',
+                axis: 'y',
+                opacity: '.7',
+                stop: updateOrdering
+            });
             $('#tree ul').disableSelection();
         });
     })(django.jQuery);
