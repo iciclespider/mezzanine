@@ -238,7 +238,7 @@ a:
     padding->
       left: 50px
       right: 50px
-    &:hover:
+    &amp;:hover:
       color: white
 
   .not-current:
