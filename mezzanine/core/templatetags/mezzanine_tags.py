@@ -13,6 +13,7 @@ from django.utils.safestring import mark_safe
 from django.utils.simplejson import loads
 from django.utils.text import capfirst
 from mezzanine import template
+from mezzanine.clevercss import convert as ccss_convert
 from mezzanine.core.forms import get_edit_form
 from mezzanine.utils import admin_url, decode_html_entities, is_editable
 from urllib import urlopen, urlencode
@@ -397,3 +398,7 @@ def uniques(context, nodelist, token, parser):
     if not values:
         return u''
     return mark_safe('\n'.join([format % value for value in values]))
+
+@register.to_end_tag
+def ccss(context, nodelist):
+    return mark_safe(ccss_convert(nodelist.render(context)))
