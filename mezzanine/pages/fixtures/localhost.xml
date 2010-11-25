@@ -13,69 +13,65 @@
   </object>
   <object pk="1" model="core.template">
     <field type="TextField" name="content">{% spaceless %}
-
   {% load mezzanine_tags %}
 
   {% block uniques %}
   {% endblock %}
 
-  &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
-  &lt;html&gt;
-    &lt;head&gt;
-      &lt;title&gt;{% block meta_title %}{% endblock %}&lt;/title&gt;
+{% endspaceless %}&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;{% block meta_title %}{% endblock %}&lt;/title&gt;
       
-      &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; 
-      &lt;meta name="keywords" content="{% metablock %}{% block meta_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
-      &lt;meta name="description" content="{% metablock %}{% block meta_description %}{% endblock %}{% endmetablock %}" /&gt; 
+    &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; 
+    &lt;meta name="keywords" content="{% metablock %}{% block meta_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
+    &lt;meta name="description" content="{% metablock %}{% block meta_description %}{% endblock %}{% endmetablock %}" /&gt; 
   
-      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/reset.css" type="text/css" /&gt;
-      {% uniques 'css' %}
-        &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/%s.css" type="text/css" /&gt;
-      {% enduniques %}
-      {% uniques 'theme' %}
-        &lt;link rel="stylesheet" href="{{ MEDIA_URL }}themes/{{ request.settings.JQUERY_UI_THEME }}/%s.css" type="text/css" /&gt;
-      {% enduniques %}
-      &lt;style&gt;
-        {% block style %}{% endblock %}
-      &lt;/style&gt;
-      &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}.js"&gt;&lt;/script&gt;
-      {% uniques 'js' %}
-        &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/%s.js"&gt;&lt;/script&gt;
-      {% enduniques %}
+    &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/reset.css" type="text/css" /&gt;
+    {% uniques 'css' %}
+      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/%s.css" type="text/css" /&gt;
+    {% enduniques %}
+    {% uniques 'theme' %}
+      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}themes/{{ request.settings.JQUERY_UI_THEME }}/%s.css" type="text/css" /&gt;
+    {% enduniques %}
+    &lt;style&gt;
+{% ccss %}{% block style %}{% endblock %}{% endccss %}
+    &lt;/style&gt;
+    &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}.js"&gt;&lt;/script&gt;
+    {% uniques 'js' %}
+      &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/%s.js"&gt;&lt;/script&gt;
+    {% enduniques %}
   
-    &lt;/head&gt;
-    &lt;body&gt;
-      &lt;div id="html-body" class="{% block body-class %}{% endblock %}"&gt;
-        {% block body %}{% endblock %}
-      &lt;/div&gt;
-      &lt;script type="text/javascript"&gt;
-        {# keep the same horizontal position regardless of the vertical scrollbar existence #}
-        $(window).resize(function () {
-          {# http://www.howtocreate.co.uk/tutorials/javascript/browserwindow #}
-          var total = 0;
-          if (typeof(window.innerWidth) == 'number') {
-            total = window.innerWidth;
-          } else if (document.documentElement &amp;&amp; document.documentElement.clientWidth) {
-            total = document.documentElement.clientWidth;
-          } else if (document.body &amp;&amp; document.body.clientWidth) {
-            total = document.body.clientWidth;
-          }
-          var body = $("#html-body");
-          var scrollbarWidth = 15;
-          var left = (total - body.width() - scrollbarWidth) / 2;
-          if (left &lt; 0) {
-             left = 0;
-          }
-          body.css('margin-left', left);
-        });
-        $(window).resize();
-        {% block ready %}{% endblock %}
-      &lt;/script&gt;
-    &lt;/body&gt;
-  &lt;/html&gt;
-
-{% endspaceless %}
-</field>
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="html-body" class="{% block body-class %}{% endblock %}"&gt;
+      {% block body %}{% endblock %}
+    &lt;/div&gt;
+    &lt;script type="text/javascript"&gt;
+      {# keep the same horizontal position regardless of the vertical scrollbar existence #}
+      $(window).resize(function () {
+        {# http://www.howtocreate.co.uk/tutorials/javascript/browserwindow #}
+        var total = 0;
+        if (typeof(window.innerWidth) == 'number') {
+          total = window.innerWidth;
+        } else if (document.documentElement &amp;&amp; document.documentElement.clientWidth) {
+          total = document.documentElement.clientWidth;
+        } else if (document.body &amp;&amp; document.body.clientWidth) {
+          total = document.body.clientWidth;
+        }
+        var body = $("#html-body");
+        var scrollbarWidth = 15;
+        var left = (total - body.width() - scrollbarWidth) / 2;
+        if (left &lt; 0) {
+           left = 0;
+        }
+        body.css('margin-left', left);
+      });
+      $(window).resize();
+      {% block ready %}{% endblock %}
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</field>
     <field type="CharField" name="name">base/html.html</field>
   </object>
   <object pk="2" model="core.template">
@@ -86,9 +82,10 @@
 {% css %}960_24_col{% endcss %}
 
 {% if request.settings.STYLE_BODY %}
-  {% block style %}
-    {% include request.settings.STYLE_BODY %}
-  {% endblock %}
+{% block style %}
+{{ block.super }}
+{% include request.settings.STYLE_BODY %}
+{% endblock %}
 {% endif %}
 
 {% block body-class %}container_24 clearfix{% endblock %}
@@ -111,8 +108,7 @@
   &lt;div id="body-content" class="prefix_1 grid_22 suffix_1"&gt;
     {% block main %}{% endblock %}
   &lt;/div&gt;
-{% endblock %}
-</field>
+{% endblock %}</field>
     <field type="CharField" name="name">base/body.html</field>
   </object>
   <object pk="3" model="core.template">
@@ -134,16 +130,15 @@
 {% endblock %}
 
 {% if request.settings.STYLE_PAGE %}
-  {% block style %}
-    {{ block.super }}
-    {% include request.settings.STYLE_PAGE %}
-  {% endblock %}
+{% block style %}
+{{ block.super }}
+{% include request.settings.STYLE_PAGE %}
+{% endblock %}
 {% endif %}
 
 {% block title %}
   {{ page.title }}
-{% endblock %}
-</field>
+{% endblock %}</field>
     <field type="CharField" name="name">base/page.html</field>
   </object>
   <object pk="4" model="core.template">
@@ -152,16 +147,15 @@
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-  {% block style %}
-    {{ block.super }}
-    {% include request.settings.STYLE_CONTENTPAGE %}
-  {% endblock %}
+{% block style %}
+{{ block.super }}
+{% include request.settings.STYLE_CONTENTPAGE %}
+{% endblock %}
 {% endif %}
 
 {% block main %}
   {% render page.content %}
-{% endblock %}
-</field>
+{% endblock %}</field>
     <field type="CharField" name="name">base/contentpage.html</field>
   </object>
   <object pk="6" model="core.template">
@@ -181,8 +175,7 @@
   &lt;p&gt;
     The requested page does not exist.
   &lt;/p&gt;
-{% endblock %}
-</field>
+{% endblock %}</field>
     <field type="CharField" name="name">base/404.html</field>
   </object>
   <object pk="7" model="core.template">
@@ -202,15 +195,11 @@
   &lt;p&gt;
     An internal server error has occurred.  The web site administrators have been notified and will investigate.
   &lt;/p&gt;
-{% endblock %}
-</field>
+{% endblock %}</field>
     <field type="CharField" name="name">base/500.html</field>
   </object>
   <object pk="5" model="core.template">
-    <field type="TextField" name="content">{% load mezzanine_tags %}
-{% ccss %}
-
-gray = #a1a1a1
+    <field type="TextField" name="content">gray = #a1a1a1
 
 body:
     background: black
@@ -246,10 +235,9 @@ a:
 
 #body-content:
     padding-top: 30px
-    p:
-        margin: 20px 0
 
-{% endccss %}</field>
+    p:
+        margin: 20px 0</field>
     <field type="CharField" name="name">base/body.css</field>
   </object>
   <object pk="1" model="pages.page">

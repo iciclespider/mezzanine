@@ -14,6 +14,7 @@ found in the original Mezzanine project:
   * "Template" model for supplying Django templates.
   * Media file handling within templates.
   * Themes driven by the user entered settings.
+  * Integration with CleverCSS
 
 ===========
 Test Server
