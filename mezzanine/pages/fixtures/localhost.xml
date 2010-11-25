@@ -207,51 +207,49 @@
     <field type="CharField" name="name">base/500.html</field>
   </object>
   <object pk="5" model="core.template">
-    <field type="TextField" name="content">body {
-  background: black;
-  color: white;
-}
+    <field type="TextField" name="content">{% load mezzanine_tags %}
+{% ccss %}
 
-a {
-  text-decoration: none;
-  color: white;
-}
+gray = #a1a1a1
 
-#body-masthead {
-  font-size:300%;
-  text-align:center;
-  padding-top:20px;
-  padding-bottom:20px;
-}
+body:
+  background: black
+  color: white
 
-#body-menu {
-  border-top:1px solid #a1a1a1;
-  border-bottom:1px solid #a1a1a1;
-  padding:10px 0px;
-  text-align:center;
-}
+a:
+  text-decoration: none
+  color: white
 
-#body-menu a {
-  padding-left: 50px;
-  padding-right: 50px;
-}
+#body-masthead:
+  font-size: 300%
+  text-align: center
+  padding->
+    top: 20px
+    bottom: 20px
 
-#body-menu .not-current {
-  color: #a1a1a1;
-}
+#body-menu:
+  padding: 10px 0px
+  text-align: center
+  border->
+    top: 1px solid $gray
+    bottom: 1px solid $gray
 
-#body-menu a:hover {
-  color: white;
-}
+  a:
+    padding->
+      left: 50px
+      right: 50px
+    &:hover:
+      color: white
 
-#body-content {
-  padding-top:30px;
-}
+  .not-current:
+    color: $gray
 
-#body-content p {
-  margin:20px 0;
-}
-</field>
+#body-content:
+  padding-top: 30px
+  p:
+    margin: 20px 0
+
+{% endccss %}</field>
     <field type="CharField" name="name">base/body.css</field>
   </object>
   <object pk="1" model="pages.page">
