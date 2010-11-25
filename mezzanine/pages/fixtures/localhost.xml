@@ -35,7 +35,7 @@
       &lt;link rel="stylesheet" href="{{ MEDIA_URL }}themes/{{ request.settings.JQUERY_UI_THEME }}/%s.css" type="text/css" /&gt;
     {% enduniques %}
     &lt;style&gt;
-{% ccss %}{% block style %}{% endblock %}{% endccss %}
+{% ccss %}{% block ccss %}{% endblock %}{% endccss %}
     &lt;/style&gt;
     &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}.js"&gt;&lt;/script&gt;
     {% uniques 'js' %}
@@ -82,7 +82,7 @@
 {% css %}960_24_col{% endcss %}
 
 {% if request.settings.STYLE_BODY %}
-{% block style %}
+{% block ccss %}
 {{ block.super }}
 {% include request.settings.STYLE_BODY %}
 {% endblock %}
@@ -99,7 +99,7 @@
     &lt;/div&gt;
     &lt;div id="body-menu"&gt;
       {% for child in request.settings.homepage.children.all %}
-        &lt;a class="{% if child != page %}not-{% endif %}current" href="{% url page child.slug %}"&gt;
+        &lt;a {% if child == page %}class="current" {% endif %}href="{% url page child.slug %}"&gt;
           {{ child.title }}
         &lt;/a&gt;
       {% endfor %}
@@ -130,7 +130,7 @@
 {% endblock %}
 
 {% if request.settings.STYLE_PAGE %}
-{% block style %}
+{% block ccss %}
 {{ block.super }}
 {% include request.settings.STYLE_PAGE %}
 {% endblock %}
@@ -147,7 +147,7 @@
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-{% block style %}
+{% block ccss %}
 {{ block.super }}
 {% include request.settings.STYLE_CONTENTPAGE %}
 {% endblock %}
@@ -225,14 +225,12 @@ a:
         top: 1px solid $menucolor
         bottom: 1px solid $menucolor
 
-    .not-current:
-        color: $menucolor
-
     a:
         padding->
             left: 50px
             right: 50px
-        &amp;:hover:
+        color: $menucolor
+        &amp;.current, &amp;:hover:
             color: $textcolor
 
 #body-content:
@@ -240,7 +238,7 @@ a:
 
     p:
         margin: 20px 0</field>
-    <field type="CharField" name="name">base/body.css</field>
+    <field type="CharField" name="name">base/body.ccss</field>
   </object>
   <object pk="1" model="pages.page">
     <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
