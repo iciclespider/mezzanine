@@ -213,41 +213,41 @@
 gray = #a1a1a1
 
 body:
-  background: black
-  color: white
+    background: black
+    color: white
 
 a:
-  text-decoration: none
-  color: white
+    text-decoration: none
+    color: white
 
 #body-masthead:
-  font-size: 300%
-  text-align: center
-  padding->
-    top: 20px
-    bottom: 20px
+    font-size: 300%
+    text-align: center
+    padding->
+      top: 20px
+      bottom: 20px
 
 #body-menu:
-  padding: 10px 0px
-  text-align: center
-  border->
-    top: 1px solid $gray
-    bottom: 1px solid $gray
+    padding: 10px 0px
+    text-align: center
+    border->
+        top: 1px solid $gray
+        bottom: 1px solid $gray
 
-  a:
-    padding->
-      left: 50px
-      right: 50px
-    &amp;:hover:
-      color: white
+    a:
+        padding->
+            left: 50px
+            right: 50px
+        &amp;:hover:
+            color: white
 
-  .not-current:
-    color: $gray
+    .not-current:
+        color: $gray
 
 #body-content:
-  padding-top: 30px
-  p:
-    margin: 20px 0
+    padding-top: 30px
+    p:
+        margin: 20px 0
 
 {% endccss %}</field>
     <field type="CharField" name="name">base/body.css</field>
