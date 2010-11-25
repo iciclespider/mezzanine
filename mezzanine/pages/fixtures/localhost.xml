@@ -224,8 +224,8 @@ a:
     font-size: 300%
     text-align: center
     padding->
-      top: 20px
-      bottom: 20px
+        top: 20px
+        bottom: 20px
 
 #body-menu:
     padding: 10px 0px
