@@ -199,15 +199,17 @@
     <field type="CharField" name="name">base/500.html</field>
   </object>
   <object pk="5" model="core.template">
-    <field type="TextField" name="content">gray = #a1a1a1
+    <field type="TextField" name="content">backcolor = black
+textcolor = white
+menucolor = #a1a1a1
 
 body:
-    background: black
-    color: white
+    background: $backcolor
+    color: $textcolor
 
 a:
     text-decoration: none
-    color: white
+    color: $textcolor
 
 #body-masthead:
     font-size: 300%
@@ -220,18 +222,18 @@ a:
     padding: 10px 0px
     text-align: center
     border->
-        top: 1px solid $gray
-        bottom: 1px solid $gray
+        top: 1px solid $menucolor
+        bottom: 1px solid $menucolor
+
+    .not-current:
+        color: $menucolor
 
     a:
         padding->
             left: 50px
             right: 50px
         &amp;:hover:
-            color: white
-
-    .not-current:
-        color: $gray
+            color: $textcolor
 
 #body-content:
     padding-top: 30px
