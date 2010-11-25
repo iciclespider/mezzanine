@@ -8,8 +8,6 @@ from urlparse import urlsplit
 
 
 urlpatterns = patterns("mezzanine.core.views",
-    url("^admin/keywords_submit/$", "admin_keywords_submit",
-        name="admin_keywords_submit"),
     url("^edit/$", "edit", name="edit"),
     url("^search/$", "search", name="search"),
     url("^404/(.*)$", "force_404", name="404"),
