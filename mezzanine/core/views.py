@@ -57,13 +57,13 @@ def edit(request):
         response = form.errors.values()[0][0]
     return HttpResponse(unicode(response))
 
-def force404(request, url=None):
+def force_404(request, url=None):
     raise Http404
 
-def force500(request, url=None):
+def force_500(request, url=None):
     raise Exception('Forced 500.')
 
-def handler404(request):
+def handler_404(request):
     info = sys.exc_info()
     if not request.settings.DEBUG:
         try:
@@ -73,7 +73,7 @@ def handler404(request):
             pass
     return debug.technical_404_response(request, info[1])
 
-def handler500(request):
+def handler_500(request):
     info = sys.exc_info()
     if not request.settings.DEBUG:
         try:

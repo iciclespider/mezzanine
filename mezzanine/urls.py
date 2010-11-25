@@ -6,8 +6,8 @@ from mezzanine.configuration import global_settings
 
 admin.autodiscover()
 
-handler404 = 'mezzanine.core.views.handler404'
-handler500 = 'mezzanine.core.views.handler500'
+handler404 = 'mezzanine.core.views.handler_404'
+handler500 = 'mezzanine.core.views.handler_500'
 
 urlpatterns = patterns("",
     ("^admin/filebrowser/", include("filebrowser.urls")),
