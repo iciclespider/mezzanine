@@ -8,6 +8,10 @@ class HtmlField(models.TextField):
     """
     #__metaclass__ = models.SubfieldBase
 
+    def __init__(self, *args, **kwargs):
+        self.widget_rows = kwargs.pop('widget_rows', 10)
+        super(HtmlField, self).__init__(*args, **kwargs)
+
     def formfield(self, **kwargs):
         """
         Apply the class to the widget that will render the field as a
@@ -15,6 +19,6 @@ class HtmlField(models.TextField):
         """
         formfield = super(HtmlField, self).formfield(**kwargs)
         formfield.widget.attrs["cols"] = "120"
-        formfield.widget.attrs["rows"] = "40"
+        formfield.widget.attrs["rows"] = self.widget_rows
         formfield.widget.attrs["class"] = "mceEditor"
         return formfield

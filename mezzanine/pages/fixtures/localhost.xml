@@ -100,7 +100,7 @@
     &lt;div id="body-menu"&gt;
       {% for child in request.settings.homepage.children.all %}
         &lt;a {% if child == page %}class="current" {% endif %}href="{% url page child.slug %}"&gt;
-          {{ child.title }}
+          {{ child.menu_name|default:child.title }}
         &lt;/a&gt;
       {% endfor %}
     &lt;/div&gt;
@@ -116,7 +116,7 @@
 
 {% load mezzanine_tags pages_tags %}
 
-{% block meta_title %}{{ page.title }}{% endblock %}
+{% block meta_title %}{{ page.titles }}{% endblock %}
 
 {% block meta_keywords %}
   {% for keyword in page.keywords.all %}
@@ -273,6 +273,7 @@ a:
     <field type="CharField" name="short_url"><None></None></field>
     <field type="IntegerField" name="_order">1</field>
     <field to="pages.page" name="parent" rel="ManyToOneRel">1</field>
+    <field type="CharField" name="menu_name">One</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
     <field type="CharField" name="titles">Hello World / Page One</field>
@@ -295,6 +296,7 @@ a:
     <field type="CharField" name="short_url"><None></None></field>
     <field type="IntegerField" name="_order">2</field>
     <field to="pages.page" name="parent" rel="ManyToOneRel">1</field>
+    <field type="CharField" name="menu_name">Two</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
     <field type="CharField" name="titles">Hello World / Page Two</field>
@@ -317,6 +319,7 @@ a:
     <field type="CharField" name="short_url"><None></None></field>
     <field type="IntegerField" name="_order">3</field>
     <field to="pages.page" name="parent" rel="ManyToOneRel">1</field>
+    <field type="CharField" name="menu_name">Three</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
     <field type="CharField" name="titles">Hello World / Page Three</field>

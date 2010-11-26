@@ -191,10 +191,10 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("core.Template", "pages.Page", "blog.BlogPost", "blog.Comment",
+        (_("Content"), ("pages.Page", "films.Person", "core.Template",
             (_("Media Library"), "fb_browse"))),
-        (_("Site"), ("sites.Site", "redirects.Redirect", "settings.Setting")),
-        (_("Users"), ("auth.User", "auth.Group",)),
+        (_("Settings"), ("configuration.Settings", "sites.Site")),
+        (_("Users"), ("auth.User",)),
     ),
 )
 
@@ -202,7 +202,7 @@ register_setting(
     name="ADMIN_REMOVAL",
     description=_("Unregister these models from the admin."),
     editable=False,
-    default=(),
+    default=('django.contrib.auth.models.Group',),
 )
 
 register_setting(

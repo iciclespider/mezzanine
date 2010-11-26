@@ -151,7 +151,7 @@ class Content(models.Model):
     Provides a HTML field for managing general content and making it searchable.
     """
 
-    content = HtmlField(_("Content"), blank=True)
+    content = HtmlField(_("Content"), widget_rows=40, blank=True)
 
     search_fields = ("content",)
 
