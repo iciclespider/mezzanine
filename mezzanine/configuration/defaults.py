@@ -13,6 +13,13 @@ register_setting(
 )
 
 register_setting(
+    name="TEMPLATE_STAFFPAGE",
+    description=_("Template for all staff page views."),
+    editable=True,
+    default="base/contentpage.html",
+)
+
+register_setting(
     name="TEMPLATE_CONTENTPAGE",
     description=_("Template for all content page views."),
     editable=True,
@@ -78,6 +85,13 @@ register_setting(
 register_setting(
     name="STYLE_CONTENTPAGE",
     description=_("CSS Style for all content page views."),
+    editable=True,
+    default="",
+)
+
+register_setting(
+    name="STYLE_STAFFPAGE",
+    description=_("CSS Style for all staff page views."),
     editable=True,
     default="",
 )
