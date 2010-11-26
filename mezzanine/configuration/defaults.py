@@ -16,7 +16,7 @@ register_setting(
     name="TEMPLATE_STAFFPAGE",
     description=_("Template for all staff page views."),
     editable=True,
-    default="base/contentpage.html",
+    default="base/staffpage.html",
 )
 
 register_setting(
