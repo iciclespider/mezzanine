@@ -29,7 +29,7 @@ class StaffPage(Page):
         verbose_name_plural = 'Staff pages'
 
     summary = HtmlField(blank=True)
-    members = models.ManyToManyField(Person, through='Member')
+    people = models.ManyToManyField(Person, related_name="staffs", through='Member')
 
     def __unicode__(self):
         return self.menu_name
@@ -47,7 +47,7 @@ class Member(Orderable):
         ordering = ("page", "_order")
         order_with_respect_to = "page"
 
-    page = models.ForeignKey(StaffPage)
-    person = models.ForeignKey(Person)
+    page = models.ForeignKey(StaffPage, related_name="members")
+    person = models.ForeignKey(Person, related_name="members")
     role = models.CharField(max_length=100, blank=True)
     description = HtmlField(widget_rows=5, blank=True)
