@@ -14,7 +14,8 @@ class Person(models.Model):
     name = models.CharField(max_length=100)
     biography = HtmlField(blank=True)
     photograph = models.ImageField(upload_to='persons/photograph', blank=True)
-    website = models.URLField(blank=True)
+    website_url = models.URLField("Website URL", blank=True)
+    website_name = models.CharField("Website Name", max_length=100, blank=True)
     email = models.EmailField(blank=True)
     notes = models.TextField(blank=True)
 
