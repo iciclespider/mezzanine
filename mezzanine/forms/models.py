@@ -44,8 +44,8 @@ class Form(Page, Content):
     email_message = models.TextField(_("Message"), blank=True)
 
     class Meta:
-        verbose_name = _("Form")
-        verbose_name_plural = _("Forms")
+        verbose_name = _("Form Page")
+        verbose_name_plural = _("Form Pages")
 
     def get_default_template(self):
         return self.settings.TEMPLATE_FORMPAGE

@@ -26,8 +26,8 @@ class StaffPage(Page):
 
     class Meta(Page.Meta):
         abstract = False
-        verbose_name = 'Staff page'
-        verbose_name_plural = 'Staff pages'
+        verbose_name = 'Staff Page'
+        verbose_name_plural = 'Staff Pages'
 
     summary = HtmlField(blank=True)
     people = models.ManyToManyField(Person, related_name="staffs", through='Member')
