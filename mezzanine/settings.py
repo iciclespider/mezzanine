@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     #"mezzanine.blog",
     #"mezzanine.forms",
     #"mezzanine.twitter",
-    "mezzanine.films",
+    "mezzanine.staff",
     "grappelli",
     "filebrowser",
     "django.contrib.admin",
