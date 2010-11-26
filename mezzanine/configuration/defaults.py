@@ -205,7 +205,7 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("pages.Page", "films.Person", "core.Template",
+        (_("Content"), ("pages.Page", "staff.Person", "core.Template",
             (_("Media Library"), "fb_browse"))),
         (_("Settings"), ("configuration.Settings", "sites.Site")),
         (_("Users"), ("auth.User",)),

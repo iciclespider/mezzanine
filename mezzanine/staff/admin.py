@@ -2,7 +2,7 @@
 from copy import deepcopy
 from django.contrib import admin
 from mezzanine.core.admin import DynamicInlineAdmin
-from mezzanine.films.models import Person, StaffPage, Member
+from mezzanine.staff.models import Person, StaffPage, Member
 from mezzanine.pages.admin import PageAdmin
 
 
