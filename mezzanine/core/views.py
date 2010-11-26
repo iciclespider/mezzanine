@@ -65,7 +65,7 @@ def force_500(request, url=None):
 
 def handler_404(request):
     info = sys.exc_info()
-    if request.settings.exist and not request.settings.DEBUG:
+    if request.settings.exists and not request.settings.DEBUG:
         try:
             template = loader.get_template(request.settings.TEMPLATE_404)
             return HttpResponseNotFound(template.render(RequestContext(request)))
