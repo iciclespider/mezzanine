@@ -82,8 +82,7 @@
 {% css %}960_24_col{% endcss %}
 
 {% if request.settings.STYLE_BODY %}
-{% block ccss %}
-{{ block.super }}
+{% block ccss %}{{ block.super }}
 {% include request.settings.STYLE_BODY %}
 {% endblock %}
 {% endif %}
@@ -130,8 +129,7 @@
 {% endblock %}
 
 {% if request.settings.STYLE_PAGE %}
-{% block ccss %}
-{{ block.super }}
+{% block ccss %}{{ block.super }}
 {% include request.settings.STYLE_PAGE %}
 {% endblock %}
 {% endif %}
@@ -147,8 +145,7 @@
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-{% block ccss %}
-{{ block.super }}
+{% block ccss %}{{ block.super }}
 {% include request.settings.STYLE_CONTENTPAGE %}
 {% endblock %}
 {% endif %}

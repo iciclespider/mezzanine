@@ -123,7 +123,7 @@ INSTALLED_APPS = (
     "mezzanine.configuration",
     "mezzanine.pages",
     #"mezzanine.blog",
-    #"mezzanine.forms",
+    "mezzanine.forms",
     #"mezzanine.twitter",
     "mezzanine.staff",
     "grappelli",
