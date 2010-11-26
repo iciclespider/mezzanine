@@ -88,7 +88,7 @@ class DynamicInlineAdmin(admin.TabularInline):
     """
 
     form = DynamicInlineAdminForm
-    extra = 20
+    extra = 0
     template = "admin/includes/dynamic_inline.html"
 
     def __init__(self, *args, **kwargs):

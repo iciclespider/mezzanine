@@ -117,7 +117,6 @@ ROOT_URLCONF = 'mezzanine.urls'
 INSTALLED_APPS = (
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django.contrib.redirects",
     "django.contrib.sessions",
     "django.contrib.sites",
     "mezzanine.core",
@@ -126,6 +125,7 @@ INSTALLED_APPS = (
     #"mezzanine.blog",
     #"mezzanine.forms",
     #"mezzanine.twitter",
+    "mezzanine.films",
     "grappelli",
     "filebrowser",
     "django.contrib.admin",

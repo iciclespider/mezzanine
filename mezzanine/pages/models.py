@@ -14,13 +14,14 @@ class Page(Orderable, Displayable):
 
     parent = models.ForeignKey("Page", blank=True, null=True,
         related_name="children")
+    menu_name = models.CharField(_("Menu Name"), max_length=100, blank=True)
     in_navigation = models.BooleanField(_("Show in navigation"), default=True)
     in_footer = models.BooleanField(_("Show in footer"))
     titles = models.CharField(editable=False, max_length=1000, null=True)
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
-    template = models.CharField(max_length=100, null=True, blank=True)
+    template = models.CharField(max_length=100, blank=True)
 
     objects = PageManager()
 

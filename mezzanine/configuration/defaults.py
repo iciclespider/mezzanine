@@ -13,6 +13,13 @@ register_setting(
 )
 
 register_setting(
+    name="TEMPLATE_STAFFPAGE",
+    description=_("Template for all staff page views."),
+    editable=True,
+    default="base/staffpage.html",
+)
+
+register_setting(
     name="TEMPLATE_CONTENTPAGE",
     description=_("Template for all content page views."),
     editable=True,
@@ -78,6 +85,13 @@ register_setting(
 register_setting(
     name="STYLE_CONTENTPAGE",
     description=_("CSS Style for all content page views."),
+    editable=True,
+    default="",
+)
+
+register_setting(
+    name="STYLE_STAFFPAGE",
+    description=_("CSS Style for all staff page views."),
     editable=True,
     default="",
 )
@@ -191,10 +205,10 @@ register_setting(
     description=_("Controls the ordering and grouping of the admin menu."),
     editable=False,
     default=(
-        (_("Content"), ("core.Template", "pages.Page", "blog.BlogPost", "blog.Comment",
+        (_("Content"), ("pages.Page", "staff.Person", "core.Template",
             (_("Media Library"), "fb_browse"))),
-        (_("Site"), ("sites.Site", "redirects.Redirect", "settings.Setting")),
-        (_("Users"), ("auth.User", "auth.Group",)),
+        (_("Settings"), ("configuration.Settings", "sites.Site")),
+        (_("Users"), ("auth.User",)),
     ),
 )
 
@@ -202,7 +216,7 @@ register_setting(
     name="ADMIN_REMOVAL",
     description=_("Unregister these models from the admin."),
     editable=False,
-    default=(),
+    default=('django.contrib.auth.models.Group',),
 )
 
 register_setting(
