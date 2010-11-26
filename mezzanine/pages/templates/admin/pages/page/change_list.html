@@ -23,10 +23,24 @@
     #tree a:hover .icon {color:#fff; background:#5B80B2;}
     .ordering {float:right; cursor:move; margin-left:10px;}
 
-    .addlist {float:right; margin-top:-3px;}
+    select {
+        height: 23px;
+        border: 0;
+        border-radius: 0;
+        -moz-border-radius: 0;
+        -webkit-border-radius: 0;
+    }
+    .addlist {
+        float:right;
+        margin-top:-3px;
+        border: 1px solid #bbb;
+        border-color: #ccc #ddd #ddd #ccc;
+        border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px;
+    }
     #addlist-primary {float:left; width:620px; text-align:right; 
         margin-top:-25px;}
-
+    
+    
 </style>
             
 <script type="text/javascript" 
@@ -138,12 +152,14 @@
 
     {% if has_add_permission %}
     <div id="addlist-primary">
-        <select class="addlist">
-            <option value="">{% trans "Add home" %} ...</option>
-            {% for model in page_models %}
-            <option value="{{ model.add_url }}">{{ model.name }}</option>
-            {% endfor %}
-        </select>
+        <span class="addlist">
+            <select>
+                <option value="">{% trans "Add home" %} ...</option>
+                {% for model in page_models %}
+                <option value="{{ model.add_url }}">{{ model.name }}</option>
+                {% endfor %}
+            </select>
+        </span>
     </div>
     {% endif %}
 
