@@ -34,6 +34,10 @@ class StaffPage(Page):
     def __unicode__(self):
         return self.menu_name
 
+    def get_default_template(self):
+        return self.settings.TEMPLATE_STAFFPAGE
+
+
 class Member(Orderable):
 
     class Meta(Orderable.Meta):
