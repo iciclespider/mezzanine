@@ -44,6 +44,7 @@ class Member(Orderable):
         abstract = False
         verbose_name = "Member"
         verbose_name_plural = "Members"
+        ordering = ("page", "_order")
         order_with_respect_to = "page"
 
     page = models.ForeignKey(StaffPage)
