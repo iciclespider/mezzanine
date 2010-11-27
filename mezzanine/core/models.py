@@ -265,12 +265,27 @@ class Template(Content):
     Implements data base backed django templates.
     """
 
-    name = models.CharField(_("Name"), max_length=100, unique=True, db_index=True)
+    directory = models.CharField(_("Directory"), max_length=100, blank=True, db_index=True)
+    name = models.CharField(_("Name"), max_length=100, db_index=True)
+    extension = models.CharField(_("Extension"), max_length=100, blank=True, db_index=True)
 
     class Meta(Content.Meta):
         abstract = False
         verbose_name = _("Template")
         verbose_name_plural = _("Templates")
+        ordering = ("directory", "name", "extension")
+        unique_together = (("directory", "name", "extension"),)
+
+    @property
+    def full_name(self):
+        if self.directory:
+            name = self.directory + '/'
+        else:
+            name = ''
+        name += self.name
+        if self.extension:
+            name += '.' + self.extension
+        return name
 
     def __unicode__(self):
-        return self.name
+        return self.full_name

@@ -11,6 +11,18 @@ class Loader(BaseLoader):
 
     def load_template_source(self, name, dirs=None):
         try:
-            return (Template.objects.get(name=name).content, name)
+            i = name.rfind('/')
+            if i < 0:
+                directory = ''
+            else:
+                directory = name[0:i]
+                name = name[i + 1:]
+            i = name.rfind('.')
+            if i < 0:
+                extension = ''
+            else:
+                extension = name[i + 1:]
+                name = name[0:i]
+            return (Template.objects.get(directory=directory, name=name, extension=extension).content, name)
         except Template.DoesNotExist:
             raise TemplateDoesNotExist(name)

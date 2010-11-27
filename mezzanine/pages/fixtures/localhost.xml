@@ -72,7 +72,9 @@
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</field>
-    <field type="CharField" name="name">base/html.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">html</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="2" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_HTML %}
@@ -108,7 +110,9 @@
     {% block main %}{% endblock %}
   &lt;/div&gt;
 {% endblock %}</field>
-    <field type="CharField" name="name">base/body.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">body</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="3" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
@@ -137,7 +141,9 @@
 {% block title %}
   {{ page.title }}
 {% endblock %}</field>
-    <field type="CharField" name="name">base/page.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">page</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="4" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_PAGE %}
@@ -153,7 +159,9 @@
 {% block main %}
   {% render page.content %}
 {% endblock %}</field>
-    <field type="CharField" name="name">base/contentpage.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">contentpage</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="6" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
@@ -173,7 +181,9 @@
     The requested page does not exist.
   &lt;/p&gt;
 {% endblock %}</field>
-    <field type="CharField" name="name">base/404.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">404</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="7" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
@@ -193,7 +203,9 @@
     An internal server error has occurred.  The web site administrators have been notified and will investigate.
   &lt;/p&gt;
 {% endblock %}</field>
-    <field type="CharField" name="name">base/500.html</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">500</field>
+    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="5" model="core.template">
     <field type="TextField" name="content">backcolor = black
@@ -235,7 +247,9 @@ a:
 
     p:
         margin: 20px 0</field>
-    <field type="CharField" name="name">base/body.ccss</field>
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">body</field>
+    <field type="CharField" name="extension">ccss</field>
   </object>
   <object pk="1" model="pages.page">
     <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
