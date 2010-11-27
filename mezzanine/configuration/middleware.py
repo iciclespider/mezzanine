@@ -8,7 +8,7 @@ class LazySettings(object):
             host = request.META.get("HTTP_HOST", '')
             domain = host.split(':')[0]
             try:
-                settings = Settings.objects.get(sites__site__domain=domain)
+                request._cached_settings = Settings.objects.get(sites__site__domain=domain)
                 request._cached_settings.exists = True
             except Settings.DoesNotExist:
                 request._cached_settings = Settings()
