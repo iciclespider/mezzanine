@@ -15,37 +15,37 @@
     <field type="TextField" name="content">{% spaceless %}
   {% load mezzanine_tags %}
 
-  {% block uniques %}
+  {% block html_medias %}
   {% endblock %}
 
 {% endspaceless %}&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
 &lt;html&gt;
   &lt;head&gt;
-    &lt;title&gt;{% block meta_title %}{% endblock %}&lt;/title&gt;
+    &lt;title&gt;{% block html_title %}{% endblock %}&lt;/title&gt;
       
     &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; 
-    &lt;meta name="keywords" content="{% metablock %}{% block meta_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
-    &lt;meta name="description" content="{% metablock %}{% block meta_description %}{% endblock %}{% endmetablock %}" /&gt; 
+    &lt;meta name="keywords" content="{% metablock %}{% block html_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
+    &lt;meta name="description" content="{% metablock %}{% block html_description %}{% endblock %}{% endmetablock %}" /&gt; 
   
-    &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/reset.css" type="text/css" /&gt;
-    {% uniques 'css' %}
+    &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/screen.css" type="text/css" /&gt;
+    {% medias 'css' %}
       &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/%s.css" type="text/css" /&gt;
-    {% enduniques %}
-    {% uniques 'theme' %}
-      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}themes/{{ request.settings.JQUERY_UI_THEME }}/%s.css" type="text/css" /&gt;
-    {% enduniques %}
-    &lt;style&gt;
-{% ccss %}{% block ccss %}{% endblock %}{% endccss %}
-    &lt;/style&gt;
+    {% endmedias %}
     &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}.js"&gt;&lt;/script&gt;
-    {% uniques 'js' %}
+    {% medias 'js' %}
       &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/%s.js"&gt;&lt;/script&gt;
-    {% enduniques %}
+    {% endmedias %}
+    &lt;style&gt;
+{% ccss %}
+{% block html_style %}{% endblock %}
+{% endccss %}
+    &lt;/style&gt;
   
   &lt;/head&gt;
+
   &lt;body&gt;
-    &lt;div id="html-body" class="{% block body-class %}{% endblock %}"&gt;
-      {% block body %}{% endblock %}
+    &lt;div id="html-body" class="container clearfix"&gt;
+      {% block html_body %}{% endblock %}
     &lt;/div&gt;
     &lt;script type="text/javascript"&gt;
       {# keep the same horizontal position regardless of the vertical scrollbar existence #}
@@ -68,7 +68,7 @@
         body.css('margin-left', left);
       });
       $(window).resize();
-      {% block ready %}{% endblock %}
+      {% block html_ready %}{% endblock %}
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</field>
@@ -81,17 +81,13 @@
 
 {% load mezzanine_tags %}
 
-{% css %}960_24_col{% endcss %}
-
 {% if request.settings.STYLE_BODY %}
-{% block ccss %}{{ block.super }}
+{% block html_style %}{{ block.super }}
 {% include request.settings.STYLE_BODY %}
 {% endblock %}
 {% endif %}
 
-{% block body-class %}container_24 clearfix{% endblock %}
-
-{% block body %}
+{% block html_body %}
   &lt;div id="body-header" class="grid_24"&gt;
     &lt;div id="body-masthead"&gt;
       &lt;a href="{% url home %}"&gt;
@@ -107,7 +103,7 @@
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div id="body-content" class="prefix_1 grid_22 suffix_1"&gt;
-    {% block main %}{% endblock %}
+    {% block body_content %}{% endblock %}
   &lt;/div&gt;
 {% endblock %}</field>
     <field type="CharField" name="directory">base</field>
@@ -119,26 +115,26 @@
 
 {% load mezzanine_tags pages_tags %}
 
-{% block meta_title %}{{ page.titles }}{% endblock %}
+{% block html_title %}{{ page.titles }}{% endblock %}
 
-{% block meta_keywords %}
+{% block html_keywords %}
   {% for keyword in page.keywords.all %}
     {% if not forloop.first %}, {% endif %}
     {{ keyword }}
   {% endfor %}
 {% endblock %}
 
-{% block meta_description %}
+{% block html_description %}
   {{ page.description }}
 {% endblock %}
 
 {% if request.settings.STYLE_PAGE %}
-{% block ccss %}{{ block.super }}
+{% block html_style %}{{ block.super }}
 {% include request.settings.STYLE_PAGE %}
 {% endblock %}
 {% endif %}
 
-{% block title %}
+{% block body_title %}
   {{ page.title }}
 {% endblock %}</field>
     <field type="CharField" name="directory">base</field>
@@ -151,12 +147,12 @@
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-{% block ccss %}{{ block.super }}
+{% block html_style %}{{ block.super }}
 {% include request.settings.STYLE_CONTENTPAGE %}
 {% endblock %}
 {% endif %}
 
-{% block main %}
+{% block body_content %}
   {% render page.content %}
 {% endblock %}</field>
     <field type="CharField" name="directory">base</field>
@@ -166,17 +162,17 @@
   <object pk="6" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
 
-{% block meta_title %}Page Not Found{% endblock %}
+{% block html_title %}Page Not Found{% endblock %}
 
-{% block meta_description %}
+{% block html_description %}
   Page Not Found.
 {% endblock %}
 
-{% block title %}
+{% block body_title %}
   Page Not Found
 {% endblock %}
 
-{% block main %}
+{% block body_content %}
   &lt;p&gt;
     The requested page does not exist.
   &lt;/p&gt;
@@ -188,17 +184,17 @@
   <object pk="7" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
 
-{% block meta_title %}Server Error{% endblock %}
+{% block html_title %}Server Error{% endblock %}
 
-{% block meta_description %}
+{% block html_description %}
   Server Error.
 {% endblock %}
 
-{% block title %}
+{% block body_title %}
   Server Error
 {% endblock %}
 
-{% block main %}
+{% block body_content %}
   &lt;p&gt;
     An internal server error has occurred.  The web site administrators have been notified and will investigate.
   &lt;/p&gt;

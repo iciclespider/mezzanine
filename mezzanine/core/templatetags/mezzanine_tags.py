@@ -320,9 +320,9 @@ def render(context, *args):
         bits.append(Template(arg, 'render').render(context))
     return mark_safe(u''.join(bits))
 
-UNIQUES = 'uniques'
+MEDIAS = 'html_medias'
 
-class UniqueNode(Node):
+class MediaNode(Node):
     def __init__(self, type, nodelist):
         self.type = type
         self.nodelist = nodelist
@@ -331,23 +331,24 @@ class UniqueNode(Node):
         if isinstance(self.type, FilterExpression):
             self.type = self.type.resolve(context)
         value = self.nodelist.render(context)
-        uniques = context.render_context.get(UNIQUES)
-        if uniques is None:
-            context.render_context[UNIQUES] = {self.type:[value]}
+        medias = context.render_context.get(MEDIAS)
+        if medias is None:
+            context.render_context[MEDIAS] = {self.type:[value]}
         else:
-            values = uniques.get(self.type)
+            values = medias.get(self.type)
             if values is None:
-                uniques[self.type] = [value]
+                medias[self.type] = [value]
             else:
                 if value not in values:
                     values.append(value)
         return u''
 
-def unique(parser, token):
+@register.tag
+def media(parser, token):
     bits = token.split_contents()
-    if bits[0] == 'unique':
+    if bits[0] == 'media':
         if len(bits) != 2:
-            raise TemplateSyntaxError("'unique' takes one argument (type)")
+            raise TemplateSyntaxError("'media' takes one argument (type)")
         type = parser.compile_filter(bits[1])
     else:
         if len(bits) != 1:
@@ -355,46 +356,44 @@ def unique(parser, token):
         type = bits[0]
     nodelist = parser.parse(('end' + bits[0],))
     parser.delete_first_token()
-    node = UniqueNode(type, nodelist)
+    node = MediaNode(type, nodelist)
     try:
-        block = parser.__uniques_block
+        block = parser.__medias_block
         block.nodelist.append(node)
         return TextNode('')
     except AttributeError:
         pass
     try:
-        if UNIQUES in parser.__loaded_blocks:
+        if MEDIAS in parser.__loaded_blocks:
             # This occurs when declared in root template and works
-            # as long as it occurs before the uniques usage.
+            # as long as it occurs before the medias usage.
             return node
-        parser.__loaded_blocks.append(UNIQUES)
+        parser.__loaded_blocks.append(MEDIAS)
     except AttributeError:
-        parser.__loaded_blocks = [UNIQUES]
+        parser.__loaded_blocks = [MEDIAS]
     nodelist = NodeList()
     nodelist.contains_nontext = True
     nodelist.append(parser.create_variable_node(parser.compile_filter('block.super')))
     nodelist.append(node)
-    block = BlockNode(UNIQUES, nodelist)
-    parser.__uniques_block = block
+    block = BlockNode(MEDIAS, nodelist)
+    parser.__medias_block = block
     return block
 
-register.tag(unique)
-register.tag('css', unique)
-register.tag('theme', unique)
-register.tag('js', unique)
+register.tag('css', media)
+register.tag('js', media)
 
 
 @register.to_end_tag
-def uniques(context, nodelist, token, parser):
+def medias(context, nodelist, token, parser):
     bits = token.split_contents()
     if len(bits) != 2:
         raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
     type = parser.compile_filter(bits[1]).resolve(context)
     format = nodelist.render(context)
-    uniques = context.render_context.get(UNIQUES)
-    if not uniques:
+    medias = context.render_context.get(MEDIAS)
+    if not medias:
         return u''
-    values = uniques.get(type)
+    values = medias.get(type)
     if not values:
         return u''
     return mark_safe('\n'.join([format % value for value in values]))

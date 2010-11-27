@@ -12,6 +12,7 @@ class Page(Orderable, Displayable):
     A page in the page tree.
     """
 
+    template = models.CharField(max_length=100, blank=True)
     parent = models.ForeignKey("Page", blank=True, null=True,
         related_name="children")
     menu_name = models.CharField(_("Menu Name"), max_length=100, blank=True)
@@ -21,7 +22,6 @@ class Page(Orderable, Displayable):
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
-    template = models.CharField(max_length=100, blank=True)
 
     objects = PageManager()
 
