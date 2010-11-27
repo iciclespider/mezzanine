@@ -32,7 +32,7 @@ class Form(Page, Content):
     button_text = models.CharField(_("Button text"), max_length=50,
         default=_("Submit"))
     response = HtmlField(_("Response"))
-    send_email = models.BooleanField(_("Send email"), default=True,
+    send_email = models.BooleanField(_("Send email"), default=False,
         help_text=_("If checked, the person entering the form will be sent an "
                                                                     "email"))
     email_from = models.EmailField(_("From address"), blank=True,

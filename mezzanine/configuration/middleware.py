@@ -5,10 +5,10 @@ from mezzanine.configuration.models import Settings
 class LazySettings(object):
     def __get__(self, request, obj_type=None):
         if not hasattr(request, '_cached_settings'):
-            host = request.META["HTTP_HOST"]
+            host = request.META.get("HTTP_HOST", '')
             domain = host.split(':')[0]
             try:
-                request._cached_settings = Settings.objects.get(sites__site__domain=domain)
+                settings = Settings.objects.get(sites__site__domain=domain)
                 request._cached_settings.exists = True
             except Settings.DoesNotExist:
                 request._cached_settings = Settings()
