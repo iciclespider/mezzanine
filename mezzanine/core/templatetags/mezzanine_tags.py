@@ -320,7 +320,7 @@ def render(context, *args):
         bits.append(Template(arg, 'render').render(context))
     return mark_safe(u''.join(bits))
 
-MEDIAS = 'html_medias'
+MEDIAS = 'medias'
 
 class MediaNode(Node):
     def __init__(self, type, nodelist):
@@ -378,9 +378,6 @@ def media(parser, token):
     block = BlockNode(MEDIAS, nodelist)
     parser.__medias_block = block
     return block
-
-register.tag('css', media)
-register.tag('js', media)
 
 
 @register.to_end_tag

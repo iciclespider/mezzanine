@@ -41,8 +41,15 @@ register_setting(
 )
 
 register_setting(
+    name="TEMPLATE_SITE",
+    description=_("Site template for all all views."),
+    editable=True,
+    default="base/site.html",
+)
+
+register_setting(
     name="TEMPLATE_BODY",
-    description=_("Body Template for all views."),
+    description=_("Body template for all views."),
     editable=True,
     default="base/body.html",
 )
@@ -80,6 +87,13 @@ register_setting(
     description=_("Body CSS Style for all views."),
     editable=True,
     default="base/body.ccss",
+)
+
+register_setting(
+    name="STYLE_SITE",
+    description=_("Site CSS Style for all views."),
+    editable=True,
+    default="base/site.ccss",
 )
 
 register_setting(
