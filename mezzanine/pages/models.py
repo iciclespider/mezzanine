@@ -108,7 +108,7 @@ class Page(Orderable, Displayable):
 
     def get_template(self):
         if self.template:
-            return Template(self.template, name='"%" Page template' % self.titles)
+            return Template(self.template, name='"%s" Page template' % self.titles)
         return get_template(self.instance.default_template)
 
     @property
