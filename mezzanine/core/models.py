@@ -7,7 +7,8 @@ from django.template.defaultfilters import slugify, truncatewords_html
 from django.utils.translation import ugettext, ugettext_lazy as _
 from mezzanine.configuration.models import Settings
 from mezzanine.core.fields import HtmlField
-from mezzanine.core.managers import DisplayableManager, KeywordManager
+from mezzanine.core.managers import (DisplayableManager, KeywordManager,
+    TemplateManager)
 from mezzanine.utils import base_concrete_model
 
 
@@ -268,6 +269,8 @@ class Template(Content):
     directory = models.CharField(_("Directory"), max_length=100, blank=True, db_index=True)
     name = models.CharField(_("Name"), max_length=100, db_index=True)
     extension = models.CharField(_("Extension"), max_length=100, blank=True, db_index=True)
+
+    objects = TemplateManager()
 
     class Meta(Content.Meta):
         abstract = False

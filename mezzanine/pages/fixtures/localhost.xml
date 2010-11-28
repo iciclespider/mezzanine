@@ -28,9 +28,7 @@
       &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/{{ js }}.js"&gt;&lt;/script&gt;
     {% endfor %}
     &lt;style&gt;
-{% ccss %}
 {% block html_style %}{% endblock %}
-{% endccss %}
     &lt;/style&gt;  
   &lt;/head&gt;
   &lt;body&gt;
@@ -49,8 +47,10 @@
 {% media 'js' %}jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}{% endmedia %}
 
 {% block html_style %}
+{% ccss %}
 {% if request.settings.STYLE_BODY %}{% include request.settings.STYLE_BODY %}{% endif %}
 {% block body_style %}{% endblock %}
+{% endccss %}
 {% endblock %}
 
 {% block html_body %}
@@ -71,13 +71,13 @@
       } else if (document.body &amp;&amp; document.body.clientWidth) {
         total = document.body.clientWidth;
       }
-      var site = $("#body-content");
+      var content = $("#body-content");
       var scrollbarWidth = 15;
-      var left = (total - site.width() - scrollbarWidth) / 2;
+      var left = (total - content.width() - scrollbarWidth) / 2;
       if (left &lt; 0) {
          left = 0;
       }
-      site.css('margin-left', left);
+      content.css('margin-left', left);
     });
     $(window).resize();
 {% block body_ready %}{% endblock %}

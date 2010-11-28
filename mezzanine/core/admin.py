@@ -189,7 +189,6 @@ class TemplateAdmin(admin.ModelAdmin):
     """
     Admin class for Template model.
     """
-    list_display = ('full_name',)
     list_filter = ('directory', 'name', 'extension')
     search_fields = ('content',)
     fields = ('directory', 'name', 'extension', 'content')

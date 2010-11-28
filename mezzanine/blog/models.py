@@ -9,6 +9,10 @@ from mezzanine.core.models import Displayable, Ownable, Content, Slugged
 from mezzanine.configuration import global_settings
 
 
+class BlogPage(Page, Content):
+    pass
+
+
 class BlogPost(Displayable, Ownable, Content):
     """
     A blog post.

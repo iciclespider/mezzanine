@@ -212,3 +212,7 @@ class DisplayableManager(PublishedManager, SearchableManager):
     Combined manager for the ``Displayable`` model.
     """
     pass
+
+
+class TemplateManager(Manager):
+    pass

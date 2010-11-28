@@ -32,7 +32,7 @@ Steps to run a sample test server:
 
 When running the server, it needs to be informed where the admin media
 is.  Generally, just pointing to the grappelli media directory is good
-enough (filebrowser does work quite right though).  I also like to test
+enough (filebrowser does not work quite right though).  I also like to test
 using all network interfaces, which creates the effect of access from
 several different domains.  There is also a fixture called "localhost",
 which provides a very simple Hello World example web site.
@@ -62,9 +62,10 @@ for the implementation of a wide variety of different types of themes.
 
 The current intent in the template hierarchy is the following:
 
-  * TEMPLATE_HTML - The root template.  This establishes a "blank slate" html page and deals with structuring the non-body html elements.
-  * TEMPLATE_BODY - The body template.  Defines the overall structure of a given web site.  Extends TEMPLATE_HTML.
-  * TEMPLATE_PAGE - Structures the html at the base Page level.  Extends TEMPLATE_BODY.
+  * TEMPLATE_HTML - The root template.  This establishes the structure of the html level elements.
+  * TEMPLATE_BODY - The body template.  This establishes the core tools used in a web site.  Extends TEMPLATE_HTML.
+  * TEMPLATE_SITE - The site template.  Defines the overall structure of a given web site.  Extends TEMPLATE_BODY.
+  * TEMPLATE_PAGE - Structures the html at the base Page level.  Extends TEMPLATE_SITE.
   * TEMPLATE_CONTENTPAGE - Structures the html for ContentPages.  Extends TEMPLATE_CONTENTPAGE.
 
 Then, there are following Settings values to associate a collection of
@@ -91,3 +92,111 @@ against it.
 
 Opening a url that does not have a domain configured for it,
 such as "http://127.0.0.1:8000/", will echo back the domain used.
+
+==================
+Template Structure
+==================
+
+-------------
+template html
+-------------
+
+creates
+=======
+
+* block medias
+* block html_title
+* block html_keywords
+* block html_description
+* block html_style
+* block html_body 
+
+-------------
+template body
+-------------
+
+uses
+====
+
+* request.settings.TEMPLATE_HTML
+* request.settings.STYLE_BODY
+* block html_style
+* block html_body 
+
+creates
+=======
+
+* block body_style
+* id body-content
+* block body_content
+* block body_ready
+
+------------- 
+template site
+-------------
+
+uses
+====
+
+* request.settings.TEMPLATE_BODY
+* request.settings.STYLE_SITE
+* block body_style
+* block body_content 
+
+creates
+=======
+
+* block site_style
+* id site-header
+* id site-masthead
+* id site-menu
+* id site-content
+* block site_content
+
+-------------------------- 
+template 404, template 500
+--------------------------
+
+uses
+====
+
+* request.settings.TEMPLATE_SITE
+* block html_title
+* block html_description
+* block site_content
+
+------------- 
+template page
+-------------
+
+uses
+====
+
+* request.settings.TEMPLATE_SITE
+* block html_title
+* block html_keywords
+* block html_description
+* request.settings.STYLE_PAGE
+* block site_style
+* block site_content 
+
+creates
+=======
+
+* block page_style
+* id page-content
+* block page_content
+
+----------------------------------------------------------- 
+template contentpage, template formpage, template staffpage
+-----------------------------------------------------------
+
+uses
+====
+
+* request.settings.TEMPLATE_PAGE
+* request.settings.STYLE_CONTENTPAGE
+* block page_style
+* block page_content
+
+
