@@ -86,7 +86,7 @@ register_setting(
     name="STYLE_BODY",
     description=_("Body CSS Style for all views."),
     editable=True,
-    default="base/body.ccss",
+    default="",
 )
 
 register_setting(

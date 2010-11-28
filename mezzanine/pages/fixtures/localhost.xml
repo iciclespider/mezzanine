@@ -49,16 +49,15 @@
 {% media 'css' %}screen{% endmedia %}
 {% media 'js' %}jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}{% endmedia %}
 
-{% if request.settings.STYLE_BODY %}
-{% block html_style %}{{ block.super }}
-{% include request.settings.STYLE_BODY %}
+{% block html_style %}
+{% if request.settings.STYLE_BODY %}{% include request.settings.STYLE_BODY %}{% endif %}
+{% block body_style %}{% endblock %}
 {% endblock %}
-{% endif %}
 
 {% block html_body %}
 
-  &lt;div id="body-site" class="container clearfix"&gt;
-{% block body_site %}{% endblock %}
+  &lt;div id="body-content" class="container clearfix"&gt;
+{% block body_content %}{% endblock %}
   &lt;/div&gt;
 
   &lt;script type="text/javascript"&gt;
@@ -73,7 +72,7 @@
       } else if (document.body &amp;&amp; document.body.clientWidth) {
         total = document.body.clientWidth;
       }
-      var site = $("#body-site");
+      var site = $("#body-content");
       var scrollbarWidth = 15;
       var left = (total - site.width() - scrollbarWidth) / 2;
       if (left &lt; 0) {
@@ -95,13 +94,12 @@
 
 {% load mezzanine_tags %}
 
-{% if request.settings.STYLE_SITE %}
-{% block html_style %}{{ block.super }}
-{% include request.settings.STYLE_SITE %}
+{% block body_style %}
+{% if request.settings.STYLE_SITE %}{% include request.settings.STYLE_SITE %}{% endif %}
+{% block site_style %}{% endblock %}
 {% endblock %}
-{% endif %}
 
-{% block body_site %}
+{% block body_content %}
   &lt;div id="site-header" class="grid_24"&gt;
     &lt;div id="site-masthead"&gt;
       &lt;a href="{% url home %}"&gt;
@@ -178,11 +176,11 @@
   {{ page.description }}
 {% endblock %}
 
-{% if request.settings.STYLE_PAGE %}
-{% block html_style %}{{ block.super }}
-{% include request.settings.STYLE_PAGE %}
+{% block site_style %}
+{% if request.settings.STYLE_PAGE %}{% include request.settings.STYLE_PAGE %}{% endif %}
+{% block page_style %}{% endblock %}
+{% if page.style %}{% render page.style %}{% endif %}
 {% endblock %}
-{% endif %}
 
 {% block site_content %}
   &lt;div id="page-content"&gt;
@@ -199,7 +197,7 @@
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-{% block html_style %}{{ block.super }}
+{% block page_style %}
 {% include request.settings.STYLE_CONTENTPAGE %}
 {% endblock %}
 {% endif %}

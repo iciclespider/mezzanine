@@ -52,7 +52,7 @@ class DisplayableAdmin(admin.ModelAdmin):
     search_fields = ("title", "content",)
     date_hierarchy = "publish_date"
     radio_fields = {"status": admin.HORIZONTAL}
-    fieldsets = (
+    fieldsets = [
         (None, {"fields": ["settings",
                            "title",
                           ]
@@ -67,7 +67,7 @@ class DisplayableAdmin(admin.ModelAdmin):
                           "classes": ("collapse", "closed")
                          },
         ),
-    )
+    ]
     form = DisplayableAdminForm
 
     def save_form(self, request, form, change):

@@ -57,4 +57,4 @@ def _handle_page(request, page):
                     "must return HttpResponse or dict." % (
                     processor.__module__, processor.__name__, type(response)))
             context.update(response)
-    return render_to_response(page.get_template(), RequestContext(request, context))
+    return HttpResponse(page.get_template().render(RequestContext(request, context)))

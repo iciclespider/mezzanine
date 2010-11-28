@@ -11,8 +11,12 @@ from mezzanine.utils import admin_url
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
 page_fieldsets[0][1]["fields"][0] = ('parent', page_fieldsets[0][1]["fields"][0])
 page_fieldsets[0][1]["fields"][1] = (page_fieldsets[0][1]["fields"][1], 'menu_name')
-page_fieldsets[1][1]["fields"].insert(0, "template")
-page_fieldsets[1][1]["fields"].insert(3, ("in_navigation", "in_footer", "login_required"))
+page_fieldsets.insert(1, ("Styling", {"fields": ["style",
+                                                 "template",
+                                                ],
+                                      "classes": ("collapse", "closed")
+                                     }))
+page_fieldsets[2][1]["fields"].insert(2, ("in_navigation", "in_footer", "login_required"))
 
 
 class PageAdminForm(DisplayableAdminForm):

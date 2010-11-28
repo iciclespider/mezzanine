@@ -1,8 +1,11 @@
 
 from django.core.urlresolvers import resolve
 from django.db import models
+from django.template import Template
 from django.template.defaultfilters import slugify
+from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
+from mezzanine.core.fields import HtmlField
 from mezzanine.core.models import Displayable, Orderable, Content
 from mezzanine.pages.managers import PageManager
 from mezzanine.utils import admin_url
@@ -12,7 +15,6 @@ class Page(Orderable, Displayable):
     A page in the page tree.
     """
 
-    template = models.CharField(max_length=100, blank=True)
     parent = models.ForeignKey("Page", blank=True, null=True,
         related_name="children")
     menu_name = models.CharField(_("Menu Name"), max_length=100, blank=True)
@@ -22,6 +24,8 @@ class Page(Orderable, Displayable):
     content_model = models.CharField(editable=False, max_length=50, null=True)
     login_required = models.BooleanField(_("Login required"),
         help_text=_("If checked, only logged in users can view this page"))
+    style = HtmlField(_("Style"), widget_rows=20, blank=True)
+    template = HtmlField(_("Template"), widget_rows=40, blank=True)
 
     objects = PageManager()
 
@@ -104,8 +108,8 @@ class Page(Orderable, Displayable):
 
     def get_template(self):
         if self.template:
-            return self.template
-        return self.instance.get_default_template()
+            return Template(self.template, name="Page template")
+        return get_template(self.instance.get_default_template())
 
     def get_default_template(self):
         return self.settings.TEMPLATE_PAGE

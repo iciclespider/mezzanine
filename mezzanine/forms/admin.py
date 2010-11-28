@@ -24,7 +24,6 @@ fs = FileSystemStorage(location=global_settings.FORMS_UPLOAD_ROOT)
 # Copy the fieldsets for PageAdmin and add the extra fields for FormAdmin.
 form_fieldsets = deepcopy(PageAdmin.fieldsets)
 form_fieldsets[0][1]["fields"].extend(["content", "button_text", "response"])
-form_fieldsets = list(form_fieldsets)
 form_fieldsets.insert(1, (_("Email"), {"fields": ("send_email", "email_from",
     "email_copies", "email_subject", "email_message")}))
 
