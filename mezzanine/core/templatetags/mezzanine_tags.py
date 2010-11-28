@@ -320,7 +320,26 @@ def render(context, *args):
         bits.append(Template(arg, 'render').render(context))
     return mark_safe(u''.join(bits))
 
-MEDIAS = 'medias'
+BLOCK_MEDIAS = '__medias__'
+
+class MediasNode(BlockNode):
+    def render(self, context):
+        context['medias'] = {}
+        super(MediasNode, self).render(context)
+        return u''
+
+@register.tag
+def medias(parser, token):
+    bits = token.contents.split()
+    if len(bits) != 1:
+        raise TemplateSyntaxError("'%s' tag does not take any arguments" % bits[0])
+    try:
+        if BLOCK_MEDIAS in parser.__loaded_blocks:
+            raise TemplateSyntaxError("'%s' tag appears more than once" % bits[0])
+        parser.__loaded_blocks.append(BLOCK_MEDIAS)
+    except AttributeError: # parser.__loaded_blocks isn't a list yet
+        parser.__loaded_blocks = [BLOCK_MEDIAS]
+    return MediasNode(BLOCK_MEDIAS, NodeList())
 
 class MediaNode(Node):
     def __init__(self, type, nodelist):
@@ -331,16 +350,13 @@ class MediaNode(Node):
         if isinstance(self.type, FilterExpression):
             self.type = self.type.resolve(context)
         value = self.nodelist.render(context)
-        medias = context.render_context.get(MEDIAS)
-        if medias is None:
-            context.render_context[MEDIAS] = {self.type:[value]}
+        medias = context['medias']
+        values = medias.get(self.type)
+        if values is None:
+            medias[self.type] = [value]
         else:
-            values = medias.get(self.type)
-            if values is None:
-                medias[self.type] = [value]
-            else:
-                if value not in values:
-                    values.append(value)
+            if value not in values:
+                values.append(value)
         return u''
 
 @register.tag
@@ -364,36 +380,18 @@ def media(parser, token):
     except AttributeError:
         pass
     try:
-        if MEDIAS in parser.__loaded_blocks:
-            # This occurs when declared in root template and works
-            # as long as it occurs before the medias usage.
+        if BLOCK_MEDIAS in parser.__loaded_blocks:
             return node
-        parser.__loaded_blocks.append(MEDIAS)
+        parser.__loaded_blocks.append(BLOCK_MEDIAS)
     except AttributeError:
-        parser.__loaded_blocks = [MEDIAS]
+        parser.__loaded_blocks = [BLOCK_MEDIAS]
     nodelist = NodeList()
     nodelist.contains_nontext = True
     nodelist.append(parser.create_variable_node(parser.compile_filter('block.super')))
     nodelist.append(node)
-    block = BlockNode(MEDIAS, nodelist)
+    block = BlockNode(BLOCK_MEDIAS, nodelist)
     parser.__medias_block = block
     return block
-
-
-@register.to_end_tag
-def medias(context, nodelist, token, parser):
-    bits = token.split_contents()
-    if len(bits) != 2:
-        raise TemplateSyntaxError("'%s' takes one argument (type)" % bits[0])
-    type = parser.compile_filter(bits[1]).resolve(context)
-    format = nodelist.render(context)
-    medias = context.render_context.get(MEDIAS)
-    if not medias:
-        return u''
-    values = medias.get(type)
-    if not values:
-        return u''
-    return mark_safe('\n'.join([format % value for value in values]))
 
 @register.to_end_tag
 def ccss(context, nodelist):

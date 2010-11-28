@@ -12,22 +12,21 @@
     <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
   </object>
   <object pk="1" model="core.template">
-    <field type="TextField" name="content">{% spaceless %}
-{% load mezzanine_tags %}
-{% block medias %}{% endblock %}
-{% endspaceless %}&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+    <field type="TextField" name="content">{% load mezzanine_tags %}
+{% medias %}
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;{% block html_title %}{% endblock %}&lt;/title&gt;      
     &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; 
     &lt;meta name="keywords" content="{% metablock %}{% block html_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
     &lt;meta name="description" content="{% metablock %}{% block html_description %}{% endblock %}{% endmetablock %}" /&gt;
-    {% medias 'css' %}
-      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/%s.css" type="text/css" /&gt;
-    {% endmedias %}
-    {% medias 'js' %}
-      &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/%s.js"&gt;&lt;/script&gt;
-    {% endmedias %}
+    {% for css in medias.css %}
+      &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/{{ css }}.css" type="text/css" /&gt;
+    {% endfor %}
+    {% for js in medias.js %}
+      &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/{{ js }}.js"&gt;&lt;/script&gt;
+    {% endfor %}
     &lt;style&gt;
 {% ccss %}
 {% block html_style %}{% endblock %}
