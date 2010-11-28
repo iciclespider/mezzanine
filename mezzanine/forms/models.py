@@ -47,7 +47,8 @@ class Form(Page, Content):
         verbose_name = _("Form Page")
         verbose_name_plural = _("Form Pages")
 
-    def get_default_template(self):
+    @property
+    def default_template(self):
         return self.settings.TEMPLATE_FORMPAGE
 
 class FieldManager(models.Manager):
