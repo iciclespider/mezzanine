@@ -124,12 +124,12 @@ register_setting(
     default="",
 )
 
-#register_setting(
-#    name="GOOGLE_ANALYTICS_ID",
-#    editable=True,
-#    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
-#    default="",
-#)
+register_setting(
+    name="GOOGLE_ANALYTICS_ID",
+    editable=True,
+    description=_("Google Analytics ID (http://www.google.com/analytics/)"),
+    default="",
+)
 
 #register_setting(
 #    name="BLOG_BITLY_USER",
