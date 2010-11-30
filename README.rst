@@ -18,6 +18,16 @@ found in the original Mezzanine project:
   * Custom styling per Page, as part of the Page admin view.
   * Custom Django template per Page, as part of the Page admin view.
 
+What this fork currently does not have that the main Mezzanine fork does:
+
+  * Blog module.
+  * tinyMCE editor support.
+  * In place editing of content.
+
+Each of these items have not been needed by the prototype I have
+been using so far.  It should be pretty easy to reintegrate any of
+the above items when needed.
+
 ===========
 Test Server
 ===========
