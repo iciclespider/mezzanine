@@ -77,8 +77,8 @@ class Setting(models.Model):
     value = models.CharField(max_length=2000)
 
     class Meta:
-        verbose_name = _("Setting")
-        verbose_name_plural = _("Settings")
+        verbose_name = "Setting"
+        verbose_name_plural = "Settings"
 
     def __unicode__(self):
         return unicode(self.name)
@@ -91,8 +91,8 @@ class SiteSettings(models.Model):
     settings = models.ForeignKey(Settings, related_name="sites")
 
     class Meta:
-        verbose_name = _("Site settings")
-        verbose_name_plural = _("Site settings")
+        verbose_name = "Site settings"
+        verbose_name_plural = "Site settings"
 
     def __unicode__(self):
         return unicode(self.settings.name)

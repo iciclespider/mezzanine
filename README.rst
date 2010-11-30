@@ -15,6 +15,8 @@ found in the original Mezzanine project:
   * Media file handling within templates.
   * Themes driven by the user entered settings.
   * Integration with CleverCSS
+  * Custom styling per Page, as part of the Page admin view.
+  * Custom Django template per Page, as part of the Page admin view.
 
 ===========
 Test Server
@@ -67,19 +69,22 @@ The current intent in the template hierarchy is the following:
   * TEMPLATE_SITE - The site template.  Defines the overall structure of a given web site.  Extends TEMPLATE_BODY.
   * TEMPLATE_PAGE - Structures the html at the base Page level.  Extends TEMPLATE_SITE.
   * TEMPLATE_CONTENTPAGE - Structures the html for ContentPages.  Extends TEMPLATE_CONTENTPAGE.
+  * Template in Page instance (optional).
 
 Then, there are following Settings values to associate a collection of
-CSS settings with these above template levels:
+CSS settings with these above template levels, all of which are optional:
 
   * STYLE_BODY - Styles applied to the html in the TEMPLATE_STYLE template.
+  * STYLE_SITE - Styles applied to the html in the TEMPLATE_SITE template.
   * STYLE_PAGE - Styles applied to the html in the TEMPLATE_PAGE template.
   * STYLE_CONTENTPAGE - Style applied to the html in the TEMPLATE_CONTENTPAGE template.
+  * Style in Page instance.
 
-Any of the above settings can be changed in the Settings to enable
-a different "theme" for that part of the rendered html page.
+Any of the above settings, both the templates and the styles, can be changed in the
+Settings to enable a different "theme" for that part of the rendered html page.
 
 An initial shell of a simple web site associated with the "localhost" domain
-showing an example of using most of the above Settings can be loaded by
+showing an example of using most of the above Settings can be created by
 loading the "localhost" fixture via the following command:
 
   mezzanine/manage.py loaddata localhost
@@ -98,105 +103,90 @@ Template Structure
 ==================
 
 -------------
-template html
+html template
 -------------
 
 creates
 =======
 
 * block medias
-* block html_title
-* block html_keywords
-* block html_description
-* block html_style
-* block html_body 
+* block head_title
+* block head_keywords
+* block head_description
+* block head_style
+* block head_ready
+* block html_body
 
 -------------
-template body
+body template
 -------------
-
-uses
-====
-
-* request.settings.TEMPLATE_HTML
-* request.settings.STYLE_BODY
-* block html_style
-* block html_body 
 
 creates
 =======
 
 * block body_style
-* id body-content
 * block body_content
 * block body_ready
 
 ------------- 
-template site
+site template
 -------------
-
-uses
-====
-
-* request.settings.TEMPLATE_BODY
-* request.settings.STYLE_SITE
-* block body_style
-* block body_content 
 
 creates
 =======
 
 * block site_style
+* block site_content
+
+------------- 
+page template
+-------------
+
+creates
+=======
+
+* block page_style
+* block page_content
+
+===============
+localhost theme
+===============
+
+The set of templates created by the localhost fixture follows
+the above standard template structure.  This "localhost theme"
+then expose the following css ids for creating different
+styled themes with.
+
+-------------
+body template
+-------------
+
+creates
+=======
+
+* id body-content
+
+------------- 
+site template
+-------------
+
+creates
+=======
+
 * id site-header
 * id site-masthead
 * id site-menu
 * id site-content
-* block site_content
-
--------------------------- 
-template 404, template 500
---------------------------
-
-uses
-====
-
-* request.settings.TEMPLATE_SITE
-* block html_title
-* block html_description
-* block site_content
 
 ------------- 
-template page
+page template
 -------------
-
-uses
-====
-
-* request.settings.TEMPLATE_SITE
-* block html_title
-* block html_keywords
-* block html_description
-* request.settings.STYLE_PAGE
-* block site_style
-* block site_content 
 
 creates
 =======
 
-* block page_style
 * id page-content
-* block page_content
 
------------------------------------------------------------ 
-template contentpage, template formpage, template staffpage
------------------------------------------------------------
-
-uses
-====
-
-* request.settings.TEMPLATE_PAGE
-* request.settings.STYLE_CONTENTPAGE
-* block page_style
-* block page_content
-
-
+All of the above templates and the associated CSS are loaded into
+the Template model by the localhost fixture.  This model is available
+in the admin application under the Content Templates menu.

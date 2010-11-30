@@ -17,10 +17,10 @@
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
 &lt;html&gt;
   &lt;head&gt;
-    &lt;title&gt;{% block html_title %}{% endblock %}&lt;/title&gt;      
+    &lt;title&gt;{% block head_title %}{% endblock %}&lt;/title&gt;      
     &lt;meta http-equiv="Content-type" content="text/html; charset=utf-8" /&gt; 
-    &lt;meta name="keywords" content="{% metablock %}{% block html_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
-    &lt;meta name="description" content="{% metablock %}{% block html_description %}{% endblock %}{% endmetablock %}" /&gt;
+    &lt;meta name="keywords" content="{% metablock %}{% block head_keywords %}{% endblock %}{% endmetablock %}" /&gt; 
+    &lt;meta name="description" content="{% metablock %}{% block head_description %}{% endblock %}{% endmetablock %}" /&gt;
     {% for css in medias.css %}
       &lt;link rel="stylesheet" href="{{ MEDIA_URL }}css/{{ css }}.css" type="text/css" /&gt;
     {% endfor %}
@@ -28,8 +28,11 @@
       &lt;script type="text/javascript" src="{{ MEDIA_URL }}js/{{ js }}.js"&gt;&lt;/script&gt;
     {% endfor %}
     &lt;style&gt;
-{% block html_style %}{% endblock %}
+{% block head_style %}{% endblock %}
     &lt;/style&gt;  
+    &lt;script type="text/javascript"&gt;
+{% block head_ready %}{% endblock %}
+    &lt;/script&gt;
   &lt;/head&gt;
   &lt;body&gt;
 {% block html_body %}{% endblock %}
@@ -46,7 +49,7 @@
 {% media 'css' %}screen{% endmedia %}
 {% media 'js' %}jquery-1.4.2{% if not request.settings.DEBUG %}.min{% endif %}{% endmedia %}
 
-{% block html_style %}
+{% block head_style %}
 {% ccss %}
 {% if request.settings.STYLE_BODY %}{% include request.settings.STYLE_BODY %}{% endif %}
 {% block body_style %}{% endblock %}
@@ -124,9 +127,9 @@
   <object pk="4" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_SITE %}
 
-{% block html_title %}Page Not Found{% endblock %}
+{% block head_title %}Page Not Found{% endblock %}
 
-{% block html_description %}
+{% block head_description %}
   Page Not Found.
 {% endblock %}
 
@@ -142,9 +145,9 @@
   <object pk="5" model="core.template">
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_SITE %}
 
-{% block html_title %}Server Error{% endblock %}
+{% block head_title %}Server Error{% endblock %}
 
-{% block html_description %}
+{% block head_description %}
   Server Error.
 {% endblock %}
 
@@ -162,16 +165,16 @@
 
 {% load mezzanine_tags %}
 
-{% block html_title %}{{ page.titles }}{% endblock %}
+{% block head_title %}{{ page.titles }}{% endblock %}
 
-{% block html_keywords %}
+{% block head_keywords %}
   {% for keyword in page.keywords.all %}
     {% if not forloop.first %}, {% endif %}
     {{ keyword }}
   {% endfor %}
 {% endblock %}
 
-{% block html_description %}
+{% block head_description %}
   {{ page.description }}
 {% endblock %}
 
