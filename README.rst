@@ -171,6 +171,13 @@ styled themes with.
 body template
 -------------
 
+uses
+====
+
+* Blueprint CSS
+* jQuery
+* CleverCSS
+
 creates
 =======
 
