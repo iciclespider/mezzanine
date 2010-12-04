@@ -949,14 +949,13 @@ def brighten_color(color, context, amount=None):
                 return color
             lightness *= 1.0 + amount.value / 100.0
         else:
-            raise EvalException(self.lineno, 'invalid unit %s for color '
+            raise EvalException(color.lineno, 'invalid unit %s for color '
                                 'calculations.' % amount.unit)
     elif isinstance(amount, Number):
         lightness += (amount.value / 100.0)
     if lightness > 1:
         lightness = 1.0
     return Color(hls_to_rgb(hue, lightness, saturation))
-
 
 def darken_color(color, context, amount=None):
     if amount is None:
@@ -968,14 +967,13 @@ def darken_color(color, context, amount=None):
                 return color
             lightness *= amount.value / 100.0
         else:
-            raise EvalException(self.lineno, 'invalid unit %s for color '
+            raise EvalException(color.lineno, 'invalid unit %s for color '
                                 'calculations.' % amount.unit)
     elif isinstance(amount, Number):
         lightness -= (amount.value / 100.0)
     if lightness < 0:
         lightness = 0.0
     return Color(hls_to_rgb(hue, lightness, saturation))
-
 
 class Color(Literal):
     name = 'color'
@@ -1068,7 +1066,7 @@ class RGB(Expr):
                                     'rgb() literal only accept numbers and '
                                     'percentages.')
             if value < 0 or value > 255:
-                raise EvalError(self.lineno, 'rgb components must be in '
+                raise EvalException(self.lineno, 'rgb components must be in '
                                 'the range 0 to 255.')
             args.append(value)
         return Color(args, lineno=self.lineno)
@@ -1090,13 +1088,13 @@ class String(Literal):
     def mul(self, other, context):
         if isinstance(other, Number):
             return String(self.value * int(other.value), lineno=self.lineno)
-        return Literal.mul(self, other, context, lineno=self.lineno)
+        return Literal.mul(self, other, context)
 
 
 class URL(Literal):
     name = 'URL'
     methods = {
-        'length':   lambda x, c: Number(len(self.value))
+        'length':   lambda x, c: Number(len(x.value))
     }
 
     def add(self, other, context):
