@@ -14,10 +14,10 @@ class PostsRSS(Feed):
     """
 
     def title(self):
-        return blog_page(self.request).title
+        return blog_page().title
 
     def description(self):
-        return strip_tags(blog_page(self.request).description)
+        return strip_tags(blog_page().description)
 
     def link(self):
         return reverse("blog_post_feed", kwargs={"url": "rss"})

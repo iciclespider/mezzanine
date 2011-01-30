@@ -9,13 +9,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
-from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.admin import DynamicInlineAdmin
 from mezzanine.forms.forms import ExportForm
 from mezzanine.forms.models import Form, Field, FieldEntry
 from mezzanine.pages.admin import PageAdmin
 from mezzanine.configuration import global_settings
-from mezzanine.utils import admin_url
+from mezzanine.utils.urls import admin_url
 from mimetypes import guess_type
 from os.path import join
 
@@ -24,7 +23,7 @@ fs = FileSystemStorage(location=global_settings.FORMS_UPLOAD_ROOT)
 # Copy the fieldsets for PageAdmin and add the extra fields for FormAdmin.
 form_fieldsets = deepcopy(PageAdmin.fieldsets)
 form_fieldsets[0][1]["fields"].extend(["content", "button_text", "response"])
-form_fieldsets.insert(1, (_("Email"), {"fields": ("send_email", "email_from",
+form_fieldsets.insert(1, ("Email", {"fields": ("send_email", "email_from",
     "email_copies", "email_subject", "email_message")}))
 
 
@@ -86,7 +85,7 @@ class FormAdmin(PageAdmin):
                 csv.writerow(rows)
             return response
         template = "admin/forms/export.html"
-        context = {"title": _("Export Entries"), "export_form": export_form}
+        context = {"title": "Export Entries", "export_form": export_form}
         return render_to_response(template, context, RequestContext(request))
 
     def file_view(self, request, field_entry_id):

@@ -5,11 +5,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from mezzanine.core.admin import DisplayableAdmin, DisplayableAdminForm
 from mezzanine.pages.models import Page, ContentPage
-from mezzanine.utils import admin_url
+from mezzanine.utils.urls import admin_url
 
 
 page_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
-page_fieldsets[0][1]["fields"][0] = ('parent', page_fieldsets[0][1]["fields"][0])
+page_fieldsets[0][1]["fields"].insert(0, ('parent', 'settings'))
 page_fieldsets[0][1]["fields"][1] = (page_fieldsets[0][1]["fields"][1], 'menu_name')
 page_fieldsets.insert(1, ("Styling", {"fields": ["style",
                                                  "template",
@@ -40,7 +40,7 @@ class PageAdminForm(DisplayableAdminForm):
                         initial['settings'] = Page.objects.get(id=parent).settings
                     except Page.DoesNotExist:
                         pass
-        super(DisplayableAdminForm, self).__init__(*args, **kwargs)
+        super(PageAdminForm, self).__init__(*args, **kwargs)
 
 class PageAdmin(DisplayableAdmin):
     """

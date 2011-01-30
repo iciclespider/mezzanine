@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db.models import Model
 from django.template import (Context, Node, TextNode, NodeList, FilterExpression,
     Template, TemplateSyntaxError)
+from django.template.defaultfilters import truncatewords_html
 from django.template.loader import get_template, Template
 from django.template.loader_tags import BlockNode
 from django.utils.html import strip_tags
@@ -15,7 +16,9 @@ from django.utils.text import capfirst
 from mezzanine import template
 from mezzanine.clevercss import convert as ccss_convert
 from mezzanine.core.forms import get_edit_form
-from mezzanine.utils import admin_url, decode_html_entities, is_editable
+from mezzanine.utils.html import decode_entities
+from mezzanine.utils.urls import admin_url
+from mezzanine.utils.views import is_editable
 from urllib import urlopen, urlencode
 from uuid import uuid4
 import os
@@ -55,7 +58,7 @@ def metablock(context, nodelist):
     """
     parsed = nodelist.render(context)
     parsed = " ".join(parsed.replace("\n", "").split()).replace(" ,", ",")
-    return strip_tags(decode_html_entities(parsed))
+    return strip_tags(decode_entities(parsed))
 
 
 @register.inclusion_tag("includes/pagination.html", takes_context=True)
@@ -319,6 +322,26 @@ def render(context, *args):
     for arg in args:
         bits.append(Template(arg, 'render').render(context))
     return mark_safe(u''.join(bits))
+
+@register.simple_context_tag
+def rendersummary(context, *args):
+    """
+    Renders the arguments as a template themselves. This allows for treating
+    text obtained from the model as template code.
+      {% render page.content %}
+    """
+    if len(args) == 1:
+        return Template(args[0], 'rendersummary').render(context)
+    bits = []
+    for arg in args:
+        bits.append(Template(arg, 'rendersummary').render(context))
+    summary = mark_safe(u''.join(bits))
+    for end in ("</p>", "<br />", "<br/>", "</br>", "\n", ". "):
+        if end in summary:
+            summary = summary.split(end)[0] + end
+    summary = truncatewords_html(summary, 100)
+    return summary
+
 
 BLOCK_MEDIAS = '__medias__'
 

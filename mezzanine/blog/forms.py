@@ -1,10 +1,9 @@
 
-from django import forms
+from django.forms import models
+from mezzanine.blog.models import Post, Comment
 
-from mezzanine.blog.models import Comment, BlogPost
 
-
-class CommentForm(forms.ModelForm):
+class CommentForm(models.ModelForm):
     """
     Model form for ``Comment`` against a ``BlogPost``.
     """
@@ -14,18 +13,16 @@ class CommentForm(forms.ModelForm):
         fields = ("name", "email", "website", "body",)
 
 
-class BlogPostForm(forms.ModelForm):
+class PostForm(models.ModelForm):
     """
     Model form for ``BlogPost`` that provides the quick blog panel in the
     admin dashboard.
     """
 
     class Meta:
-        model = BlogPost
+        model = Post
         fields = ("title", "content", "status")
 
     def __init__(self):
-        super(BlogPostForm, self).__init__()
-        self.fields["title"].label = 'Title:'
-        self.fields["content"].label = 'Content:'
+        super(PostForm, self).__init__()
         self.fields["status"].widget = forms.HiddenInput()

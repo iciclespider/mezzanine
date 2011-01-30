@@ -25,8 +25,8 @@ else:
         'default': {
             'ENGINE': 'postgresql_psycopg2',
             'NAME': 'mcnerthney',
-            'USER': 'mcnerthney',
-            'PASSWORD': 'mcnerthney',
+            'USER': 'storm',
+            'PASSWORD': 'storm',
             'HOST': 'localhost',
             'PORT': '',
         }
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     "mezzanine.core",
     "mezzanine.configuration",
     "mezzanine.pages",
-    #"mezzanine.blog",
+    "mezzanine.blog",
     "mezzanine.forms",
     #"mezzanine.twitter",
     "mezzanine.staff",

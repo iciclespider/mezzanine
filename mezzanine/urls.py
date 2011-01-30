@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib import admin
-from mezzanine.configuration import global_settings
 
 admin.autodiscover()
 
@@ -17,6 +16,12 @@ urlpatterns = patterns("",
     ("^admin/filebrowser/", include("filebrowser.urls")),
     ("^admin/grappelli/", include("grappelli.urls")),
     ("^admin/", include(admin.site.urls)),
+)
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )
+urlpatterns += patterns('',
     ("^", include("mezzanine.core.urls")),
     ("^", include("mezzanine.pages.urls")),
 )

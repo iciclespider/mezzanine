@@ -4,11 +4,5 @@ from django.conf.urls.defaults import patterns, url
 
 # Page patterns.
 urlpatterns = patterns("mezzanine.pages.views",
-    url("^$", "home", name="home"),
-    url("^(?P<slug>.*)/$", "page", name="page"),
+    url("^(.*)$", "page"),
 )
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    )

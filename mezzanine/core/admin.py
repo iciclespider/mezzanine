@@ -3,10 +3,9 @@ from django import forms
 from django.contrib import admin
 from django.db.models import AutoField
 from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
 from mezzanine.core.forms import DynamicInlineAdminForm
 from mezzanine.core.models import Orderable, Template
-from mezzanine.utils import content_media_urls, admin_url
+from mezzanine.utils.urls import content_media_urls, admin_url
 
 
 # Build the list of admin JS file for ``Displayable`` models.
@@ -19,23 +18,23 @@ displayable_js = content_media_urls(*displayable_js)
 
 class DisplayableAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        if len(args) > 0:
-            if not args[0].get('initial') and request.settings.exists:
-                POST = args[0].copy()
-                POST['settings'] = request.settings.id
-                args = [POST]
-                args.extend(args[1:])
-        else:
-            initial = kwargs.get('initial')
-            if initial is not None and not initial.get('settings') and request.settings.exists:
-                initial['settings'] = request.settings
+        #if len(args) > 0:
+        #    if not args[0].get('initial') and request.settings.exists:
+        #        POST = args[0].copy()
+        #        POST['settings'] = request.settings.id
+        #        args = [POST]
+        #        args.extend(args[1:])
+        #else:
+        #    initial = kwargs.get('initial')
+        #    if initial is not None and not initial.get('settings') and request.settings.exists:
+        #        initial['settings'] = request.settings
         super(DisplayableAdminForm, self).__init__(*args, **kwargs)
 
-    def _get_validation_exclusions(self):
-        exclusions = super(DisplayableAdminForm, self)._get_validation_exclusions()
-        # prevent the check for settings, slug unique together by the form.
-        exclusions.append('slug')
-        return exclusions
+    #def _get_validation_exclusions(self):
+    #    exclusions = super(DisplayableAdminForm, self)._get_validation_exclusions()
+    #    # prevent the check for settings, slug unique together by the form.
+    #    exclusions.append('slug')
+    #    return exclusions
 
 class DisplayableAdmin(admin.ModelAdmin):
     """
@@ -53,22 +52,21 @@ class DisplayableAdmin(admin.ModelAdmin):
     date_hierarchy = "publish_date"
     radio_fields = {"status": admin.HORIZONTAL}
     fieldsets = [
-        (None, {"fields": ["settings",
-                           "title",
+        (None, {"fields": ["title",
                           ]
                },
         ),
-        (_("Meta data"), {"fields": ["status",
-                                     ("publish_date", "expiry_date"),
-                                     "slug",
-                                     "description",
-                                     "keywords",
-                                    ],
+        ("Meta data", {"fields": ["status",
+                                  ("publish_date", "expiry_date"),
+                                  "slug",
+                                  "description",
+                                  "keywords",
+                                 ],
                           "classes": ("collapse", "closed")
                          },
         ),
     ]
-    form = DisplayableAdminForm
+    #form = DisplayableAdminForm
 
     def save_form(self, request, form, change):
         """

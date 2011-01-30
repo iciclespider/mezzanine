@@ -1,15 +1,12 @@
 
 from datetime import datetime
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.base import ModelBase
 from django.template.defaultfilters import slugify, truncatewords_html
-from django.utils.translation import ugettext, ugettext_lazy as _
-from mezzanine.configuration.models import Settings
 from mezzanine.core.fields import HtmlField
 from mezzanine.core.managers import (DisplayableManager, KeywordManager,
     TemplateManager)
-from mezzanine.utils import base_concrete_model
+from mezzanine.utils.models import base_concrete_model
 
 
 class Slugged(models.Model):
@@ -17,14 +14,12 @@ class Slugged(models.Model):
     Abstract model that handles auto-generating slugs.
     """
 
-    settings = models.ForeignKey(Settings, related_name="%(class)s")
-    slug = models.CharField(_("URL"), max_length=100, blank=True)
-    title = models.CharField(_("Title"), max_length=100)
+    slug = models.CharField("URL", max_length=100, blank=True)
+    title = models.CharField("Title", max_length=100)
 
     class Meta:
         abstract = True
-        ordering = ("settings", "title",)
-        unique_together = ("settings", "slug")
+        ordering = ("title",)
 
     def __unicode__(self):
         return self.title
@@ -34,38 +29,21 @@ class Slugged(models.Model):
         Create a unique slug from the title by appending an index.
         """
         if not self.slug:
-            # For custom content types, use the ``Page`` instance for slug
-            # lookup.
-            concrete_model = base_concrete_model(Slugged, self)
-            self.slug = self.get_slug()
-            i = 0
-            while True:
-                if i > 0:
-                    if i > 1:
-                        self.slug = self.slug.rsplit("-", 1)[0]
-                    self.slug = "%s-%s" % (self.slug, i)
-                qs = concrete_model.objects.all()
-                if self.id is not None:
-                    qs = qs.exclude(id=self.id)
-                try:
-                    qs.get(settings=self.settings, slug=self.slug)
-                except ObjectDoesNotExist:
-                    break
-                i += 1
+            self.slug = self.generate_slug()
         super(Slugged, self).save(*args, **kwargs)
 
     def natural_key(self):
         return (self.slug,)
 
-    def get_slug(self):
+    def generate_slug(self):
         return slugify(self.title)
 
 
 CONTENT_STATUS_DRAFT = 1
 CONTENT_STATUS_PUBLISHED = 2
 CONTENT_STATUS_CHOICES = (
-    (CONTENT_STATUS_DRAFT, _("Draft")),
-    (CONTENT_STATUS_PUBLISHED, _("Published")),
+    (CONTENT_STATUS_DRAFT, "Draft"),
+    (CONTENT_STATUS_PUBLISHED, "Published"),
 )
 
 class Displayable(Slugged):
@@ -74,16 +52,16 @@ class Displayable(Slugged):
     such as publishing fields and meta data.
     """
 
-    status = models.IntegerField(_("Status"),
+    status = models.IntegerField("Status",
         choices=CONTENT_STATUS_CHOICES, default=CONTENT_STATUS_PUBLISHED)
-    publish_date = models.DateTimeField(_("Published from"),
-        help_text=_("With published selected, won't be shown until this time"),
+    publish_date = models.DateTimeField("Published from",
+        help_text="With published selected, won't be shown until this time",
         blank=True, null=True)
-    expiry_date = models.DateTimeField(_("Expires on"),
-        help_text=_("With published selected, won't be shown after this time"),
+    expiry_date = models.DateTimeField("Expires on",
+        help_text="With published selected, won't be shown after this time",
         blank=True, null=True)
-    description = HtmlField(_("Description"), blank=True)
-    keywords = models.ManyToManyField("Keyword", verbose_name=_("Keywords"),
+    description = HtmlField("Description", blank=True)
+    keywords = models.ManyToManyField("Keyword", verbose_name="Keywords",
         blank=True)
     _keywords = models.CharField(max_length=500, editable=False)
     short_url = models.URLField(blank=True, null=True)
@@ -105,6 +83,10 @@ class Displayable(Slugged):
         if not self.description:
             self.description = self.description_from_content()
         super(Displayable, self).save(*args, **kwargs)
+
+    @property
+    def head_title(self):
+        return self.title
 
     def description_from_content(self):
         """
@@ -141,8 +123,7 @@ class Displayable(Slugged):
         self.save()
 
     def admin_link(self):
-        return "<a href='%s'>%s</a>" % (self.get_absolute_url(),
-            ugettext("View on site"))
+        return "<a href='%s'>%s</a>" % (self.get_absolute_url(), "View on site")
     admin_link.allow_tags = True
     admin_link.short_description = ""
 
@@ -152,7 +133,7 @@ class Content(models.Model):
     Provides a HTML field for managing general content and making it searchable.
     """
 
-    content = HtmlField(_("Content"), widget_rows=40, blank=True)
+    content = HtmlField("Content", widget_rows=40, blank=True)
 
     search_fields = ("content",)
 
@@ -191,7 +172,7 @@ class Orderable(models.Model):
 
     __metaclass__ = OrderableBase
 
-    _order = models.IntegerField(_("Order"), null=True)
+    _order = models.IntegerField("Order", null=True)
 
     class Meta:
         abstract = True
@@ -214,7 +195,7 @@ class Orderable(models.Model):
         if self._order is None:
             lookup = self.with_respect_to()
             concrete_model = base_concrete_model(Orderable, self)
-            self._order = concrete_model.objects.filter(**lookup).count()
+            self._order = concrete_model.objects.filter(**lookup).count() # IGNORE:E1103
         super(Orderable, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -224,7 +205,7 @@ class Orderable(models.Model):
         lookup = self.with_respect_to()
         lookup["_order__gte"] = self._order
         concrete_model = base_concrete_model(Orderable, self)
-        after = concrete_model.objects.filter(**lookup)
+        after = concrete_model.objects.filter(**lookup) # IGNORE:E1103
         after.update(_order=models.F("_order") - 1)
         super(Orderable, self).delete(*args, **kwargs)
 
@@ -234,7 +215,7 @@ class Ownable(models.Model):
     Abstract model that provides ownership of an object for a user.
     """
 
-    user = models.ForeignKey("auth.User", verbose_name=_("Author"),
+    user = models.ForeignKey("auth.User", verbose_name="Author",
         related_name="%(class)ss")
 
     class Meta:
@@ -257,8 +238,8 @@ class Keyword(Slugged):
 
     class Meta(Slugged.Meta):
         abstract = False
-        verbose_name = _("Keyword")
-        verbose_name_plural = _("Keywords")
+        verbose_name = "Keyword"
+        verbose_name_plural = "Keywords"
 
 
 class Template(Content):
@@ -266,16 +247,16 @@ class Template(Content):
     Implements data base backed django templates.
     """
 
-    directory = models.CharField(_("Directory"), max_length=100, blank=True, db_index=True)
-    name = models.CharField(_("Name"), max_length=100, db_index=True)
-    extension = models.CharField(_("Extension"), max_length=100, blank=True, db_index=True)
+    directory = models.CharField("Directory", max_length=100, blank=True, db_index=True)
+    name = models.CharField("Name", max_length=100, db_index=True)
+    extension = models.CharField("Extension", max_length=100, blank=True, db_index=True)
 
     objects = TemplateManager()
 
     class Meta(Content.Meta):
         abstract = False
-        verbose_name = _("Template")
-        verbose_name_plural = _("Templates")
+        verbose_name = "Template"
+        verbose_name_plural = "Templates"
         ordering = ("directory", "name", "extension")
         unique_together = (("directory", "name", "extension"),)
 

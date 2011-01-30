@@ -13,6 +13,20 @@ register_setting(
 )
 
 register_setting(
+    name="TEMPLATE_BLOGPOST",
+    description=_("Template for all blog post views."),
+    editable=True,
+    default="base/blogpost.html",
+)
+
+register_setting(
+    name="TEMPLATE_BLOGPAGE",
+    description=_("Template for all blog page views."),
+    editable=True,
+    default="base/blogpage.html",
+)
+
+register_setting(
     name="TEMPLATE_STAFFPAGE",
     description=_("Template for all staff page views."),
     editable=True,
@@ -34,10 +48,10 @@ register_setting(
 )
 
 register_setting(
-    name="TEMPLATE_PAGE",
-    description=_("Template for all page views."),
+    name="TEMPLATE_DISPLAYABLE",
+    description=_("Template for all displayable views."),
     editable=True,
-    default="base/page.html",
+    default="base/displayable.html",
 )
 
 register_setting(
@@ -97,8 +111,8 @@ register_setting(
 )
 
 register_setting(
-    name="STYLE_PAGE",
-    description=_("CSS Style for all page views."),
+    name="STYLE_DISPLAYABLE",
+    description=_("CSS Style for all displayable views."),
     editable=True,
     default="",
 )
@@ -125,6 +139,20 @@ register_setting(
 )
 
 register_setting(
+    name="STYLE_BLOGPAGE",
+    description=_("CSS Style for all blog page views."),
+    editable=True,
+    default="",
+)
+
+register_setting(
+    name="STYLE_BLOGPOST",
+    description=_("CSS Style for all blog post views."),
+    editable=True,
+    default="",
+)
+
+register_setting(
     name="GOOGLE_ANALYTICS_ID",
     editable=True,
     description=_("Google Analytics ID (http://www.google.com/analytics/)"),
@@ -146,20 +174,6 @@ register_setting(
 #)
 
 #register_setting(
-#    name="BLOG_POST_PER_PAGE",
-#    description=_("Number of blog posts to show on a blog listing page."),
-#    editable=True,
-#    default=5,
-#)
-
-#register_setting(
-#    name="BLOG_POST_MAX_PAGING_LINKS",
-#    description=_("Max number of paging links to show on a blog listing page."),
-#    editable=True,
-#    default=10,
-#)
-
-#register_setting(
 #    name="COMMENTS_DISQUS_SHORTNAME",
 #    description=_("Username for the http://disqus.com comments service."),
 #    editable=True,
@@ -171,13 +185,6 @@ register_setting(
 #    description=_("API key for the http://disqus.com comments service."),
 #    editable=True,
 #    default="",
-#)
-
-#register_setting(
-#    name="COMMENTS_DEFAULT_APPROVED",
-#    description=_("If ``True``, built-in comments are approved by default."),
-#    editable=False,
-#    default=True,
 #)
 
 #register_setting(
@@ -235,6 +242,7 @@ register_setting(
     default=(
         (_("Content"), ("pages.Page", "staff.Person", "core.Template",
             (_("Media Library"), "fb_browse"))),
+        (_("Blogs"), ("blog.Post", "blog.Comment")),
         (_("Settings"), ("configuration.Settings", "sites.Site")),
         (_("Users"), ("auth.User",)),
     ),
@@ -316,13 +324,6 @@ register_setting(
 )
 
 register_setting(
-    name="BLOG_SLUG",
-    description=_("Slug of the page object for the blog."),
-    editable=False,
-    default="blog",
-)
-
-register_setting(
     name="STOP_WORDS",
     description=_("List of words which will be stripped from search queries."),
     editable=False,
@@ -385,3 +386,25 @@ register_setting(
     editable=False,
     default="%stinymce" % settings.ADMIN_MEDIA_PREFIX,
 )
+
+register_setting(
+    name="COMMENTS_DEFAULT_APPROVED",
+    description=_("If ``True``, built-in comments are approved by default."),
+    editable=False,
+    default=True,
+)
+
+register_setting(
+    name="BLOG_POSTS_PER_PAGE",
+    description=_("Number of blog posts to show on a blog listing page."),
+    editable=True,
+    default=5,
+)
+
+register_setting(
+    name="BLOG_MAX_PAGING_LINKS",
+    description=_("Max number of paging links to show on a blog listing page."),
+    editable=True,
+    default=10,
+)
+

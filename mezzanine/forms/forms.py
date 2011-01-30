@@ -5,10 +5,8 @@ from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
 from django.forms.extras import SelectDateWidget
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext_lazy as _
 from mezzanine.forms.models import FormEntry, FieldEntry
 from mezzanine.configuration import global_settings
-from operator import ior
 from os.path import join
 from uuid import uuid4
 
@@ -22,22 +20,22 @@ FILTER_CHOICE_DOESNT_EQUAL = "4"
 FILTER_CHOICE_BETWEEN = "5"
 
 TEXT_FILTER_CHOICES = (
-    ("", _("Nothing")),
-    (FILTER_CHOICE_CONTAINS, _("Contains")),
-    (FILTER_CHOICE_DOESNT_CONTAIN, _("Doesn't contain")),
-    (FILTER_CHOICE_EQUALS, _("Equals")),
-    (FILTER_CHOICE_DOESNT_EQUAL, _("Doesn't equal")),
+    ("", "Nothing"),
+    (FILTER_CHOICE_CONTAINS, "Contains"),
+    (FILTER_CHOICE_DOESNT_CONTAIN, "Doesn't contain"),
+    (FILTER_CHOICE_EQUALS, "Equals"),
+    (FILTER_CHOICE_DOESNT_EQUAL, "Doesn't equal"),
 )
 
 CHOICE_FILTER_CHOICES = (
-    ("", _("Nothing")),
-    (FILTER_CHOICE_EQUALS, _("Equals")),
-    (FILTER_CHOICE_DOESNT_EQUAL, _("Doesn't equal")),
+    ("", "Nothing"),
+    (FILTER_CHOICE_EQUALS, "Equals"),
+    (FILTER_CHOICE_DOESNT_EQUAL, "Doesn't equal"),
 )
 
 DATE_FILTER_CHOICES = (
-    ("", _("Nothing")),
-    (FILTER_CHOICE_BETWEEN, _("Is between")),
+    ("", "Nothing"),
+    (FILTER_CHOICE_BETWEEN, "Is between"),
 )
 
 FILTER_FUNCS = {
@@ -134,6 +132,12 @@ class FormForForm(forms.ModelForm):
                 return self.cleaned_data["field_%s" % field.id]
         return None
 
+    def format_value(self, value):
+        if isinstance(value, list):
+            value = ", ".join([v.strip() for v in value])
+        return value
+
+
 class ExportForm(forms.Form):
     """
     Form with a set if fields dynamically assigned that can be used to 
@@ -164,7 +168,7 @@ class ExportForm(forms.Form):
             if "ChoiceField" in field.field_type or is_bool_field:
                 # A fixed set of choices to filter by.
                 if is_bool_field:
-                    choices = ((True, _("Checked")), (False, _("Not checked")))
+                    choices = ((True, "Checked"), (False, "Not checked"))
                 else:
                     choices = field.get_choices()
                 contains_field = forms.MultipleChoiceField(label=" ",
@@ -178,7 +182,7 @@ class ExportForm(forms.Form):
                 self.fields["%s_from" % field_key] = forms.DateField(
                     label=" ", widget=SelectDateWidget(), required=False)
                 self.fields["%s_to" % field_key] = forms.DateField(
-                    label=_("and"), widget=SelectDateWidget(), required=False)
+                    label="and", widget=SelectDateWidget(), required=False)
             else:
                 # Text box for search term to filter by.
                 contains_field = forms.CharField(label=" ", required=False)
@@ -193,7 +197,7 @@ class ExportForm(forms.Form):
         self.fields["%s_from" % field_key] = forms.DateField(
             label=" ", widget=SelectDateWidget(), required=False)
         self.fields["%s_to" % field_key] = forms.DateField(
-            label=_("and"), widget=SelectDateWidget(), required=False)
+            label="and", widget=SelectDateWidget(), required=False)
 
     def __iter__(self):
         """

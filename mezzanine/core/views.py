@@ -5,11 +5,10 @@ from django.http import (HttpResponse, Http404, HttpResponseNotFound,
     HttpResponseServerError)
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
-from django.utils.translation import ugettext_lazy as _
 from django.views import debug
 from mezzanine.core.forms import get_edit_form
 from mezzanine.core.models import Keyword, Displayable
-from mezzanine.utils import is_editable, paginate
+from mezzanine.utils.views import is_editable, paginate
 import sys
 
 
@@ -49,7 +48,7 @@ def edit(request):
     form = get_edit_form(obj, request.POST["fields"], data=request.POST,
                         files=request.FILES)
     if not is_editable(obj, request):
-        response = _("Permission denied")
+        response = "Permission denied"
     elif form.is_valid():
         form.save()
         response = ""

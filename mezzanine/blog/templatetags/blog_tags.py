@@ -1,15 +1,18 @@
 
 from collections import defaultdict
 from datetime import datetime, timedelta
+from time import timezone
+from urllib import urlopen, urlencode
+
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.utils.simplejson import loads
-from mezzanine import template
-from mezzanine.blog.forms import BlogPostForm
-from mezzanine.blog.models import BlogPost, BlogCategory, Comment
+
+from mezzanine.configuration import global_settings
+from mezzanine.blog.forms import PostForm
+from mezzanine.blog.models import Post, Category, Comment
 from mezzanine.core.models import Keyword
-from time import timezone
-from urllib import urlopen, urlencode
+from mezzanine import template
 
 
 register = template.Library()
@@ -34,7 +37,7 @@ def blog_comments_for(context, parent):
     """
     if "blog_comments" not in context:
         comments = defaultdict(list)
-        for comment in parent.comments.visible(context["request"]):
+        for comment in parent.comments.visible():
             comments[comment.replied_to_id].append(comment)
         context["blog_comments"] = comments
         parent = None
@@ -57,8 +60,12 @@ def blog_months(*args):
     """
     Put a list of dates for blog posts into the template context.
     """
-    return BlogPost.objects.published().dates("publish_date", "month",
-        order="DESC")
+    months = []
+    for month in Post.objects.published().dates("publish_date", "month",
+                                                order="DESC"):
+        if month not in months:
+            months.append(month)
+    return months
 
 
 @register.as_tag
@@ -66,12 +73,12 @@ def blog_categories(*args):
     """
     Put a list of categories for blog posts into the template context.
     """
-    posts = BlogPost.objects.published()
-    return BlogCategory.objects.filter(blogposts__in=posts)
+    posts = Post.objects.published()
+    return list(Category.objects.filter(blogposts__in=posts).distinct())
 
 
-@register.as_tag(takes_context=True)
-def blog_tags(context, *args):
+@register.as_tag
+def blog_tags(*args):
     """
     Put a list of tags (keywords) for blog posts into the template context.
     """
@@ -81,7 +88,7 @@ def blog_tags(context, *args):
         return []
     counts = [tag.post_count for tag in tags]
     min_count, max_count = min(counts), max(counts)
-    sizes = context["request"].TAG_CLOUD_SIZES
+    sizes = global_settings.TAG_CLOUD_SIZES
     step = (max_count - min_count) / (sizes - 1)
     if step == 0:
         steps = [sizes / 2]
@@ -99,8 +106,16 @@ def blog_authors(*args):
     """
     Put a list of authors (users) for blog posts into the template context.
     """
-    blog_posts = BlogPost.objects.published()
-    return User.objects.filter(blogposts__in=blog_posts).distinct()
+    blog_posts = Post.objects.published()
+    return list(User.objects.filter(blogposts__in=blog_posts).distinct())
+
+
+@register.as_tag
+def blog_recent_posts(limit=5):
+    """
+    Put a list of recently published blog posts into the template context.
+    """
+    return list(Post.objects.published()[:limit])
 
 
 @register.inclusion_tag("admin/includes/quick_blog.html", takes_context=True)
@@ -108,11 +123,12 @@ def quick_blog(context):
     """
     Admin dashboard tag for the quick blog form.
     """
-    context["form"] = BlogPostForm()
+    context["form"] = PostForm()
     return context
 
 
 DISQUS_FORUM_ID = None
+
 
 @register.inclusion_tag("admin/includes/recent_comments.html",
     takes_context=True)
@@ -127,7 +143,7 @@ def recent_comments(context):
     """
 
     global DISQUS_FORUM_ID
-    settings = context["request"].settings
+    settings = context["settings"]
     disqus_key = settings.COMMENTS_DISQUS_KEY
     disqus_shortname = settings.COMMENTS_DISQUS_SHORTNAME
     latest = settings.COMMENTS_NUM_LATEST
@@ -152,7 +168,7 @@ def recent_comments(context):
         if DISQUS_FORUM_ID is not None:
             comments = disqus_api("get_forum_posts", forum_id=DISQUS_FORUM_ID,
                 limit=latest, exclude="spam,killed")
-            posts = BlogPost.objects.in_bulk(map(post_from_comment, comments))
+            posts = Post.objects.in_bulk(map(post_from_comment, comments))
             for comment in comments:
                 try:
                     blog_post = posts[post_from_comment(comment)]

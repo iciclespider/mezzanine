@@ -1,16 +1,16 @@
 
 from uuid import uuid4
 
-from django import forms
+from django.forms import models, fields, widgets
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-from mezzanine.utils import content_media_urls
+from mezzanine.utils.urls import content_media_urls
 from mezzanine.core.models import Orderable
 
 
-class OrderWidget(forms.HiddenInput):
+class OrderWidget(widgets.HiddenInput):
     """
     Add up and down arrows for ordering controls next to a hidden form field.
     """
@@ -22,7 +22,7 @@ class OrderWidget(forms.HiddenInput):
         return rendered + mark_safe(arrows)
 
 
-class DynamicInlineAdminForm(forms.ModelForm):
+class DynamicInlineAdminForm(models.ModelForm):
     """
     Form for ``DynamicInlineAdmin`` that can be collapsed and sorted with 
     drag and drop using ``OrderWidget``.
@@ -35,7 +35,7 @@ class DynamicInlineAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DynamicInlineAdminForm, self).__init__(*args, **kwargs)
         if issubclass(self._meta.model, Orderable):
-            self.fields["_order"] = forms.CharField(label=_("Order"),
+            self.fields["_order"] = fields.CharField(label=_("Order"),
                 widget=OrderWidget, required=False)
 
 
@@ -44,15 +44,15 @@ def get_edit_form(obj, field_names, data=None, files=None):
     Returns the in-line editing form for editing a single model field.
     """
 
-    class EditForm(forms.ModelForm):
+    class EditForm(models.ModelForm):
         """
         In-line editing form for editing a single model field.
         """
 
-        app = forms.CharField(widget=forms.HiddenInput)
-        model = forms.CharField(widget=forms.HiddenInput)
-        id = forms.CharField(widget=forms.HiddenInput)
-        fields = forms.CharField(widget=forms.HiddenInput)
+        app = fields.CharField(widget=widgets.HiddenInput)
+        model = fields.CharField(widget=widgets.HiddenInput)
+        id = fields.CharField(widget=widgets.HiddenInput)
+        fields = fields.CharField(widget=widgets.HiddenInput)
 
         class Meta:
             model = obj.__class__

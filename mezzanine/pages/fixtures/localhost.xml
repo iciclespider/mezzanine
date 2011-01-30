@@ -12,6 +12,9 @@
     <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
   </object>
   <object pk="1" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">html</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% load mezzanine_tags %}
 {% medias %}
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
@@ -38,11 +41,11 @@
 {% block html_body %}{% endblock %}
   &lt;/body&gt;
 &lt;/html&gt;</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">html</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="2" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">body</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_HTML %}
 {% load mezzanine_tags %}
 
@@ -87,11 +90,11 @@
   &lt;/script&gt;
 
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">body</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="3" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">site</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_BODY %}
 
 {% load mezzanine_tags %}
@@ -104,13 +107,13 @@
 {% block body_content %}
   &lt;div id="site-header" class="grid_24"&gt;
     &lt;div id="site-masthead"&gt;
-      &lt;a href="{% url home %}"&gt;
+      &lt;a href="{{ request.settings.homepage.url }}"&gt;
         {{ request.settings.homepage.title }}
       &lt;/a&gt;
     &lt;/div&gt;
     &lt;div id="site-menu"&gt;
       {% for child in request.settings.homepage.children.all %}
-        &lt;a {% if child == page %}class="current" {% endif %}href="{% url page child.slug %}"&gt;
+        &lt;a {% if child == page %}class="current" {% endif %}href="{{ child.url }}"&gt;
           {{ child.menu_name|default:child.title }}
         &lt;/a&gt;
       {% endfor %}
@@ -120,11 +123,11 @@
 {% block site_content %}{% endblock %}
   &lt;/div&gt;
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">site</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="4" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">404</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_SITE %}
 
 {% block head_title %}Page Not Found{% endblock %}
@@ -138,11 +141,11 @@
     The requested page does not exist.
   &lt;/p&gt;
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">404</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="5" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">500</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_SITE %}
 
 {% block head_title %}Server Error{% endblock %}
@@ -156,62 +159,97 @@
     An internal server error has occurred.  The web site administrators have been notified and will investigate.
   &lt;/p&gt;
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">500</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="6" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">displayable</field>
+    <field type="CharField" name="extension">html</field>
     <field type="TextField" name="content">{% extends request.settings.TEMPLATE_SITE %}
 
 {% load mezzanine_tags %}
 
-{% block head_title %}{{ page.titles }}{% endblock %}
+{% block head_title %}{{ displayable.head_title }}{% endblock %}
 
 {% block head_keywords %}
-  {% for keyword in page.keywords.all %}
+  {% for keyword in displayable.keywords.all %}
     {% if not forloop.first %}, {% endif %}
     {{ keyword }}
   {% endfor %}
 {% endblock %}
 
 {% block head_description %}
-  {{ page.description }}
+  {{ displayable.description }}
 {% endblock %}
 
 {% block site_style %}
-{% if request.settings.STYLE_PAGE %}{% include request.settings.STYLE_PAGE %}{% endif %}
-{% block page_style %}{% endblock %}
-{% if page.style %}{% render page.style %}{% endif %}
+{% if request.settings.STYLE_DISPLAYABLE %}{% include request.settings.STYLE_DISPLAYABLE %}{% endif %}
+{% block displayable_style %}{% endblock %}
+{% if displayable.style %}{% render displayable.style %}{% endif %}
 {% endblock %}
 
 {% block site_content %}
-  &lt;div id="page-content"&gt;
-{% block page_content %}{% endblock %}
+  &lt;div id="displayable-content"&gt;
+{% block displayable_content %}{% endblock %}
   &lt;/div&gt;
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">page</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="7" model="core.template">
-    <field type="TextField" name="content">{% extends request.settings.TEMPLATE_PAGE %}
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">contentpage</field>
+    <field type="CharField" name="extension">html</field>
+    <field type="TextField" name="content">{% extends request.settings.TEMPLATE_DISPLAYABLE %}
 
 {% load mezzanine_tags %}
 
 {% if request.settings.STYLE_CONTENTPAGE %}
-{% block page_style %}
+{% block displayable_style %}
 {% include request.settings.STYLE_CONTENTPAGE %}
 {% endblock %}
 {% endif %}
 
-{% block page_content %}
-{% render page.content %}
+{% block displayable_content %}
+{% render displayable.content %}
 {% endblock %}</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">contentpage</field>
-    <field type="CharField" name="extension">html</field>
   </object>
   <object pk="8" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">formpage</field>
+    <field type="CharField" name="extension">html</field>
+    <field type="TextField" name="content">{% extends request.settings.TEMPLATE_DISPLAYABLE %}
+
+{% load mezzanine_tags %}
+
+{% if request.settings.STYLE_FORMPAGE %}
+{% block displayable_style %}
+{% include request.settings.STYLE_FORMPAGE %}
+{% endblock %}
+{% endif %}
+
+{% block displayable_content %}
+  {% if sent %}
+    &lt;div id="form-response"&gt;
+      {% render displayable.response %}
+    &lt;/div&gt;
+  {% else %}
+    &lt;div id="form-content"&gt;
+      {% render displayable.content %}
+    &lt;/div&gt;
+    &lt;form id="form-form" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}&gt;
+        {% csrf_token %}
+        &lt;table id="form-table"&gt;
+          {{ form }}
+        &lt;/table&gt;
+        &lt;div id="form-submit"&gt;
+          &lt;input class="button" type="submit" value="{{ displayable.button_text }}" /&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+  {% endif %}
+{% endblock %}</field>
+  </object>
+  <object pk="9" model="core.template">
+    <field type="CharField" name="directory">base</field>
+    <field type="CharField" name="name">site</field>
+    <field type="CharField" name="extension">ccss</field>
     <field type="TextField" name="content">backcolor = black
 textcolor = white
 menucolor = #a1a1a1
@@ -251,9 +289,6 @@ a:
 
     p:
         margin: 20px 0</field>
-    <field type="CharField" name="directory">base</field>
-    <field type="CharField" name="name">site</field>
-    <field type="CharField" name="extension">ccss</field>
   </object>
   <object pk="1" model="pages.page">
     <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
@@ -268,7 +303,6 @@ a:
     <field type="IntegerField" name="_order">0</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
-    <field type="CharField" name="titles">Hello World</field>
     <field type="CharField" name="content_model">contentpage</field>
     <field type="BooleanField" name="login_required">False</field>
     <field type="CharField" name="template"></field>
@@ -291,7 +325,6 @@ a:
     <field type="CharField" name="menu_name">One</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
-    <field type="CharField" name="titles">Hello World / Page One</field>
     <field type="CharField" name="content_model">contentpage</field>
     <field type="BooleanField" name="login_required">False</field>
     <field type="CharField" name="template"></field>
@@ -314,7 +347,6 @@ a:
     <field type="CharField" name="menu_name">Two</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
-    <field type="CharField" name="titles">Hello World / Page Two</field>
     <field type="CharField" name="content_model">contentpage</field>
     <field type="BooleanField" name="login_required">False</field>
     <field type="CharField" name="template"></field>
@@ -337,8 +369,29 @@ a:
     <field type="CharField" name="menu_name">Three</field>
     <field type="BooleanField" name="in_navigation">True</field>
     <field type="BooleanField" name="in_footer">False</field>
-    <field type="CharField" name="titles">Hello World / Page Three</field>
     <field type="CharField" name="content_model">contentpage</field>
+    <field type="BooleanField" name="login_required">False</field>
+    <field type="CharField" name="template"></field>
+    <field to="core.keyword" name="keywords" rel="ManyToManyRel"></field>
+  </object>
+  <object pk="5" model="pages.page">
+    <field to="configuration.settings" name="settings" rel="ManyToOneRel">1</field>
+    <field type="CharField" name="slug">contact-us</field>
+    <field type="CharField" name="title">Contact Us</field>
+    <field type="IntegerField" name="status">2</field>
+    <field type="DateTimeField" name="publish_date">2010-11-24 04:25:45</field>
+    <field type="DateTimeField" name="expiry_date"><None></None></field>
+    <field type="TextField" name="description">&lt;p&gt;
+  Contact us.
+&lt;/p&gt;</field>
+    <field type="CharField" name="_keywords"></field>
+    <field type="CharField" name="short_url"><None></None></field>
+    <field type="IntegerField" name="_order">4</field>
+    <field to="pages.page" name="parent" rel="ManyToOneRel">1</field>
+    <field type="CharField" name="menu_name">Contact</field>
+    <field type="BooleanField" name="in_navigation">True</field>
+    <field type="BooleanField" name="in_footer">False</field>
+    <field type="CharField" name="content_model">form</field>
     <field type="BooleanField" name="login_required">False</field>
     <field type="CharField" name="template"></field>
     <field to="core.keyword" name="keywords" rel="ManyToManyRel"></field>
@@ -368,5 +421,45 @@ a:
 &lt;/p&gt;
 </field>
     <field to="core.keyword" name="keywords" rel="ManyToManyRel"></field>
+  </object>
+  <object pk="5" model="forms.form">
+    <field type="TextField" name="content"></field>
+    <field type="CharField" name="button_text">Submit</field>
+    <field type="TextField" name="response">Response</field>
+    <field type="BooleanField" name="send_email">False</field>
+    <field type="CharField" name="email_from"></field>
+    <field type="CharField" name="email_copies"></field>
+    <field type="CharField" name="email_subject"></field>
+    <field type="TextField" name="email_message"></field>
+    <field to="core.keyword" name="keywords" rel="ManyToManyRel"></field>
+  </object>
+  <object pk="1" model="forms.field">
+    <field type="IntegerField" name="_order">0</field>
+    <field to="forms.form" name="form" rel="ManyToOneRel">5</field>
+    <field type="CharField" name="label">Do tell...</field>
+    <field type="CharField" name="field_type">CharField/django.forms.Textarea</field>
+    <field type="BooleanField" name="required">True</field>
+    <field type="BooleanField" name="visible">True</field>
+    <field type="CharField" name="choices"></field>
+    <field type="CharField" name="default"></field>
+    <field type="CharField" name="help_text"></field>
+  </object>
+  <object pk="1" model="forms.formentry">
+    <field to="forms.form" name="form" rel="ManyToOneRel">5</field>
+    <field type="DateTimeField" name="entry_time">2010-12-26 18:59:28</field>
+  </object>
+  <object pk="2" model="forms.formentry">
+    <field to="forms.form" name="form" rel="ManyToOneRel">5</field>
+    <field type="DateTimeField" name="entry_time">2010-12-26 19:02:07</field>
+  </object>
+  <object pk="1" model="forms.fieldentry">
+    <field to="forms.formentry" name="entry" rel="ManyToOneRel">1</field>
+    <field type="IntegerField" name="field_id">1</field>
+    <field type="CharField" name="value">This is the message</field>
+  </object>
+  <object pk="2" model="forms.fieldentry">
+    <field to="forms.formentry" name="entry" rel="ManyToOneRel">2</field>
+    <field type="IntegerField" name="field_id">1</field>
+    <field type="CharField" name="value">...this is the message.</field>
   </object>
 </django-objects>
